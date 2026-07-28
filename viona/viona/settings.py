@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ========== CORE ==========
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-real-key-here')
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = [
     'viona.azurewebsites.net',
@@ -202,8 +202,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'gsftyegwrw63ui@gmail.com'
-EMAIL_HOST_PASSWORD = 'tvshoazjidbdssdx'  # App Password بتاع جيميل (16 حرف بدون مسافات)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 
