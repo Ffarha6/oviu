@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/cart/', include('cart.urls')),
     path('api/payment/', include('payment.urls')),
     path('api/coupons/', include('coupons.urls')),
-    path('tryon/', include('try_on.urls')),
+    #path('tryon/', include('try_on.urls')),
     path('api/wishlist/', include('wishlist.urls')),
     path('api/admin/wishlist/', include('wishlist.admin_urls')),
     path('api/reviews/', include('reviews.urls')),
