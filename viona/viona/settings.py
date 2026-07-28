@@ -15,6 +15,7 @@ ALLOWED_HOSTS = [
     'www.viona.com',
     'localhost',
     '127.0.0.1',
+    '.onrender.com',
 ]
 
 # ========== APPS ==========
