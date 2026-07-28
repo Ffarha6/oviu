@@ -1,0 +1,193 @@
+import { ThemeContext } from "../../context/ThemeContext"
+import { useContext } from "react"
+import { LanguageContext } from "../../context/LanguageContext"
+import { useNavigate } from "react-router-dom"
+import heroBannerLight from "../../assets/images/hero-banner-light.png"
+import heroBannerDark from "../../assets/images/hero-banner-dark.png"
+import { motion } from "framer-motion"
+
+function HeroSection() {
+  const navigate = useNavigate()
+  const { language } = useContext(LanguageContext)
+  const { darkMode } = useContext(ThemeContext)
+
+  const isAr = language === "ar"
+  const bannerImg = darkMode ? heroBannerDark : heroBannerLight
+
+  // ✅ الصورتين (الفاتحة والغامقة) مصورتين بزاوية وبعد مختلفين عن بعض، فنفس
+  // الـ object-position بيدّي كروب مختلف بصريًا في كل واحدة. القيم دي بتحكم في
+  // موضع الصورة على الموبايل لكل ثيم لوحده — عدّلي الأرقام دي لحد ما الشخص
+  // يبان بنفس الحجم وفي نفس المكان تقريبًا في الصورتين.
+  const heroMobileImageStyle = darkMode
+    ? { objectPosition: "88% top" }      // الصورة الغامقة
+    : { objectPosition: "88% 10%" }      // الصورة الفاتحة — زوّدي/قلّلي النسبة دي لو لسه مش متطابقة
+
+  const content = {
+    ar: {
+      subtitle: "أسلوبك . رؤيتك",
+      title: "كلها تعبر عنك",
+      description:
+        "اكتشف مجموعة مختارة بعناية من النظارات التي تجمع بين الفخامة والجودة والأناقة العصرية",
+      shop: "تسوق الآن",
+      tryon: "تجربة افتراضية",
+    },
+    en: {
+      subtitle: "Your Style . Your Vision",
+      title: "It All Reflects You",
+      description:
+        "Discover a curated collection of eyewear that blends luxury, quality, and modern elegance.",
+      shop: "Shop Now",
+      tryon: "Virtual Try-On",
+    },
+  }
+  const c = content[language]
+
+  return (
+    <section className="transition-all duration-500">
+
+      {/* ══════════════════════════════════════════════════════════
+          MOBILE LAYOUT (sm وتحت) — النص والأزرار فوق الصورة نفسها،
+          بس متحطين في الجزء السفلي بس، مع تعتيم تدريجي في الجزء
+          السفلي فقط (مش الصورة كلها) عشان وش الشخص يفضل واضح فوق،
+          والنص يقرا كويس تحت من غير ما يتعارض مع الدائرة الدهبية.
+      ══════════════════════════════════════════════════════════ */}
+      <div className="sm:hidden px-4 pt-3 pb-6">
+        <div className="relative rounded-[28px] overflow-hidden h-[430px]">
+          <img
+            src={bannerImg}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            style={heroMobileImageStyle}
+          />
+
+          {/* تعتيم بس في النص السفلي من الصورة (مش من فوق خالص) */}
+          <div
+            className={`absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t ${
+              darkMode ? "from-black/85 via-black/40 to-transparent" : "from-black/70 via-black/25 to-transparent"
+            }`}
+          />
+
+          {/* المحتوى: ملتصق بأسفل الكارت */}
+          <div className={`absolute inset-x-0 bottom-0 px-5 pb-5 ${isAr ? "text-right" : "text-left"}`}>
+            <p className="text-[#E8B074] text-[13px] font-semibold mb-1">
+              {c.subtitle}
+            </p>
+            <h1 className="text-white text-[26px] font-bold mb-1.5 leading-[1.25]">
+              {c.title}
+            </h1>
+            <p className="text-white/80 text-[12px] leading-relaxed mb-4 max-w-[280px]">
+              {c.description}
+            </p>
+
+            <div className={`flex items-center gap-2.5 ${isAr ? "flex-row-reverse justify-end" : "flex-row justify-start"}`}>
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate("/glasses/all")}
+                className="bg-[#D9A066] text-white font-semibold text-[13px] px-5 py-2.5 rounded-full shadow-md shadow-black/20"
+              >
+                {c.shop}
+              </motion.button>
+
+              <motion.button
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate("/virtual-tryon")}
+                className="border-2 border-white/80 text-white font-semibold text-[13px] px-5 py-2.5 rounded-full"
+              >
+                {c.tryon}
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════
+          DESKTOP / TABLET LAYOUT (sm وفوق) — نفس التصميم الأصلي:
+          نص فوق صورة خلفية كبيرة بتراكب لوني
+      ══════════════════════════════════════════════════════════ */}
+      <div
+        className="
+          hidden sm:flex
+          md:px-0 pb-0 md:pb-2
+          overflow-hidden
+          items-center
+          min-h-[70vh] md:min-h-screen
+          bg-transparent
+        "
+      >
+        <div
+          className="
+            max-w-full w-full mx-auto
+            rounded-none md:rounded-[45px]
+            relative overflow-hidden
+            min-h-[70vh] md:min-h-[calc(100vh-80px)]
+            flex items-center
+            md:-mt-12 lg:-mt-14
+          "
+          style={{
+            backgroundImage: `url(${bannerImg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center top",
+            backgroundRepeat: "no-repeat",
+            backgroundAttachment: "local",
+          }}
+        >
+          <div
+            className={`
+              absolute inset-0
+              ${darkMode
+                ? "bg-gradient-to-r from-black/70 via-black/30 to-transparent"
+                : "bg-gradient-to-r from-[#F8F4F1]/55 via-[#F8F4F1]/20 to-transparent"
+              }
+            `}
+          />
+
+          <motion.div
+            key={language}
+            initial={{ opacity: 0, x: isAr ? 80 : -80 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+            className={`
+              relative z-20 w-full max-w-[580px]
+              px-10 lg:px-14 py-8 lg:py-16
+              ${isAr ? "text-right mr-auto" : "text-left ml-0"}
+            `}
+          >
+            <p className="text-[#D9A066] text-xl lg:text-3xl font-semibold mb-3">
+              {c.subtitle}
+            </p>
+
+            <h1 className="text-6xl lg:text-7xl xl:text-[80px] font-bold mb-5 text-black dark:text-white leading-[1.1] drop-shadow-[0_0_20px_rgba(217,160,102,0.15)]">
+              {c.title}
+            </h1>
+
+            <p className="text-gray-700 dark:text-gray-300 text-lg lg:text-xl leading-relaxed mb-8 max-w-[460px]">
+              {c.description}
+            </p>
+
+            <div className={`flex items-center flex-wrap gap-4 mb-10 ${isAr ? "flex-row-reverse justify-end" : "flex-row justify-start"}`}>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate("/glasses/all")}
+                className="bg-[#D9A066] text-white hover:bg-[#c4894f] transition-all duration-300 text-lg lg:text-xl px-8 lg:px-10 py-3 lg:py-4 rounded-full font-semibold shadow-md shadow-[#D9A066]/30"
+              >
+                {c.shop}
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate("/virtual-tryon")}
+                className="border-2 border-[#D9A066] text-[#D9A066] hover:bg-[#D9A066] hover:text-white transition-all duration-300 text-lg lg:text-xl px-8 lg:px-10 py-3 lg:py-4 rounded-full font-semibold"
+              >
+                {c.tryon}
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default HeroSection

@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: #F7F2EE;
+  --color-surface: #F3ECE7;
+  --color-primary: #0F0F0F;
+  --color-secondary: #C89072;
+}
+
+.dark {
+  --color-background: #0F0F0F;
+  --color-surface: #1A1A1A;
+  --color-primary: #FFFFFF;
+  --color-secondary: #D9A066;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+  /* ✅ لون الخلفية بيتبع نفس متغير الثيم (بيج فاتح في اللايت / أسود في الدارك)
+     بدل ما يفضل من غير لون، عشان مساحة الـ overscroll bounce (لما تسحب لفوق
+     والمتصفح يعمل إرتداد بسيط) تبين بنفس لون الصفحة مش أبيض المتصفح الافتراضي */
+  background-color: var(--color-background);
+}
+
+/* ✅ FIX: الكلاس ده كان مستخدم في Navbar.jsx (شريط الفئات القابل للسحب أفقيًا)
+   بس مكنش معرّف في أي مكان، فكان بيظهر سكرول بار فعلي فوق شريط الفئات
+   بدل ما يختفي بصريًا مع إبقاء إمكانية السحب شغالة */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
+
+
+
+
+
+/* ✅ إصلاح لون الخلفية اللي بيغيّره المتصفح تلقائيًا (autofill) لما يتعرف
+   على بيانات معروفة زي رقم الهاتف أو العنوان (بيحطها لون أزرق فاتح افتراضيًا).
+   ده مش لون بتاعنا في الكود، ده استايل جوه المتصفح نفسه بيغلب أي background
+   عادي، فلازم نتغلب عليه بالطريقة دي تحديدًا (box-shadow inset بحجم كبير
+   بيغطي مكان الخلفية بلون الحقل العادي بتاعنا).
+
+   ضيفي البلوك ده في ملف الـ CSS العام عندك (index.css) - أي حقل نصي أو
+   textarea أو select في الموقع كله هيستفيد منه تلقائيًا. */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  /* اللون ده لازم يتطابق مع خلفية الحقول العادية عندك في اللايت مود (#F7F2EE) */
+  -webkit-box-shadow: 0 0 0px 1000px #F7F2EE inset !important;
+  box-shadow: 0 0 0px 1000px #F7F2EE inset !important;
+  -webkit-text-fill-color: #222 !important;
+  caret-color: #222 !important;
+  /* بتأخر أي تغيير لون خلفية يحاول المتصفح يعمله لفترة طويلة جدًا،
+     فعمليًا بيبقى وكأنه مش بيحصل خالص */
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* نفس الفكرة بس للدارك مود */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active,
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:hover,
+.dark textarea:-webkit-autofill:focus,
+.dark select:-webkit-autofill,
+.dark select:-webkit-autofill:hover,
+.dark select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #374151 inset !important; /* gray-700 */
+  box-shadow: 0 0 0px 1000px #374151 inset !important;
+  -webkit-text-fill-color: #f3f4f6 !important;
+  caret-color: #f3f4f6 !important;
+}
