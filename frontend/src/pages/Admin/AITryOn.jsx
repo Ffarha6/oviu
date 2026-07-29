@@ -17,11 +17,11 @@ import {
 
 import SectionCard from "../../components/admin/shared/SectionCard";
 import DonutChart from "../../components/admin/charts/DonutChart";
-import TryOnSessionsChart from "../../components/admin/tryon/TryOnSessionsChart";
-import TopTriedGlasses from "../../components/admin/tryon/TopTriedGlasses";
-import TryOnToolbar from "../../components/admin/tryon/TryOnToolbar";
-import TryOnTable, { sessions } from "../../components/admin/tryon/TryOnTable";
-import SessionDetailPanel from "../../components/admin/tryon/SessionDetailPanel";
+import TryOnSessionsChart from "../../components/admin/tryon/Tryonsessionschart";
+import TopTriedGlasses from "../../components/admin/tryon/Toptriedglasses";
+import TryOnToolbar from "../../components/admin/tryon/Tryontoolbar";
+import TryOnTable, { sessions } from "../../components/admin/tryon/Tryontable";
+import SessionDetailPanel from "../../components/admin/tryon/Sessiondetailpanel";
 
 export default function AiTryOn() {
   const [selectedId, setSelectedId] = useState(sessions[0].id);

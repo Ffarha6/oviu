@@ -5,11 +5,11 @@ import { Plus, Users, ShieldCheck, UserPlus, Ban, ChevronLeft, ShieldAlert } fro
 import api from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
 import SectionCard from "../../components/admin/shared/SectionCard";
-import AdminsToolbar from "../../components/admin/admins/AdminsToolbar";
-import AdminsTable from "../../components/admin/admins/AdminsTable";
+import AdminsToolbar from "../../components/admin/admins/Adminstoolbar";
+import AdminsTable from "../../components/admin/admins/Adminstable";
 import AdminDetailPanel from "../../components/admin/admins/AdminDetailPanel";
-import RolesPermissionsPanel from "../../components/admin/admins/RolesPermissionsPanel";
-import AdminActivityPanel from "../../components/admin/admins/AdminActivityPanel";
+import RolesPermissionsPanel from "../../components/admin/admins/Rolespermissionspanel";
+import AdminActivityPanel from "../../components/admin/admins/Adminactivitypanel";
 
 export default function Admins() {
   const { user } = useAuth();

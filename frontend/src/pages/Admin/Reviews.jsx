@@ -11,9 +11,9 @@ import {
 
 import api from "../../api/axios";
 import SectionCard from "../../components/admin/shared/SectionCard";
-import ReviewsToolbar from "../../components/admin/reviews/ReviewsToolbar";
-import ReviewsTable from "../../components/admin/reviews/ReviewsTable";
-import ReviewDetailPanel from "../../components/admin/reviews/ReviewDetailPanel";
+import ReviewsToolbar from "../../components/admin/reviews/Reviewstoolbar";
+import ReviewsTable from "../../components/admin/reviews/Reviewstable";
+import ReviewDetailPanel from "../../components/admin/reviews/Reviewdetailpanel";
 
 export default function Reviews() {
   const [search, setSearch] = useState("");

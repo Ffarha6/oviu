@@ -15,9 +15,9 @@ import {
 } from "lucide-react";
 
 import SectionCard from "../../components/admin/shared/SectionCard";
-import PaymentsToolbar from "../../components/admin/payments/PaymentsToolbar";
-import PaymentsTable, { payments } from "../../components/admin/payments/PaymentsTable";
-import PaymentDetailPanel from "../../components/admin/payments/PaymentDetailPanel";
+import PaymentsToolbar from "../../components/admin/payments/Paymentstoolbar";
+import PaymentsTable, { payments } from "../../components/admin/payments/Paymentstable";
+import PaymentDetailPanel from "../../components/admin/payments/Paymentdetailpanel";
 
 export default function Payments() {
   const [selectedId, setSelectedId] = useState(payments[0].id);

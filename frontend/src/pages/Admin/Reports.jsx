@@ -14,16 +14,16 @@ import {
 } from "lucide-react";
 
 import SectionCard from "../../components/admin/shared/SectionCard";
-import ReportsTabs from "../../components/admin/reports/ReportsTabs";
-import SalesByCategoryDonut from "../../components/admin/reports/SalesByCategoryDonut";
-import OrdersByStatusDonut from "../../components/admin/reports/OrdersByStatusDonut";
-import RecentReportsTable from "../../components/admin/reports/RecentReportsTable";
-import RevenueSummaryTable from "../../components/admin/reports/RevenueSummaryTable";
+import ReportsTabs from "../../components/admin/reports/Reportstabs";
+import SalesByCategoryDonut from "../../components/admin/reports/Salesbycategorydonut";
+import OrdersByStatusDonut from "../../components/admin/reports/Ordersbystatusdonut";
+import RecentReportsTable from "../../components/admin/reports/Recentreportstable";
+import RevenueSummaryTable from "../../components/admin/reports/Revenuesummarytable";
 
 // ✅ إعادة استخدام مكونات جاهزة من صفحة Analytics بدل ما نكررهم
-import RevenueOverviewChart from "../../components/admin/analytics/RevenueOverviewChart";
-import SalesByChannelDonut from "../../components/admin/analytics/SalesByChannelDonut";
-import TopSellingProductsTable from "../../components/admin/analytics/TopSellingProductsTable";
+import RevenueOverviewChart from "../../components/admin/analytics/Revenueoverviewchart";
+import SalesByChannelDonut from "../../components/admin/analytics/Salesbychanneldonut";
+import TopSellingProductsTable from "../../components/admin/analytics/Topsellingproductstable";
 
 export default function Reports() {
   const [activeTab, setActiveTab] = useState("نظرة عامة");

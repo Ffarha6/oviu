@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 
-import SettingsTabs from "../../components/admin/settings/SettingsTabs";
-import GeneralTab from "../../components/admin/settings/GeneralTab";
-import SettingsSidePanel from "../../components/admin/settings/SettingsSidePanel";
+import SettingsTabs from "../../components/admin/settings/Settingstabs";
+import GeneralTab from "../../components/admin/settings/Generaltab";
+import SettingsSidePanel from "../../components/admin/settings/Settingssidepanel";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("عام");

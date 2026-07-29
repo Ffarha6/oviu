@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { FaSearch, FaFilter, FaBoxOpen, FaHeadset } from "react-icons/fa"
 import FullOrderCard from "./FullOrderCard"
 import OrderDetailsView from "./OrderDetailsView"
-import { ORDER_FILTERS } from "./profileConstants"
+import { ORDER_FILTERS } from "./ProfileConstants"
 
 export default function OrdersTab({ orders, ordersError }) {
   const [orderSearch, setOrderSearch] = useState("")

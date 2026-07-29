@@ -4,11 +4,11 @@ import { Heart, Users, ChevronDown, ChevronLeft } from "lucide-react";
 
 import api from "../../api/axios";
 import SectionCard from "../../components/admin/shared/SectionCard";
-import WishlistToolbar from "../../components/admin/wishlist/WishlistToolbar";
-import WishlistTable from "../../components/admin/wishlist/WishlistTable";
-import WishlistOverviewChart from "../../components/admin/wishlist/WishlistOverviewChart";
-import TopWishlistedCategories from "../../components/admin/wishlist/TopWishlistedCategories";
-import MostWishlistedProducts from "../../components/admin/wishlist/MostWishlistedProducts";
+import WishlistToolbar from "../../components/admin/wishlist/Wishlisttoolbar";
+import WishlistTable from "../../components/admin/wishlist/Wishlisttable";
+import WishlistOverviewChart from "../../components/admin/wishlist/Wishlistoverviewchart";
+import TopWishlistedCategories from "../../components/admin/wishlist/Topwishlistedcategories";
+import MostWishlistedProducts from "../../components/admin/wishlist/Mostwishlistedproducts";
 
 export default function Wishlist() {
   const [search, setSearch] = useState("");

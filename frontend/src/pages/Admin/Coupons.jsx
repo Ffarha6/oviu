@@ -14,9 +14,9 @@ import {
 
 import api from "../../api/axios";
 import SectionCard from "../../components/admin/shared/SectionCard";
-import CouponsToolbar from "../../components/admin/coupons/CouponsToolbar";
-import CouponsTable from "../../components/admin/coupons/CouponsTable";
-import CouponDetailPanel from "../../components/admin/coupons/CouponDetailPanel";
+import CouponsToolbar from "../../components/admin/coupons/Couponstoolbar";
+import CouponsTable from "../../components/admin/coupons/Couponstable";
+import CouponDetailPanel from "../../components/admin/coupons/Coupondetailpanel";
 
 export default function Coupons() {
   const [search, setSearch] = useState("");

@@ -6,7 +6,7 @@ import CategoriesSection from "./CategoriesSection"
 import SocialSidebar from "./SocialSidebar"
 import BestSellers from "./Bestsellers"
 import PromoBanners from "./Promobanners"
-import TrustBar from "./TrustBar"
+import TrustBar from "./Trustbar"
 
 function Home() {
   useEffect(() => {

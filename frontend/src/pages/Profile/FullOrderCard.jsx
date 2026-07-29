@@ -1,6 +1,6 @@
 import { FaBoxOpen, FaChevronLeft, FaCheck, FaBox } from "react-icons/fa"
 import StatusBadge from "./StatusBadge"
-import { STATUS_CONFIG, DEFAULT_STATUS_CONFIG } from "./profileConstants"
+import { STATUS_CONFIG, DEFAULT_STATUS_CONFIG } from "./ProfileConstants"
 
 // دالة تنسيق تاريخ عربي (يوم الأسبوع + اليوم + الشهر) — مستخدمة هنا بس
 function formatArabicDate(dateStr) {
