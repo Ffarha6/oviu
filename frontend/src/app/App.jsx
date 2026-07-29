@@ -30,7 +30,7 @@ import ProductForm        from "../pages/Admin/ProductForm.jsx"
 import Orders             from "../pages/Admin/Orders.jsx"
 import OrderDetail         from "../pages/Admin/OrderDetail.jsx"
 import Customers          from "../pages/Admin/Customers.jsx"
-import AiTryOn            from "../pages/Admin/AiTryOn.jsx"
+import AiTryOn            from "../pages/Admin/AITryOn.jsx";
 import Reviews            from "../pages/Admin/Reviews.jsx"
 import Coupons            from "../pages/Admin/Coupons.jsx"
 import CouponForm          from "../pages/Admin/CouponForm.jsx"
