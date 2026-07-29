@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { LanguageContext } from "../../context/LanguageContext";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://oviu-production.up.railway.app";
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;

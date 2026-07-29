@@ -17,7 +17,7 @@ import { MdOutlineLocalShipping } from "react-icons/md"
 // ✅ نفس فكرة صفحة البروفايل: رابط ثابت احتياطي لو VITE_API_URL مش متعرّف في .env
 // (لو ده هو اللي حصل، كان الطلب رايح لمسار غلط عند سيرفر الفرونت نفسه وبيرجع HTML
 // مش JSON، فده كان سبب رسالة "فشل إتمام الطلب" الفاضية اللي بتظهر بدون أي تفاصيل)
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://oviu-production.up.railway.app"
 
 const PHONE_CODES = ["+966", "+20", "+971", "+965", "+974", "+973", "+968"]
 

@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from "rea
 
 export const CartContext = createContext()
 
-const API = "http://localhost:8000/api/cart"
+const API = "https://oviu-production.up.railway.app/api/cart"
 
 // ✅ بيقرا الـ body كـ JSON مرة واحدة، وبيستخرج رسالة خطأ واضحة لو الرد مش ok
 // (سواء الباك إند رجع {error: "..."} أو {detail: "..."} أو أخطاء validation

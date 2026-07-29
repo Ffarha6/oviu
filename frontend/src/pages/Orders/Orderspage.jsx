@@ -7,7 +7,7 @@ import {
   FaSpinner, FaBoxOpen, FaHeadset
 } from "react-icons/fa"
 
-const BASE_URL = "http://localhost:8000"
+const BASE_URL = "https://oviu-production.up.railway.app"
 
 function getCookie(name) {
   const v = `; ${document.cookie}`

@@ -7,7 +7,7 @@ import {
   FiCopy, FiShield
 } from "react-icons/fi"
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000"
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://oviu-production.up.railway.app"
 
 function authFetch(endpoint) {
   const token = localStorage.getItem("access_token")

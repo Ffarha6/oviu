@@ -3,7 +3,7 @@ import {
 } from "react-icons/fa"
 
 // ── API ─────────────────────────────────────────────────────────
-export const BASE_URL = "http://localhost:8000"
+export const BASE_URL = "https://oviu-production.up.railway.app"
 
 export function authFetch(endpoint, options = {}) {
   const token = localStorage.getItem("access_token")

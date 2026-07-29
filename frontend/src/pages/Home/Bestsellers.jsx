@@ -18,7 +18,7 @@ function BestSellers() {
   const [activeFilter, setActiveFilter] = useState("all")
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/best-sellers/")
+    fetch("https://oviu-production.up.railway.app/api/products/best-sellers/")
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         return res.json()

@@ -10,7 +10,7 @@ import banner from "../../assets/images/banner.jpg"
 
 import { FiMail, FiLock, FiEye, FiEyeOff, FiAlertCircle, FiCheckCircle } from "react-icons/fi"
 
-const BACKEND_URL = "http://127.0.0.1:8000"
+const BACKEND_URL = "https://oviu-production.up.railway.app"
 
 /* ── أيقونة جوجل الرسمية (الألوان الأربعة) ── */
 const GoogleIcon = ({ className = "w-5 h-5" }) => (

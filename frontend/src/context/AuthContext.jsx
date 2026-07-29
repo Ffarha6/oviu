@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
 
   const fetchProfile = async (token) => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/auth/user/", {
+      const res = await fetch("https://oviu-production.up.railway.app/api/auth/user/", {
         headers: { Authorization: `Token ${token}` }, // ✅ Token مش Bearer
       })
       if (res.ok) {

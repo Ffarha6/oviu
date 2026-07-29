@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-const BASE_URL = "http://127.0.0.1:8000/api";
+const BASE_URL = "https://oviu-production.up.railway.app/api";
 
 function getCookie(name) {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));

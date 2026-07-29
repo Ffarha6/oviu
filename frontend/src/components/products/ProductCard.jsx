@@ -6,10 +6,10 @@ import { useCart } from "../../context/CartContext"
 import { useWishlist } from "../../context/WishlistContext"
 // ─────────────────────────────────────────────
 // FIX: بعض روابط الصور بترجع من الـ API ناقصة الدومين
-// (زي "/media/products/xxx.jpg" بدل "http://127.0.0.1:8000/media/products/xxx.jpg")
+// (زي "/media/products/xxx.jpg" بدل "https://oviu-production.up.railway.app/media/products/xxx.jpg")
 // الدالة دي بتكمل الدومين الناقص عشان المتصفح يقدر يجيب الصورة صح
 // ─────────────────────────────────────────────
-const API_BASE = "http://127.0.0.1:8000"
+const API_BASE = "https://oviu-production.up.railway.app"
 
 function resolveImageUrl(url) {
   if (!url) return null
