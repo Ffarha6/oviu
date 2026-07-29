@@ -1,0 +1,661 @@
+[
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "نظارة شمس",
+    "slug": "nthr-shms",
+    "sku": "OV-SUN-0153",
+    "product_type": "sunglasses",
+    "audience": "kids",
+    "is_active": true,
+    "lens_type": "",
+    "frame_shape": "",
+    "price": "500.00",
+    "discount_price": "300.00",
+    "has_discount": true,
+    "stock": 1,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "نظارة شمس اطفال مناسبه للجنسين",
+    "lens_width": 51,
+    "bridge_width": 22,
+    "temple_length": 140,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "نظارة اطفال شمس",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "ar",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-04-18T22:37:52.809Z",
+    "updated_at": "2026-07-28T09:01:12.390Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "نظارة شمس كلاسيك",
+    "slug": "nthr-shms-klsyk",
+    "sku": null,
+    "product_type": "sunglasses",
+    "audience": "women",
+    "is_active": true,
+    "lens_type": null,
+    "frame_shape": null,
+    "price": "2000.00",
+    "discount_price": "1000.00",
+    "has_discount": true,
+    "stock": 0,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "نظارة شمس كلاسيك مناسبه للنساء باطار معدنى",
+    "lens_width": 55,
+    "bridge_width": 22,
+    "temple_length": 121,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "نظارة شمس للنساء",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "نظارة للنساء شمس",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-05-12T02:11:18.887Z",
+    "updated_at": "2026-07-10T09:01:24.783Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "نظارة قراءى",
+    "slug": "nthr-kr",
+    "sku": null,
+    "product_type": "reading",
+    "audience": "unisex",
+    "is_active": true,
+    "lens_type": "blue_cut",
+    "frame_shape": "square",
+    "price": "700.00",
+    "discount_price": "500.00",
+    "has_discount": true,
+    "stock": 0,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "نظارة قراءة مناسبه للجنسين باطار خفيف ومريح",
+    "lens_width": 54,
+    "bridge_width": 22,
+    "temple_length": 122,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-05-12T11:04:06.231Z",
+    "updated_at": "2026-07-09T06:31:40.274Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 4,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "نظارة طبيه كلاسيك",
+    "slug": "nthr-tbyh-klsyk",
+    "sku": "OV-MED-3153",
+    "product_type": "medical",
+    "audience": "men",
+    "is_active": true,
+    "lens_type": null,
+    "frame_shape": null,
+    "price": "1000.00",
+    "discount_price": "300.00",
+    "has_discount": true,
+    "stock": 4,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "نظارة طبيه كلاسيك بجودة عاليه",
+    "lens_width": null,
+    "bridge_width": null,
+    "temple_length": null,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-05-12T11:20:35.602Z",
+    "updated_at": "2026-07-21T09:34:29.162Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 5,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "نظارة قراءة",
+    "slug": "",
+    "sku": null,
+    "product_type": "reading",
+    "audience": "women",
+    "is_active": true,
+    "lens_type": null,
+    "frame_shape": null,
+    "price": "1000.00",
+    "discount_price": "300.00",
+    "has_discount": true,
+    "stock": 0,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "ننظارة بشكل عصرى ومناسب",
+    "lens_width": null,
+    "bridge_width": null,
+    "temple_length": null,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-05-12T12:17:02.036Z",
+    "updated_at": "2026-05-12T12:17:02.036Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 6,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "نظارة نساء كلاسيك",
+    "slug": "nthr-ns-klsyk",
+    "sku": "OV-MED-2023",
+    "product_type": "medical",
+    "audience": "women",
+    "is_active": true,
+    "lens_type": "plastic",
+    "frame_shape": "square",
+    "price": "3000.00",
+    "discount_price": "1500.00",
+    "has_discount": true,
+    "stock": 4,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "نظارة طبيه مريحه ومناسبه",
+    "lens_width": 45,
+    "bridge_width": 22,
+    "temple_length": 120,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-05-13T00:05:19.757Z",
+    "updated_at": "2026-07-27T22:31:28.173Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 7,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "نظارة شمس  للنساء",
+    "slug": "nthr-shms-llns",
+    "sku": "OV-SUN-8446",
+    "product_type": "sunglasses",
+    "audience": "women",
+    "is_active": true,
+    "lens_type": null,
+    "frame_shape": "square",
+    "price": "700.00",
+    "discount_price": null,
+    "has_discount": false,
+    "stock": 0,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "نظارة شمس بحمايه عاليه",
+    "lens_width": 65,
+    "bridge_width": 22,
+    "temple_length": 43,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-05-13T01:04:20.198Z",
+    "updated_at": "2026-07-25T16:53:59.339Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 8,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "نظاره فاخرة باطار عصر",
+    "slug": "nthrh-fkhr-btr-aasr",
+    "sku": "OV-SUN-3207",
+    "product_type": "sunglasses",
+    "audience": "men",
+    "is_active": true,
+    "lens_type": "plastic",
+    "frame_shape": "square",
+    "price": "1500.00",
+    "discount_price": "800.00",
+    "has_discount": true,
+    "stock": 8,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "نظارة فاخره للرجال باطار عصرى ومتين",
+    "lens_width": 53,
+    "bridge_width": 22,
+    "temple_length": 140,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-07-11T00:54:36.539Z",
+    "updated_at": "2026-07-28T09:01:12.385Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 9,
+  "fields": {
+    "name": "ar",
+    "name_ar": null,
+    "name_en": "تتاتلالا بالتات",
+    "slug": "تتاتلالا-بالتات",
+    "sku": "OV-SUN-8600",
+    "product_type": "sunglasses",
+    "audience": "unisex",
+    "is_active": true,
+    "lens_type": "plastic",
+    "frame_shape": "round",
+    "price": "1300.00",
+    "discount_price": "700.00",
+    "has_discount": true,
+    "stock": 8,
+    "description": "ar",
+    "description_ar": null,
+    "description_en": "منمنتا  ييبلاتن لاات",
+    "lens_width": null,
+    "bridge_width": null,
+    "temple_length": null,
+    "meta_title": "ar",
+    "meta_title_ar": null,
+    "meta_title_en": "ar",
+    "meta_description": "ar",
+    "meta_description_ar": null,
+    "meta_description_en": "ar",
+    "views_count": 0,
+    "average_rating": "0.00",
+    "reviews_count": 0,
+    "created_at": "2026-07-20T03:19:44.744Z",
+    "updated_at": "2026-07-27T14:40:25.407Z"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 1,
+  "fields": {
+    "product": 1,
+    "name": "brown",
+    "code": "#8B4513"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 2,
+  "fields": {
+    "product": 1,
+    "name": "black",
+    "code": "#000000"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 3,
+  "fields": {
+    "product": 2,
+    "name": "black",
+    "code": "#000000"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 4,
+  "fields": {
+    "product": 3,
+    "name": "black",
+    "code": "#000000"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 5,
+  "fields": {
+    "product": 4,
+    "name": "brown",
+    "code": "#8B4513"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 6,
+  "fields": {
+    "product": 4,
+    "name": "black",
+    "code": "#000000"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 7,
+  "fields": {
+    "product": 5,
+    "name": "brown",
+    "code": "#8B4513"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 8,
+  "fields": {
+    "product": 6,
+    "name": "black",
+    "code": "#000000"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 9,
+  "fields": {
+    "product": 7,
+    "name": "black",
+    "code": "#000000"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 10,
+  "fields": {
+    "product": 8,
+    "name": "black",
+    "code": "#000000"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 17,
+  "fields": {
+    "product": 9,
+    "name": "بني",
+    "code": "#78350F"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 18,
+  "fields": {
+    "product": 9,
+    "name": "اخضر",
+    "code": "#16A34A"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 19,
+  "fields": {
+    "product": 9,
+    "name": "اسود",
+    "code": "#000000"
+  }
+},
+{
+  "model": "products.color",
+  "pk": 20,
+  "fields": {
+    "product": 1,
+    "name": "اخضر",
+    "code": "#16A34A"
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 1,
+  "fields": {
+    "color": 1,
+    "image": "products/nthr-shms/brown/model1-brown-3_61taPor.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 2,
+  "fields": {
+    "color": 1,
+    "image": "products/nthr-shms/brown/model1-brown-2_xcBqlqG.jpg",
+    "alt_text": "",
+    "is_primary": true
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 3,
+  "fields": {
+    "color": 2,
+    "image": "products/nthr-shms/black/model1-navy-pink-4_Sjiu1gV.jpg",
+    "alt_text": "",
+    "is_primary": true
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 4,
+  "fields": {
+    "color": 2,
+    "image": "products/nthr-shms/black/model1-navy-pink-3_LDjTvTt.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 5,
+  "fields": {
+    "color": 3,
+    "image": "products/nthr-shms-klsyk/black/model1-black-1.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 6,
+  "fields": {
+    "color": 3,
+    "image": "products/nthr-shms-klsyk/black/model1-black-2.jpg",
+    "alt_text": "",
+    "is_primary": true
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 7,
+  "fields": {
+    "color": 3,
+    "image": "products/nthr-shms-klsyk/black/model1-black-3.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 8,
+  "fields": {
+    "color": 4,
+    "image": "products/nthr-kr/black/model1-silver-1.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 9,
+  "fields": {
+    "color": 4,
+    "image": "products/nthr-kr/black/model1-silver-2.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 10,
+  "fields": {
+    "color": 4,
+    "image": "products/nthr-kr/black/model1-silver-3.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 11,
+  "fields": {
+    "color": 7,
+    "image": "products/brown/WhatsApp_Image_2026-05-12_at_3.12.56_PM.jpeg",
+    "alt_text": "",
+    "is_primary": true
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 12,
+  "fields": {
+    "color": 8,
+    "image": "products/nthr-ns-klsyk/black/model1-gold-1.jpg",
+    "alt_text": "",
+    "is_primary": true
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 13,
+  "fields": {
+    "color": 8,
+    "image": "products/nthr-ns-klsyk/black/model1-gold-2.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 14,
+  "fields": {
+    "color": 9,
+    "image": "products/nthr-shms-llns/black/model3-white-2.jpg",
+    "alt_text": "",
+    "is_primary": true
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 15,
+  "fields": {
+    "color": 4,
+    "image": "products/nthr-kr/black/model2-black-3.png",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 16,
+  "fields": {
+    "color": 4,
+    "image": "products/nthr-kr/black/model1-gold-1_1.png",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 17,
+  "fields": {
+    "color": 4,
+    "image": "products/nthr-kr/black/WhatsApp_Image_2026-05-13_at_9.36.03_PM.jpeg",
+    "alt_text": "",
+    "is_primary": true
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 18,
+  "fields": {
+    "color": 10,
+    "image": "products/nthrh-fkhr-btr-aasr/black/model1-black-1.jpg",
+    "alt_text": "",
+    "is_primary": true
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 19,
+  "fields": {
+    "color": 10,
+    "image": "products/nthrh-fkhr-btr-aasr/black/model1-black-2.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+},
+{
+  "model": "products.productimage",
+  "pk": 20,
+  "fields": {
+    "color": 10,
+    "image": "products/nthrh-fkhr-btr-aasr/black/model1-black-3.jpg",
+    "alt_text": "",
+    "is_primary": false
+  }
+}
+]
