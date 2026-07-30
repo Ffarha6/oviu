@@ -12,6 +12,7 @@ from django.core.validators import RegexValidator
 from django.shortcuts import redirect
 from .models import User
 import secrets
+import requests
 from django.utils.timezone import now
 from datetime import timedelta
 import json
@@ -113,24 +114,32 @@ def register(request):
     user.verification_code_created_at = now()
     user.save()
 
-    # Send verification email
+        # Send verification email using Resend API
     try:
-        send_mail(
-            'تفعيل حسابك في OVIU',
-            f'''مرحباً {user.first_name or username},
-
-كود التفعيل الخاص بك هو:
-
-{verification_code}
-
-يمكنك استخدام هذا الكود لتفعيل حسابك.
-
-شكراً لانضمامك إلى OVIU
-''',
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
+        response = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": "OVIU <onboarding@resend.dev>",
+                "to": [email],
+                "subject": "تفعيل حسابك في OVIU",
+                "html": f"""
+                    <div dir="rtl">
+                        <h2>مرحباً {user.first_name or username}</h2>
+                        <p>كود تفعيل حسابك في OVIU هو:</p>
+                        <h1>{verification_code}</h1>
+                        <p>الكود صالح لمدة ساعة واحدة.</p>
+                        <p>شكراً لانضمامك إلى OVIU</p>
+                    </div>
+                """,
+            },
+            timeout=10,
         )
+        response.raise_for_status()
+
     except Exception as e:
         print(f"Verification email error: {e}")
 
