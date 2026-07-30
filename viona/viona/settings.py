@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from corsheaders.defaults import default_headers
 import dj_database_url
 from django.utils.translation import gettext_lazy as _
 
@@ -187,6 +188,12 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://.*\.vercel\.app$",
 ]
+
+
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "x-cart-id",
+)
 
 CSRF_TRUSTED_ORIGINS = [
     'https://viona.azurewebsites.net',
