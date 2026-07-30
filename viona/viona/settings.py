@@ -289,11 +289,15 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
-# بعد ما allauth يخلص يروح لـ OAuthRedirectView
-LOGIN_REDIRECT_URL = '/api/auth/oauth/complete/'
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
 
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
+
+LOGIN_REDIRECT_URL = '/api/auth/oauth/complete/'
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://oviu.vercel.app')
+
+
+
 
 # ========== CACHE ==========
 REDIS_URL = os.environ.get('REDIS_URL')
