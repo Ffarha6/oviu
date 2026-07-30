@@ -259,7 +259,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_ADAPTER = 'accounts.adapters.CustomSocialAccountAdapter'
 ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
 
-SITE_ID = 1
+SITE_ID = 2
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
