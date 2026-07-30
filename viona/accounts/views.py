@@ -38,54 +38,102 @@ def register(request):
     email = request.data.get('email')
     phone = request.data.get('phone') or request.data.get('phone_number')
     password = request.data.get('password')
-    
+
     if not all([username, email, password]):
         return Response({'error': 'جميع الحقول مطلوبة'}, status=400)
-    
-    if User.objects.filter(email=email).exists():
-        return Response({'error': 'هذا البريد الإلكتروني مسجل بالفعل'}, status=400)
-    
-    if phone and User.objects.filter(phone=phone).exists():
-        return Response({'error': 'رقم الهاتف مسجل بالفعل'}, status=400)
-    
+
+    # Normalize values
+    username = username.strip()
+    email = email.strip().lower()
+
+    # Email must be unique
+    if User.objects.filter(email__iexact=email).exists():
+        return Response(
+            {'error': 'هذا البريد الإلكتروني مسجل بالفعل'},
+            status=400
+        )
+
+    # Phone must be unique
+    if phone:
+        phone = phone.strip()
+
+        if User.objects.filter(phone=phone).exists():
+            return Response(
+                {'error': 'رقم الهاتف مسجل بالفعل'},
+                status=400
+            )
+
+    # Validate password
     try:
         validate_password(password)
     except Exception as e:
         return Response({'error': str(e)}, status=400)
-    
+
+    # Validate phone
     if phone:
         try:
             phone_regex(phone)
-        except:
+        except Exception:
             return Response({'error': 'رقم الهاتف غير صحيح'}, status=400)
-    
+
+    # ---------------------------------------
+    # Generate a unique username automatically
+    # ---------------------------------------
+    base_username = username
+    unique_username = base_username
+    counter = 1
+
+    while User.objects.filter(username=unique_username).exists():
+        unique_username = f"{base_username}_{counter}"
+        counter += 1
+
+    # Create user
     user = User.objects.create_user(
-        username=username,
+        username=unique_username,
         email=email,
         phone=phone,
         password=password
     )
-    
-    # first_name / last_name (optional)
-    user.first_name = request.data.get('first_name') or request.data.get('firstName', '')
-    user.last_name  = request.data.get('last_name')  or request.data.get('lastName', '')
-    
+
+    # Save first and last name
+    user.first_name = (
+        request.data.get('first_name')
+        or request.data.get('firstName', '')
+    )
+
+    user.last_name = (
+        request.data.get('last_name')
+        or request.data.get('lastName', '')
+    )
+
+    # Generate verification code
     verification_code = secrets.token_hex(3).upper()
+
     user.verification_code = verification_code
     user.verification_code_created_at = now()
     user.save()
-    
+
+    # Send verification email
     try:
         send_mail(
-            'تفعيل حسابك في Viona',
-            f'مرحباً {username},\n\nكود التفعيل الخاص بك هو: {verification_code}\n\nيمكنك استخدام هذا الكود لتفعيل حسابك.\n\nشكراً لانضمامك إلى Viona',
+            'تفعيل حسابك في OVIU',
+            f'''مرحباً {user.first_name or username},
+
+كود التفعيل الخاص بك هو:
+
+{verification_code}
+
+يمكنك استخدام هذا الكود لتفعيل حسابك.
+
+شكراً لانضمامك إلى OVIU
+''',
             settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
         )
-    except:
-        pass
-    
+    except Exception as e:
+        print(f"Verification email error: {e}")
+
     return Response({
         'user_id': user.id,
         'username': user.username,
