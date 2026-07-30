@@ -261,6 +261,8 @@ ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
 
 SITE_ID = 2
 
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
