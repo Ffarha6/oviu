@@ -59,13 +59,19 @@ export default function FullOrderCard({ order, onViewDetails }) {
     <div className="bg-white dark:bg-black rounded-2xl border border-[#f0f0f0] dark:border-gray-700 overflow-hidden">
       <div className="px-5 py-4 flex items-center gap-4">
 
-        <div className="w-16 h-16 rounded-[10px] bg-[#f8f8f8] dark:bg-gray-700 border border-[#f0f0f0] dark:border-gray-700 flex items-center justify-center shrink-0 overflow-hidden">
-          {firstItem?.product_image
-            ? <img src={firstItem.product_image} alt="" className="w-full h-full object-cover" />
-            : <FaBoxOpen className="text-[#ddd] dark:text-gray-500 text-2xl" />
-          }
-        </div>
-
+        <div className="w-[90px] h-[64px] flex items-center justify-center shrink-0 overflow-hidden">
+  {firstItem?.product_image ? (
+    <img
+      src={firstItem.product_image}
+      alt={firstItem.product_name || "صورة المنتج"}
+      className="w-full h-full object-contain"
+    />
+  ) : (
+    <div className="w-full h-full flex items-center justify-center">
+      <FaBoxOpen className="text-[#ddd] dark:text-gray-500 text-2xl" />
+    </div>
+  )}
+</div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2.5 mb-1 flex-wrap">
             <span className="text-[17px] font-bold text-[#222] dark:text-gray-100">طلب رقم #{order.id}</span>
