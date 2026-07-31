@@ -317,8 +317,7 @@ SOCIALACCOUNT_PROVIDERS = {
 LOGIN_REDIRECT_URL = '/api/auth/oauth/complete/'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://oviu.vercel.app')
-
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://www.oviustore.com')
 
 
 
