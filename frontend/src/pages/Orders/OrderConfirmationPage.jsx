@@ -239,33 +239,40 @@ export default function OrderConfirmationPage() {
                         className={`flex items-center gap-3 ${isAr ? "flex-row-reverse" : ""} ${i !== order.items.length - 1 ? "pb-4 border-b border-black/5 dark:border-white/5" : ""}`}
                       >
                         {/* صورة المنتج + شارة الكمية xN */}
-                        <div className="relative w-14 h-14 rounded-[12px] bg-[#F7F2EE] dark:bg-[#1a1a1a] flex items-center justify-center shrink-0 overflow-hidden">
-                          {imageUrl ? (
-                            <img
-                              src={imageUrl}
-                              alt=""
-                              className="w-full h-full object-contain p-1.5"
-                              onError={(e) => {
-                                // ✅ لو الصورة فشلت تحمل حتى بعد تصحيح الرابط، نرجع لأيقونة
-                                // بديلة بدل ما تفضل أيقونة "صورة مكسورة" من المتصفح
-                                e.target.style.display = "none"
-                                if (e.target.nextSibling) {
-                                  e.target.nextSibling.style.display = "flex"
-                                }
-                              }}
-                            />
-                          ) : null}
-                          <FiPackage
-                            className="text-gray-300 text-lg"
-                            style={{ display: imageUrl ? "none" : "flex" }}
-                          />
-                          {item.quantity > 1 && (
-                            <span className={`absolute bottom-0.5 ${isAr ? "left-0.5" : "right-0.5"} bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md`}>
-                              x{item.quantity}
-                            </span>
-                          )}
-                        </div>
+                        <div className="relative w-[72px] h-[58px] flex items-center justify-center shrink-0 overflow-hidden">
+  {imageUrl ? (
+    <img
+      src={imageUrl}
+      alt={item.product_name || ""}
+      className="w-full h-full object-contain"
+      onError={(e) => {
+        e.currentTarget.style.display = "none"
 
+        const fallback = e.currentTarget.nextElementSibling
+        if (fallback) {
+          fallback.style.display = "flex"
+        }
+      }}
+    />
+  ) : null}
+
+  <div
+    className="w-full h-full items-center justify-center"
+    style={{ display: imageUrl ? "none" : "flex" }}
+  >
+    <FiPackage className="text-gray-300 text-lg" />
+  </div>
+
+  {item.quantity > 1 && (
+    <span
+      className={`absolute bottom-0.5 ${
+        isAr ? "left-0.5" : "right-0.5"
+      } bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md`}
+    >
+      x{item.quantity}
+    </span>
+  )}
+</div>
                         <div className={`flex-1 min-w-0 ${isAr ? "text-right" : "text-left"}`}>
                           <p className="font-semibold text-black dark:text-white text-sm truncate">{item.product_name}</p>
                           {item.color_name && <p className="text-gray-400 text-xs mt-0.5">{item.color_name}</p>}
