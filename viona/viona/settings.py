@@ -182,13 +182,18 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+
+    # Vercel
     "https://oviu.vercel.app",
+
+    # OVIU custom domain
+    "https://oviustore.com",
+    "https://www.oviustore.com",
 ]
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://.*\.vercel\.app$",
 ]
-
 
 CORS_ALLOW_HEADERS = (
     *default_headers,
@@ -196,14 +201,22 @@ CORS_ALLOW_HEADERS = (
 )
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://viona.azurewebsites.net',
-    'https://www.viona.com',
-    'https://oviu.vercel.app',
-    'https://*.vercel.app',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
+    "https://viona.azurewebsites.net",
+    "https://www.viona.com",
+
+    # Vercel
+    "https://oviu.vercel.app",
+    "https://*.vercel.app",
+
+    # OVIU custom domain
+    "https://oviustore.com",
+    "https://www.oviustore.com",
+
+    # Local development
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 # ========== EMAIL ==========
