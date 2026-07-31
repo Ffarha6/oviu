@@ -123,7 +123,7 @@ def register(request):
                 "Content-Type": "application/json",
             },
             json={
-                "from": "OVIU <onboarding@resend.dev>",
+                "from": "OVIU <noreply@oviustore.com>",
                 "to": [email],
                 "subject": "تفعيل حسابك في OVIU",
                 "html": f"""
@@ -142,6 +142,17 @@ def register(request):
 
     except Exception as e:
         print(f"Verification email error: {e}")
+
+        # لو إرسال كود التفعيل فشل، نحذف الحساب غير المفعّل
+        # حتى يقدر المستخدم يحاول التسجيل مرة أخرى بنفس البريد.
+        user.delete()
+
+        return Response(
+            {
+                'error': 'تعذر إرسال كود التفعيل إلى بريدك الإلكتروني. حاول مرة أخرى لاحقًا.'
+            },
+            status=503
+        )
 
     return Response({
         'user_id': user.id,
@@ -355,9 +366,9 @@ def forgot_password(request):
             reset_link = f"{settings.FRONTEND_URL}/reset-password/{reset_token}"
 
             send_mail(
-                'استعادة كلمة المرور - Viona',
+                'استعادة كلمة المرور - OVIU',
                 f'مرحباً {user.username},\n\nلإعادة تعيين كلمة المرور، اضغط على الرابط التالي:\n{reset_link}\n\nإذا لم تطلب هذا، تجاهل هذا البريد.',
-                settings.EMAIL_HOST_USER,
+                settings.DEFAULT_FROM_EMAIL,
                 [email],
                 fail_silently=False,
             )
