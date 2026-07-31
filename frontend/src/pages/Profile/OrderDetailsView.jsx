@@ -85,12 +85,17 @@ export default function OrderDetailsView({ order, onBack }) {
         <div className="flex flex-col gap-2.5">
           {order.items?.map((item, i) => (
             <div key={i} className="flex items-center gap-3 bg-[#fafafa] dark:bg-gray-700/50 rounded-[10px] px-3.5 py-3 border border-[#f0f0f0] dark:border-gray-700">
-              <div className="w-12 h-12 rounded-lg bg-[#f5f5f5] dark:bg-gray-700 flex items-center justify-center shrink-0 overflow-hidden">
-                {item.product_image
-                  ? <img src={item.product_image} alt="" className="w-full h-full object-cover" />
-                  : <FaBox className="text-[#ddd] dark:text-gray-500 text-base" />
-                }
-              </div>
+              <div className="w-16 h-16 rounded-lg bg-white dark:bg-gray-700 flex items-center justify-center shrink-0 overflow-hidden border border-[#eeeeee] dark:border-gray-600">
+  {item.product_image ? (
+    <img
+      src={item.product_image}
+      alt={item.product_name || "صورة المنتج"}
+      className="w-full h-full object-contain p-1.5"
+    />
+  ) : (
+    <FaBox className="text-[#ddd] dark:text-gray-500 text-base" />
+  )}
+</div>
               <div className="flex-1">
                 <p className="m-0 text-[15px] font-semibold text-[#222] dark:text-gray-100">{item.product_name}</p>
                 <p className="m-0 text-[13px] text-[#aaa] dark:text-gray-500">
