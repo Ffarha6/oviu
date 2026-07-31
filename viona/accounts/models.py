@@ -2,13 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
-class User(AbstractUser):
 
+class User(AbstractUser):
     """
     Custom User Model for Viona Eyewear Store
     """
 
-    # ✅ خيارات الجنس - اتضافت جديد
     GENDER_CHOICES = [
         ('male', 'ذكر'),
         ('female', 'أنثى'),
@@ -23,18 +22,39 @@ class User(AbstractUser):
     address = models.TextField(_('address'), blank=True, null=True)
     date_of_birth = models.DateField(_('date of birth'), null=True, blank=True)
 
-    # ✅ حقلين جداد: الجنس والمحافظة - دول اللي كانوا ناقصين
-    gender = models.CharField(_('gender'), max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
-    governorate = models.CharField(_('governorate'), max_length=50, blank=True, null=True)
-    
+    gender = models.CharField(
+        _('gender'),
+        max_length=10,
+        choices=GENDER_CHOICES,
+        blank=True,
+        null=True
+    )
+    governorate = models.CharField(
+        _('governorate'),
+        max_length=50,
+        blank=True,
+        null=True
+    )
+
     ADMIN_ROLE_CHOICES = [
         ('admin', 'أدمن'),
         ('manager', 'مدير'),
         ('editor', 'محرر'),
         ('support', 'دعم فني'),
     ]
-    admin_role = models.CharField(_('admin role'), max_length=20, choices=ADMIN_ROLE_CHOICES, blank=True, null=True)
-    admin_permissions = models.JSONField(_('admin permissions'), default=list, blank=True)
+
+    admin_role = models.CharField(
+        _('admin role'),
+        max_length=20,
+        choices=ADMIN_ROLE_CHOICES,
+        blank=True,
+        null=True
+    )
+    admin_permissions = models.JSONField(
+        _('admin permissions'),
+        default=list,
+        blank=True
+    )
 
     # Verification
     email_verified = models.BooleanField(_('email verified'), default=False)
@@ -77,33 +97,63 @@ class User(AbstractUser):
         return bool(self.phone and self.address)
 
     def is_prescription_available(self):
-        return bool(self.prescription_details and
-                   (self.prescription_details.get('right_eye') or
-                    self.prescription_details.get('left_eye')))
+        return bool(
+            self.prescription_details and
+            (
+                self.prescription_details.get('right_eye') or
+                self.prescription_details.get('left_eye')
+            )
+        )
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Profile of {self.user.username}"
-    
-    
-    
-    
-    
-    # ════════════════════════════════════════════════════════════════════════
-# ✅ جديد: موديل عناوين حقيقي (بدل الاعتماد على حقول address/phone/governorate
-# الموجودة على User مباشرة). ده اللي بيسمح بأكتر من عنوان محفوظ لكل مستخدم.
-#
-# ضيفي الكلاس ده في آخر accounts/models.py (تحت كلاس Profile اللي عندك بالفعل)
-# ════════════════════════════════════════════════════════════════════════
+
+
+class PendingRegistration(models.Model):
+    """
+    بيانات تسجيل مؤقتة.
+    لا يتم إنشاء User فعلي إلا بعد تأكيد البريد الإلكتروني.
+    """
+
+    username = models.CharField(max_length=150)
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
+
+    email = models.EmailField(unique=True)
+
+    # رقم الهاتف مسموح يتكرر بين الحسابات
+    phone = models.CharField(max_length=20, blank=True, null=True)
+
+    # نخزن Password Hash فقط وليس كلمة المرور الأصلية
+    password_hash = models.CharField(max_length=128)
+
+    verification_code = models.CharField(max_length=6)
+    verification_code_created_at = models.DateTimeField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.email
+
 
 class Address(models.Model):
     """عنوان شحن محفوظ - المستخدم ممكن يكون عنده أكتر من واحد"""
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -113,7 +163,7 @@ class Address(models.Model):
     phone = models.CharField(max_length=20)
     governorate = models.CharField(max_length=50)
     address = models.TextField()
-    # ✅ العنوان الافتراضي اللي بيتعرض أول واحد ويتختار تلقائيًا في الشيك اوت
+
     is_default = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)

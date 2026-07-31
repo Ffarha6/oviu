@@ -227,19 +227,23 @@ CSRF_TRUSTED_ORIGINS = [
 # تشتغل بسرعة في التطوير المحلي بس. لو الملف ده هيترفع على GitHub أو أي مكان
 # عام، لازم تتنقل لمتغيرات بيئة (environment variables / ملف .env) بدل ما تفضل
 # مكتوبة صراحة في الكود، عشان محدش يقدر يشوف الـ App Password بتاعك.
+# ========== EMAIL / RESEND ==========
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_HOST = 'smtp.resend.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SERVER_EMAIL = EMAIL_HOST_USER
+
+EMAIL_HOST_USER = 'resend'
+EMAIL_HOST_PASSWORD = os.environ.get('RESEND_API_KEY', '')
+
+DEFAULT_FROM_EMAIL = 'OVIU <noreply@oviustore.com>'
+SERVER_EMAIL = 'OVIU <noreply@oviustore.com>'
+
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 
-# لو حبيتي ترجعي لوضع التطوير (يطبع في التيرمنال بدل ما يبعت فعليًا)، شيلي
-# السطور اللي فوق وارجعي للسطر ده:
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 # ========== SECURITY ==========
 X_FRAME_OPTIONS = 'DENY'

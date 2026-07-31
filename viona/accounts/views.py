@@ -6,11 +6,12 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.shortcuts import redirect
-from .models import User
+from .models import User, PendingRegistration
 import secrets
 import requests
 from django.utils.timezone import now
@@ -43,144 +44,132 @@ def register(request):
     if not all([username, email, password]):
         return Response({'error': 'جميع الحقول مطلوبة'}, status=400)
 
-    # Normalize values
     username = username.strip()
     email = email.strip().lower()
+    phone = phone.strip() if phone else None
 
-    # Email must be unique
     if User.objects.filter(email__iexact=email).exists():
-        return Response(
-            {'error': 'هذا البريد الإلكتروني مسجل بالفعل'},
-            status=400
-        )
+        return Response({'error': 'هذا البريد الإلكتروني مسجل بالفعل'}, status=400)
 
-    # Phone must be unique
-    if phone:
-        phone = phone.strip()
-
-        if User.objects.filter(phone=phone).exists():
-            return Response(
-                {'error': 'رقم الهاتف مسجل بالفعل'},
-                status=400
-            )
-
-    # Validate password
     try:
         validate_password(password)
     except Exception as e:
         return Response({'error': str(e)}, status=400)
 
-    # Validate phone
     if phone:
         try:
             phone_regex(phone)
         except Exception:
             return Response({'error': 'رقم الهاتف غير صحيح'}, status=400)
 
-    # ---------------------------------------
-    # Generate a unique username automatically
-    # ---------------------------------------
+    first_name = request.data.get('first_name') or request.data.get('firstName', '')
+    last_name = request.data.get('last_name') or request.data.get('lastName', '')
+
     base_username = username
     unique_username = base_username
     counter = 1
-
-    while User.objects.filter(username=unique_username).exists():
+    while (User.objects.filter(username=unique_username).exists()
+           or PendingRegistration.objects.exclude(email__iexact=email).filter(username=unique_username).exists()):
         unique_username = f"{base_username}_{counter}"
         counter += 1
 
-    # Create user
-    user = User.objects.create_user(
-        username=unique_username,
-        email=email,
-        phone=phone,
-        password=password
-    )
-
-    # Save first and last name
-    user.first_name = (
-        request.data.get('first_name')
-        or request.data.get('firstName', '')
-    )
-
-    user.last_name = (
-        request.data.get('last_name')
-        or request.data.get('lastName', '')
-    )
-
-    # Generate verification code
     verification_code = secrets.token_hex(3).upper()
+    pending, _ = PendingRegistration.objects.update_or_create(
+        email=email,
+        defaults={
+            'username': unique_username,
+            'first_name': first_name,
+            'last_name': last_name,
+            'phone': phone,
+            'password_hash': make_password(password),
+            'verification_code': verification_code,
+            'verification_code_created_at': now(),
+        }
+    )
 
-    user.verification_code = verification_code
-    user.verification_code_created_at = now()
-    user.save()
-
-        # Send verification email using Resend API
     try:
         response = requests.post(
             "https://api.resend.com/emails",
-            headers={
-                "Authorization": f"Bearer {settings.RESEND_API_KEY}",
-                "Content-Type": "application/json",
-            },
+            headers={"Authorization": f"Bearer {settings.RESEND_API_KEY}", "Content-Type": "application/json"},
             json={
                 "from": "OVIU <noreply@oviustore.com>",
                 "to": [email],
                 "subject": "تفعيل حسابك في OVIU",
-                "html": f"""
-                    <div dir="rtl">
-                        <h2>مرحباً {user.first_name or username}</h2>
-                        <p>كود تفعيل حسابك في OVIU هو:</p>
-                        <h1>{verification_code}</h1>
-                        <p>الكود صالح لمدة ساعة واحدة.</p>
-                        <p>شكراً لانضمامك إلى OVIU</p>
-                    </div>
-                """,
+                "html": f'''<div dir="rtl"><h2>مرحباً {first_name or username}</h2>
+                <p>كود تفعيل حسابك في OVIU هو:</p><h1>{verification_code}</h1>
+                <p>الكود صالح لمدة ساعة واحدة.</p><p>شكراً لانضمامك إلى OVIU</p></div>''',
             },
             timeout=10,
         )
         response.raise_for_status()
-
     except Exception as e:
         print(f"Verification email error: {e}")
-
-        # لو إرسال كود التفعيل فشل، نحذف الحساب غير المفعّل
-        # حتى يقدر المستخدم يحاول التسجيل مرة أخرى بنفس البريد.
-        user.delete()
-
-        return Response(
-            {
-                'error': 'تعذر إرسال كود التفعيل إلى بريدك الإلكتروني. حاول مرة أخرى لاحقًا.'
-            },
-            status=503
-        )
+        pending.delete()
+        return Response({'error': 'تعذر إرسال كود التفعيل إلى بريدك الإلكتروني. حاول مرة أخرى لاحقًا.'}, status=503)
 
     return Response({
-        'user_id': user.id,
-        'username': user.username,
-        'email': user.email,
-        'message': 'تم إنشاء الحساب بنجاح. برجاء تفعيل بريدك الإلكتروني'
+        'registration_id': pending.id,
+        'email': pending.email,
+        'message': 'تم إرسال كود التفعيل إلى بريدك الإلكتروني'
     }, status=201)
 
 
 @api_view(['POST'])
+@throttle_classes([AnonRateThrottle])
 def verify_email(request):
-    user_id = request.data.get('user_id')
-    code = request.data.get('code')
-    
-    if not user_id or not code:
-        return Response({'error': 'user_id و code مطلوبين'}, status=400)
-    
+    registration_id = request.data.get('registration_id')
+    code = (request.data.get('code') or '').strip().upper()
+
+    if not registration_id or not code:
+        return Response({'error': 'registration_id و code مطلوبين'}, status=400)
+
     try:
-        user = User.objects.get(id=user_id, verification_code=code)
-        if user.verification_code_created_at:
-            if (now() - user.verification_code_created_at) > timedelta(hours=1):
-                return Response({'error': 'انتهت صلاحية كود التفعيل. يرجى طلب كود جديد'}, status=400)
-        user.email_verified = True
-        user.verification_code = ''
-        user.save()
-        return Response({'message': 'تم تفعيل البريد الإلكتروني بنجاح'})
-    except User.DoesNotExist:
+        pending = PendingRegistration.objects.get(id=registration_id)
+    except PendingRegistration.DoesNotExist:
+        return Response({'error': 'طلب التسجيل غير موجود أو انتهت صلاحيته'}, status=400)
+
+    if not pending.verification_code_created_at or (now() - pending.verification_code_created_at) > timedelta(hours=1):
+        pending.delete()
+        return Response({'error': 'انتهت صلاحية كود التفعيل. يرجى التسجيل مرة أخرى'}, status=400)
+
+    if pending.verification_code.upper() != code:
         return Response({'error': 'كود التفعيل غير صحيح'}, status=400)
+
+    if User.objects.filter(email__iexact=pending.email).exists():
+        pending.delete()
+        return Response({'error': 'هذا البريد الإلكتروني مسجل بالفعل'}, status=400)
+
+    base_username = pending.username
+    unique_username = base_username
+    counter = 1
+    while User.objects.filter(username=unique_username).exists():
+        unique_username = f"{base_username}_{counter}"
+        counter += 1
+
+    user = User(
+        username=unique_username,
+        email=pending.email,
+        phone=pending.phone,
+        first_name=pending.first_name,
+        last_name=pending.last_name,
+        email_verified=True,
+    )
+    user.password = pending.password_hash
+    user.save()
+
+    token, _ = Token.objects.get_or_create(user=user)
+    pending.delete()
+
+    return Response({
+        'token': token.key,
+        'user_id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'phone': user.phone,
+        'is_staff': user.is_staff,
+        'is_superuser': user.is_superuser,
+        'message': 'تم تفعيل الحساب وتسجيل الدخول بنجاح'
+    }, status=201)
 
 
 @api_view(['POST'])
@@ -283,8 +272,6 @@ def update_profile(request):
                 phone_regex(phone)
             except Exception:
                 return Response({'error': 'رقم الهاتف غير صحيح'}, status=400)
-            if User.objects.exclude(id=user.id).filter(phone=phone).exists():
-                return Response({'error': 'رقم الهاتف مسجل بالفعل'}, status=400)
         user.phone = phone
 
     # ── address ──

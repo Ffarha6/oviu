@@ -1,6 +1,7 @@
 import { useState, useContext } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { LanguageContext } from "../../context/LanguageContext"
+import { useAuth } from "../../context/AuthContext"
 import { motion } from "framer-motion"
 import api from "../../api/axios"
 import banner from "../../assets/images/banner.jpg"
@@ -56,11 +57,12 @@ const PageWrapper = ({ children }) => (
 
 function Register() {
   const { language } = useContext(LanguageContext)
+  const { login } = useAuth()
   const navigate = useNavigate()
   const isAr = language === "ar"
 
   const [step, setStep]             = useState("form")
-  const [userId, setUserId]         = useState(null)
+  const [registrationId, setRegistrationId] = useState(null)
   const [verifyCode, setVerifyCode] = useState("")
   const [verifyError, setVerifyError]   = useState("")
   const [verifyLoading, setVerifyLoading] = useState(false)
@@ -95,7 +97,7 @@ function Register() {
         password: form.password,
         password_confirm: form.confirm,
       })
-      setUserId(res.data.user_id)
+      setRegistrationId(res.data.registration_id)
       setStep("verify")
     } catch (err) {
       const data = err.response?.data
@@ -110,9 +112,29 @@ function Register() {
     if (!verifyCode.trim()) { setVerifyError(isAr ? "أدخل الكود" : "Enter the code"); return }
     setVerifyLoading(true); setVerifyError("")
     try {
-      await api.post("/auth/verify-email/", { user_id: userId, code: verifyCode.toUpperCase() })
+      const res = await api.post("/auth/verify-email/", {
+        registration_id: registrationId,
+        code: verifyCode.toUpperCase()
+      })
+
+      if (!res.data?.token) {
+        throw new Error("Verification succeeded but no authentication token was returned")
+      }
+
+      await login(
+        {
+          id: res.data.user_id,
+          username: res.data.username,
+          email: res.data.email,
+          phone: res.data.phone,
+          is_staff: res.data.is_staff,
+          is_superuser: res.data.is_superuser,
+        },
+        res.data.token
+      )
+
       setVerifySuccess(true)
-      setTimeout(() => navigate("/login", { state: { verified: true } }), 2000)
+      setTimeout(() => navigate("/", { replace: true }), 800)
     } catch (err) {
       setVerifyError(err.response?.data?.error || (isAr ? "الكود غير صحيح أو منتهي الصلاحية" : "Invalid or expired code"))
     } finally {
@@ -140,7 +162,7 @@ function Register() {
       verifyDesc: "أرسلنا كود التفعيل إلى",
       verifyPh: "أدخل الكود المكون من 6 أحرف",
       verifyBtn: "تأكيد الحساب", verifying: "جارٍ التحقق...",
-      verifySuccess: "تم تفعيل حسابك بنجاح! جارٍ توجيهك...",
+      verifySuccess: "تم تفعيل حسابك وتسجيل دخولك بنجاح! جارٍ فتح الموقع...",
       back: "تعديل البيانات",
     },
     en: {
@@ -159,7 +181,7 @@ function Register() {
       verifyDesc: "We sent a verification code to",
       verifyPh: "Enter the 6-character code",
       verifyBtn: "Verify Account", verifying: "Verifying...",
-      verifySuccess: "Account verified! Redirecting...",
+      verifySuccess: "Account verified and signed in! Opening the store...",
       back: "Edit details",
     },
   }[language]
