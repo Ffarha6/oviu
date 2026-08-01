@@ -22,13 +22,7 @@ const GoogleIcon = ({ className = "w-5 h-5" }) => (
   </svg>
 )
 
-/* ── أيقونة فيسبوك الرسمية (الدائرة الزرقاء) ── */
-const FacebookIcon = ({ className = "w-5 h-5" }) => (
-  <svg viewBox="0 0 48 48" className={className}>
-    <path fill="#1877F2" d="M24,4C12.954,4,4,12.954,4,24c0,10.019,7.393,18.302,17.031,19.734V29.531h-4.797v-5.484h4.797v-3.836c0-5.484,3.023-8.531,7.914-8.531c2.297,0,4.617,0.219,4.617,0.219v5.109h-2.594c-2.555,0-3.352,1.586-3.352,3.211v3.828h5.703l-0.914,5.484h-4.789v14.203C36.607,42.302,44,34.019,44,24C44,12.954,35.046,4,24,4z"/>
-    <path fill="#FFFFFF" d="M31.31,29.531l0.914-5.484h-5.703v-3.828c0-1.625,0.797-3.211,3.352-3.211h2.594v-5.109c0,0-2.32-0.219-4.617-0.219c-4.891,0-7.914,3.047-7.914,8.531v3.836h-4.797v5.484h4.797v14.203c0.961,0.151,1.947,0.231,2.953,0.231s1.992-0.08,2.953-0.231V29.531H31.31z"/>
-  </svg>
-)
+
 
 /* ── تعديل الـ autofill اللي بيحط خلفية بيضاء ── */
 const autofillFix = `
@@ -92,7 +86,6 @@ function Login() {
   }
 
   const handleGoogleLogin   = () => { window.location.href = `${BACKEND_URL}/accounts/google/login/?process=login` }
-  const handleFacebookLogin = () => { window.location.href = `${BACKEND_URL}/accounts/facebook/login/?process=login` }
 
   const t = {
     ar: {
@@ -249,10 +242,6 @@ function Login() {
               <button type="button" onClick={handleGoogleLogin}
                 className="flex-1 flex items-center justify-center gap-2 sm:gap-2.5 bg-white/10 border border-white/20 text-white font-medium py-3 sm:py-3.5 rounded-xl hover:border-[#D9A066] hover:bg-white/20 transition-all text-xs sm:text-sm">
                 <GoogleIcon className="w-5 h-5 sm:w-6 sm:h-6" /> Google
-              </button>
-              <button type="button" onClick={handleFacebookLogin}
-                className="flex-1 flex items-center justify-center gap-2 sm:gap-2.5 bg-white/10 border border-white/20 text-white font-medium py-3 sm:py-3.5 rounded-xl hover:border-[#D9A066] hover:bg-white/20 transition-all text-xs sm:text-sm">
-                <FacebookIcon className="w-5 h-5 sm:w-6 sm:h-6" /> Facebook
               </button>
             </div>
 
