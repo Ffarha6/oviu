@@ -59,16 +59,18 @@ export default function FullOrderCard({ order, onViewDetails }) {
     <div className="bg-white dark:bg-black rounded-2xl border border-[#f0f0f0] dark:border-gray-700 overflow-hidden">
       <div className="px-5 py-4 flex items-center gap-4">
 
-        <div className="w-[90px] h-[64px] flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="w-[90px] h-[90px] shrink-0 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
   {firstItem?.product_image ? (
     <img
       src={firstItem.product_image}
       alt={firstItem.product_name || "صورة المنتج"}
-      className="w-full h-full object-contain"
+      className="w-full h-full object-contain p-2"
+      draggable={false}
+      loading="lazy"
     />
   ) : (
     <div className="w-full h-full flex items-center justify-center">
-      <FaBoxOpen className="text-[#ddd] dark:text-gray-500 text-2xl" />
+      <FaBoxOpen className="text-gray-300 text-3xl" />
     </div>
   )}
 </div>

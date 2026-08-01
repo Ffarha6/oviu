@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
@@ -70,6 +71,7 @@ const SIDE_ITEMS = [
 ]
 
 export default function ProfilePage() {
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const { logout } = useAuth()

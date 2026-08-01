@@ -239,12 +239,15 @@ export default function OrderConfirmationPage() {
                         className={`flex items-center gap-3 ${isAr ? "flex-row-reverse" : ""} ${i !== order.items.length - 1 ? "pb-4 border-b border-black/5 dark:border-white/5" : ""}`}
                       >
                         {/* صورة المنتج + شارة الكمية xN */}
-                        <div className="relative w-[72px] h-[58px] flex items-center justify-center shrink-0 overflow-hidden">
+                       <div className="relative w-[88px] h-[88px] shrink-0 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+
   {imageUrl ? (
     <img
       src={imageUrl}
       alt={item.product_name || ""}
-      className="w-full h-full object-contain"
+      className="w-full h-full object-contain p-2"
+      draggable={false}
+      loading="lazy"
       onError={(e) => {
         e.currentTarget.style.display = "none"
 
@@ -257,21 +260,22 @@ export default function OrderConfirmationPage() {
   ) : null}
 
   <div
-    className="w-full h-full items-center justify-center"
+    className="w-full h-full items-center justify-center bg-white"
     style={{ display: imageUrl ? "none" : "flex" }}
   >
-    <FiPackage className="text-gray-300 text-lg" />
+    <FiPackage className="text-gray-300 text-2xl" />
   </div>
 
   {item.quantity > 1 && (
     <span
-      className={`absolute bottom-0.5 ${
-        isAr ? "left-0.5" : "right-0.5"
-      } bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md`}
+      className={`absolute bottom-1 ${
+        isAr ? "left-1" : "right-1"
+      } bg-black/75 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md`}
     >
       x{item.quantity}
     </span>
   )}
+
 </div>
                         <div className={`flex-1 min-w-0 ${isAr ? "text-right" : "text-left"}`}>
                           <p className="font-semibold text-black dark:text-white text-sm truncate">{item.product_name}</p>

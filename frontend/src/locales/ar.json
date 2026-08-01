@@ -1,5 +1,129 @@
 {
   "language": {
     "switchTo": "English"
+  },
+  "common": {
+    "currency": "ج.م"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "subtitle": "إدارة معلوماتك الشخصية وتفاصيل حسابك",
+    "editButton": "تعديل الملف الشخصي",
+    "firstName": "الاسم الأول",
+    "lastName": "الاسم الأخير",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الجوال",
+    "dateOfBirth": "تاريخ الميلاد",
+    "gender": "الجنس",
+    "governorate": "المحافظة",
+    "country": "الدولة",
+    "egypt": "جمهورية مصر العربية",
+    "membership": "العضوية",
+    "memberSince": "عضو منذ {{date}}",
+    "recentOrders": "آخر الطلبات",
+    "viewAll": "عرض الكل",
+    "noOrders": "لا توجد طلبات بعد"
+  },
+  "orderStatus": {
+    "pending": "قيد الانتظار",
+    "confirmed": "تم التأكيد",
+    "preparing": "جارٍ التحضير",
+    "shipped": "جار التوصيل",
+    "delivered": "تم التوصيل",
+    "cancelled": "ملغي"
+  },
+  "orderStatusDetailed": {
+    "pending": "قيد المعالجة",
+    "confirmed": "تم التأكيد",
+    "preparing": "جاري التجهيز",
+    "shipped": "جاري التوصيل",
+    "delivered": "تم التوصيل",
+    "cancelled": "ملغي"
+  },
+  "orderFilters": {
+    "all": "الكل",
+    "pending": "قيد المعالجة",
+    "shipped": "تم الشحن",
+    "delivered": "تم التوصيل",
+    "cancelled": "ملغاة"
+  },
+  "gender": {
+    "male": "ذكر",
+    "female": "أنثى"
+  },
+  "governorates": {
+    "cairo": "القاهرة",
+    "giza": "الجيزة",
+    "alexandria": "الإسكندرية",
+    "dakahlia": "الدقهلية",
+    "redSea": "البحر الأحمر",
+    "beheira": "البحيرة",
+    "fayoum": "الفيوم",
+    "gharbia": "الغربية",
+    "ismailia": "الإسماعيلية",
+    "monufia": "المنوفية",
+    "minya": "المنيا",
+    "qalyubia": "القليوبية",
+    "newValley": "الوادي الجديد",
+    "suez": "السويس",
+    "aswan": "أسوان",
+    "asyut": "أسيوط",
+    "beniSuef": "بني سويف",
+    "portSaid": "بورسعيد",
+    "damietta": "دمياط",
+    "sharqia": "الشرقية",
+    "southSinai": "جنوب سيناء",
+    "kafrElSheikh": "كفر الشيخ",
+    "matrouh": "مطروح",
+    "luxor": "الأقصر",
+    "qena": "قنا",
+    "northSinai": "شمال سيناء",
+    "sohag": "سوهاج"
+  },
+  "orders": {
+    "title": "طلباتي",
+    "subtitle": "تتبع جميع طلباتك وحالة الشحن الخاصة بها",
+    "count_zero": "لا يوجد طلبات",
+    "count_one": "طلب واحد",
+    "count_two": "طلبين",
+    "count_few": "{{count}} طلبات",
+    "count_many": "{{count}} طلب",
+    "count_other": "{{count}} طلب",
+    "searchPlaceholder": "ابحث برقم الطلب...",
+    "filterLabel": "تصفية:",
+    "noOrders": "لا توجد طلبات",
+    "noSearchResults": "لم يتم العثور على طلب بهذا الرقم",
+    "noOrdersYet": "لم تقم بأي طلبات بعد",
+    "shopNow": "تسوق الآن",
+    "needHelp": "تحتاج مساعدة في طلبك؟",
+    "supportAvailable": "فريق الدعم متاح 24/7 لمساعدتك",
+    "contactUs": "تواصل معنا"
+  },
+  "addressModal": {
+    "fillRequired": "الرجاء تعبئة كل الحقول المطلوبة",
+    "saveFailed": "فشل حفظ العنوان",
+    "connectionError": "تعذر الاتصال بالسيرفر، تحقق من الإنترنت أو من عنوان الـ API",
+    "addTitle": "إضافة عنوان الشحن",
+    "editTitle": "تعديل عنوان الشحن",
+    "fullName": "الاسم الكامل",
+    "fullNamePlaceholder": "أدخل اسمك الكامل",
+    "phone": "رقم الجوال",
+    "governorate": "المحافظة",
+    "chooseGovernorate": "اختر المحافظة",
+    "addressDetails": "تفاصيل العنوان",
+    "addressPlaceholder": "اسم الشارع، رقم المبنى، الشقة، المعلم القريب",
+    "saving": "جاري الحفظ...",
+    "addButton": "إضافة العنوان",
+    "saveButton": "حفظ التعديلات",
+    "cancel": "إلغاء"
+  },
+  "addresses": {
+    "default": "افتراضي",
+    "title": "العناوين المحفوظة",
+    "subtitle": "عناوين الشحن المحفوظة في حسابك",
+    "none": "لا يوجد عنوان محفوظ بعد",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "add": "إضافة عنوان"
   }
 }

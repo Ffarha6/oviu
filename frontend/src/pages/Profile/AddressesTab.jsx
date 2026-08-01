@@ -1,14 +1,15 @@
+import { useTranslation } from "react-i18next"
 import { FaHome, FaCheckCircle, FaPlus, FaTrash } from "react-icons/fa"
 
 // كارت العنوان المحفوظ — مستخدم هنا بس
-function AddressCard({ addr, onEdit, onDelete }) {
+function AddressCard({ addr, onEdit, onDelete, t }) {
   const addressText = [addr.governorate, addr.address].filter(Boolean).join(" - ")
 
   return (
     <div className="bg-white dark:bg-black rounded-2xl border border-[#f0f0f0] dark:border-gray-700 px-4 sm:px-5 py-4 sm:py-[18px] relative flex flex-col gap-2.5">
       {addr.is_default && (
         <span className="self-start bg-[#fff4ea] dark:bg-[#3a2410] text-[#E8821A] text-xs font-bold px-2.5 py-[3px] rounded-[20px] border border-[#fed7aa] dark:border-[#5c3d1a]">
-          افتراضي
+          {t("addresses.default")}
         </span>
       )}
 
@@ -35,14 +36,14 @@ function AddressCard({ addr, onEdit, onDelete }) {
           className="bg-transparent border-none text-[#3b82f6] text-[13px] sm:text-sm font-semibold cursor-pointer p-0"
           style={{ fontFamily: "'Cairo',sans-serif" }}
         >
-          تعديل
+          {t("addresses.edit")}
         </button>
         <button
           onClick={() => onDelete(addr)}
           className="bg-transparent border-none text-[#e53935] text-[13px] sm:text-sm font-semibold cursor-pointer p-0 flex items-center gap-1.5"
           style={{ fontFamily: "'Cairo',sans-serif" }}
         >
-          <FaTrash className="text-xs" /> حذف
+          <FaTrash className="text-xs" /> {t("addresses.delete")}
         </button>
       </div>
     </div>
@@ -50,18 +51,19 @@ function AddressCard({ addr, onEdit, onDelete }) {
 }
 
 export default function AddressesTab({ addresses, onEdit, onAdd, onDelete }) {
+  const { t } = useTranslation()
   const hasAddresses = addresses.length > 0
 
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h2 className="m-0 text-xl sm:text-[22px] font-bold text-[#222] dark:text-gray-100">العناوين المحفوظة</h2>
-        <p className="mt-1 mb-0 text-sm sm:text-[15px] text-[#aaa] dark:text-gray-500">عناوين الشحن المحفوظة في حسابك</p>
+        <h2 className="m-0 text-xl sm:text-[22px] font-bold text-[#222] dark:text-gray-100">{t("addresses.title")}</h2>
+        <p className="mt-1 mb-0 text-sm sm:text-[15px] text-[#aaa] dark:text-gray-500">{t("addresses.subtitle")}</p>
       </div>
 
       {!hasAddresses ? (
         <div className="bg-white dark:bg-black rounded-2xl border border-[#f0f0f0] dark:border-gray-700 text-center py-8 sm:py-9">
-          <p className="text-[#bbb] dark:text-gray-500 text-[15px] sm:text-base m-0">لا يوجد عنوان محفوظ بعد</p>
+          <p className="text-[#bbb] dark:text-gray-500 text-[15px] sm:text-base m-0">{t("addresses.none")}</p>
         </div>
       ) : (
         // ✅ FIX: دلوقتي بتعرض كل العناوين المحفوظة (مش عنوان واحد بس)، كل
@@ -73,6 +75,7 @@ export default function AddressesTab({ addresses, onEdit, onAdd, onDelete }) {
               addr={addr}
               onEdit={onEdit}
               onDelete={onDelete}
+              t={t}
             />
           ))}
         </div>
@@ -83,7 +86,7 @@ export default function AddressesTab({ addresses, onEdit, onAdd, onDelete }) {
         className="w-full sm:w-auto border-[1.5px] border-dashed border-[#e0e0e0] dark:border-gray-600 rounded-[14px] bg-white dark:bg-transparent text-[#E8821A] text-[15px] sm:text-base font-semibold cursor-pointer flex items-center justify-center gap-2 py-3.5 sm:py-[14px] sm:max-w-[280px]"
         style={{ fontFamily: "'Cairo',sans-serif" }}
       >
-        <FaPlus /> إضافة عنوان
+        <FaPlus /> {t("addresses.add")}
       </button>
     </div>
   )

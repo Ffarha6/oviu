@@ -1,11 +1,15 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { useTranslation } from "react-i18next"
 import { FaTimes } from "react-icons/fa"
-import { PHONE_CODES, EGYPT_GOVERNORATES, authFetch } from "./ProfileConstants"
+import { PHONE_CODES, getGovernorates, authFetch } from "./ProfileConstants"
 
 // ✅ isNew: true = بيضيف عنوان جديد (POST) - initialData بتبقى null
 // ✅ isNew: false = بيعدّل عنوان موجود (PATCH) - initialData لازم يجيب معاها addressId
 export default function AddressModal({ initialData, isNew, addressId, onClose, onSaved }) {
+  const { t, i18n } = useTranslation()
+  const governorates = getGovernorates(t)
+
   const [form, setForm] = useState({
     fullName: initialData?.fullName || "",
     phoneCode: initialData?.phoneCode || "+20",
@@ -20,7 +24,7 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
 
   const handleSave = async () => {
     if (!form.fullName || !form.phone || !form.governorate || !form.address) {
-      setError("الرجاء تعبئة كل الحقول المطلوبة")
+      setError(t("addressModal.fillRequired"))
       return
     }
     setError("")
@@ -50,14 +54,14 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
       if (!res.ok) {
         const firstFieldError = Object.values(data || {})[0]
         const message = Array.isArray(firstFieldError) ? firstFieldError[0] : (data.detail || data.error)
-        setError(message || "فشل حفظ العنوان")
+        setError(message || t("addressModal.saveFailed"))
         return
       }
 
       onSaved(data)
       onClose()
     } catch {
-      setError("تعذر الاتصال بالسيرفر، تحقق من الإنترنت أو من عنوان الـ API")
+      setError(t("addressModal.connectionError"))
     } finally {
       setSaving(false)
     }
@@ -78,11 +82,11 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
         transition={{ duration: 0.18 }}
         onClick={(e) => e.stopPropagation()}
         className="bg-white dark:bg-black rounded-[20px] sm:rounded-[24px] w-full max-w-[600px] max-h-[92vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-6"
-        style={{ fontFamily: "'Cairo',sans-serif", direction: "rtl" }}
+        style={{ fontFamily: "'Cairo',sans-serif", direction: i18n.dir() }}
       >
         <div className="flex items-center justify-between mb-4 sm:mb-5">
           <h3 className="font-bold text-black dark:text-gray-100 text-base sm:text-lg">
-            {isNew ? "إضافة عنوان الشحن" : "تعديل عنوان الشحن"}
+            {isNew ? t("addressModal.addTitle") : t("addressModal.editTitle")}
           </h3>
           <button
             onClick={onClose}
@@ -100,18 +104,18 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 mb-4 text-right">
           <div>
-            <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">الاسم الكامل</label>
+            <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">{t("addressModal.fullName")}</label>
             <input
               name="fullName"
               value={form.fullName}
               onChange={handleChange}
-              placeholder="أدخل اسمك الكامل"
+              placeholder={t("addressModal.fullNamePlaceholder")}
               autoComplete="off"
               className="w-full bg-[#F7F2EE] dark:bg-gray-700 border border-black/10 dark:border-gray-600 rounded-[12px] px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm text-black dark:text-gray-100 placeholder:text-gray-400 outline-none focus:border-[#E8821A] transition text-right"
             />
           </div>
           <div>
-            <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">رقم الجوال</label>
+            <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">{t("addressModal.phone")}</label>
             <div className="flex gap-2">
               <select
                 value={form.phoneCode}
@@ -133,26 +137,26 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
         </div>
 
         <div className="mb-4 text-right">
-          <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">المحافظة</label>
+          <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">{t("addressModal.governorate")}</label>
           <select
             name="governorate"
             value={form.governorate}
             onChange={handleChange}
             className="w-full bg-[#F7F2EE] dark:bg-gray-700 border border-black/10 dark:border-gray-600 rounded-[12px] px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm text-black dark:text-gray-100 outline-none focus:border-[#E8821A] transition text-right"
           >
-            <option value="">اختر المحافظة</option>
-            {EGYPT_GOVERNORATES.map(g => <option key={g}>{g}</option>)}
+            <option value="">{t("addressModal.chooseGovernorate")}</option>
+            {governorates.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
           </select>
         </div>
 
         <div className="mb-5 sm:mb-6 text-right">
-          <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">تفاصيل العنوان</label>
+          <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">{t("addressModal.addressDetails")}</label>
           <textarea
             name="address"
             value={form.address}
             onChange={handleChange}
             rows={3}
-            placeholder="اسم الشارع، رقم المبنى، الشقة، المعلم القريب"
+            placeholder={t("addressModal.addressPlaceholder")}
             autoComplete="off"
             className="w-full bg-[#F7F2EE] dark:bg-gray-700 border border-black/10 dark:border-gray-600 rounded-[12px] px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm text-black dark:text-gray-100 placeholder:text-gray-400 outline-none focus:border-[#E8821A] transition resize-none text-right"
           />
@@ -164,14 +168,14 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
             disabled={saving}
             className={`flex-1 bg-[#E8821A] hover:bg-[#c96e10] text-white font-bold text-sm py-2.5 sm:py-3 rounded-full transition flex items-center justify-center gap-2 ${saving ? "opacity-70 cursor-not-allowed" : ""}`}
           >
-            {saving ? "جاري الحفظ..." : (isNew ? "إضافة العنوان" : "حفظ التعديلات")}
+            {saving ? t("addressModal.saving") : (isNew ? t("addressModal.addButton") : t("addressModal.saveButton"))}
           </button>
           <button
             onClick={onClose}
             disabled={saving}
             className="flex-1 border border-black/10 dark:border-gray-600 text-black dark:text-gray-200 font-semibold text-sm py-2.5 sm:py-3 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition"
           >
-            إلغاء
+            {t("addressModal.cancel")}
           </button>
         </div>
       </motion.div>

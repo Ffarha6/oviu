@@ -1,11 +1,13 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { FaSearch, FaFilter, FaBoxOpen, FaHeadset } from "react-icons/fa"
 import FullOrderCard from "./FullOrderCard"
 import OrderDetailsView from "./OrderDetailsView"
-import { ORDER_FILTERS } from "./ProfileConstants"
+import { getOrderFilters } from "./ProfileConstants"
 
 export default function OrdersTab({ orders, ordersError }) {
+  const { t, i18n } = useTranslation()
   const [orderSearch, setOrderSearch] = useState("")
   const [orderFilter, setOrderFilter] = useState("all")
   const [selectedOrder, setSelectedOrder] = useState(null)
@@ -13,6 +15,8 @@ export default function OrdersTab({ orders, ordersError }) {
   if (selectedOrder) {
     return <OrderDetailsView order={selectedOrder} onBack={() => setSelectedOrder(null)} />
   }
+
+  const orderFilters = getOrderFilters(t)
 
   const filteredOrders = orders.filter(o => {
     const matchFilter = orderFilter === "all" || o.status === orderFilter
@@ -25,11 +29,11 @@ export default function OrdersTab({ orders, ordersError }) {
 
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="m-0 text-2xl font-bold text-[#222] dark:text-gray-100">طلباتي 📦</h2>
-          <p className="mt-1 mb-0 text-[15px] text-[#aaa] dark:text-gray-500">تتبع جميع طلباتك وحالة الشحن الخاصة بها</p>
+          <h2 className="m-0 text-2xl font-bold text-[#222] dark:text-gray-100">{t("orders.title")} 📦</h2>
+          <p className="mt-1 mb-0 text-[15px] text-[#aaa] dark:text-gray-500">{t("orders.subtitle")}</p>
         </div>
         <span className="text-[15px] text-[#888] dark:text-gray-400 bg-white dark:bg-black px-3.5 py-1.5 rounded-[20px] border border-[#f0f0f0] dark:border-gray-700">
-          {orders.length} طلب
+          {t("orders.count", { count: orders.length })}
         </span>
       </div>
 
@@ -39,17 +43,17 @@ export default function OrdersTab({ orders, ordersError }) {
           <input
             value={orderSearch}
             onChange={e => setOrderSearch(e.target.value)}
-            placeholder="ابحث برقم الطلب..."
+            placeholder={t("orders.searchPlaceholder")}
             className="border-none bg-transparent outline-none text-base flex-1 text-[#222] dark:text-gray-100 placeholder:text-[#aaa] dark:placeholder:text-gray-500"
-            style={{ fontFamily: "'Cairo',sans-serif", direction: "rtl" }}
+            style={{ fontFamily: "'Cairo',sans-serif", direction: i18n.dir() }}
           />
         </div>
 
         <div className="flex gap-2 flex-wrap">
           <span className="flex items-center gap-1.5 text-[15px] text-[#888] dark:text-gray-400 ml-1">
-            <FaFilter className="text-[11px]" /> تصفية:
+            <FaFilter className="text-[11px]" /> {t("orders.filterLabel")}
           </span>
-          {ORDER_FILTERS.map(f => (
+          {orderFilters.map(f => (
             <button
               key={f.key}
               onClick={() => setOrderFilter(f.key)}
@@ -78,15 +82,15 @@ export default function OrdersTab({ orders, ordersError }) {
       {filteredOrders.length === 0 ? (
         <div className="bg-white dark:bg-black rounded-2xl border border-[#f0f0f0] dark:border-gray-700 text-center" style={{ padding: 60 }}>
           <FaBoxOpen className="text-5xl text-[#e0e0e0] dark:text-gray-600 mb-4 mx-auto" />
-          <p className="text-lg font-semibold text-[#aaa] dark:text-gray-500 mb-2 mt-0">لا توجد طلبات</p>
+          <p className="text-lg font-semibold text-[#aaa] dark:text-gray-500 mb-2 mt-0">{t("orders.noOrders")}</p>
           <p className="text-[15px] text-[#ccc] dark:text-gray-600 mb-6 mt-0">
-            {orderSearch ? "لم يتم العثور على طلب بهذا الرقم" : "لم تقم بأي طلبات بعد"}
+            {orderSearch ? t("orders.noSearchResults") : t("orders.noOrdersYet")}
           </p>
           <Link
             to="/"
             className="inline-block px-6 py-2.5 bg-[#E8821A] text-white rounded-[10px] no-underline text-base font-semibold"
           >
-            تسوق الآن
+            {t("orders.shopNow")}
           </Link>
         </div>
       ) : (
@@ -105,8 +109,8 @@ export default function OrdersTab({ orders, ordersError }) {
         <div className="flex items-center gap-3.5">
           <FaHeadset className="text-[28px] text-[#E8821A]" />
           <div>
-            <p className="m-0 text-base font-bold text-[#222] dark:text-gray-100">تحتاج مساعدة في طلبك؟</p>
-            <p className="m-0 text-sm text-[#888] dark:text-gray-400">فريق الدعم متاح 24/7 لمساعدتك</p>
+            <p className="m-0 text-base font-bold text-[#222] dark:text-gray-100">{t("orders.needHelp")}</p>
+            <p className="m-0 text-sm text-[#888] dark:text-gray-400">{t("orders.supportAvailable")}</p>
           </div>
         </div>
         <button
@@ -114,7 +118,7 @@ export default function OrdersTab({ orders, ordersError }) {
           className="px-5 py-2.5 bg-[#E8821A] text-white border-none rounded-[10px] text-[15px] font-semibold cursor-pointer"
           style={{ fontFamily: "'Cairo',sans-serif" }}
         >
-          تواصل معنا 💬
+          {t("orders.contactUs")} 💬
         </button>
       </div>
     </div>

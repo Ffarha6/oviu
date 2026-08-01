@@ -1,5 +1,126 @@
 {
   "language": {
     "switchTo": "عربي"
+  },
+  "common": {
+    "currency": "EGP"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Manage your personal information and account details",
+    "editButton": "Edit Profile",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "dateOfBirth": "Date of Birth",
+    "gender": "Gender",
+    "governorate": "Governorate",
+    "country": "Country",
+    "egypt": "Arab Republic of Egypt",
+    "membership": "Membership",
+    "memberSince": "Member since {{date}}",
+    "recentOrders": "Recent Orders",
+    "viewAll": "View All",
+    "noOrders": "No orders yet"
+  },
+  "orderStatus": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "preparing": "Preparing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "orderStatusDetailed": {
+    "pending": "Processing",
+    "confirmed": "Confirmed",
+    "preparing": "Preparing",
+    "shipped": "Out for Delivery",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "orderFilters": {
+    "all": "All",
+    "pending": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female"
+  },
+  "governorates": {
+    "cairo": "Cairo",
+    "giza": "Giza",
+    "alexandria": "Alexandria",
+    "dakahlia": "Dakahlia",
+    "redSea": "Red Sea",
+    "beheira": "Beheira",
+    "fayoum": "Fayoum",
+    "gharbia": "Gharbia",
+    "ismailia": "Ismailia",
+    "monufia": "Monufia",
+    "minya": "Minya",
+    "qalyubia": "Qalyubia",
+    "newValley": "New Valley",
+    "suez": "Suez",
+    "aswan": "Aswan",
+    "asyut": "Asyut",
+    "beniSuef": "Beni Suef",
+    "portSaid": "Port Said",
+    "damietta": "Damietta",
+    "sharqia": "Sharqia",
+    "southSinai": "South Sinai",
+    "kafrElSheikh": "Kafr El Sheikh",
+    "matrouh": "Matrouh",
+    "luxor": "Luxor",
+    "qena": "Qena",
+    "northSinai": "North Sinai",
+    "sohag": "Sohag"
+  },
+  "orders": {
+    "title": "My Orders",
+    "subtitle": "Track all your orders and their shipping status",
+    "count_zero": "No orders",
+    "count_one": "{{count}} order",
+    "count_other": "{{count}} orders",
+    "searchPlaceholder": "Search by order number...",
+    "filterLabel": "Filter:",
+    "noOrders": "No orders",
+    "noSearchResults": "No order found with this number",
+    "noOrdersYet": "You have not placed any orders yet",
+    "shopNow": "Shop Now",
+    "needHelp": "Need help with your order?",
+    "supportAvailable": "Our support team is available 24/7",
+    "contactUs": "Contact Us"
+  },
+  "addressModal": {
+    "fillRequired": "Please fill in all required fields",
+    "saveFailed": "Failed to save address",
+    "connectionError": "Could not connect to the server, check your internet or the API address",
+    "addTitle": "Add Shipping Address",
+    "editTitle": "Edit Shipping Address",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "phone": "Phone Number",
+    "governorate": "Governorate",
+    "chooseGovernorate": "Choose Governorate",
+    "addressDetails": "Address Details",
+    "addressPlaceholder": "Street name, building number, apartment, nearby landmark",
+    "saving": "Saving...",
+    "addButton": "Add Address",
+    "saveButton": "Save Changes",
+    "cancel": "Cancel"
+  },
+  "addresses": {
+    "default": "Default",
+    "title": "Saved Addresses",
+    "subtitle": "Shipping addresses saved in your account",
+    "none": "No saved address yet",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add Address"
   }
 }
