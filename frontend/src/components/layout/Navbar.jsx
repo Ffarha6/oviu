@@ -4,7 +4,7 @@ import { ThemeContext } from "../../context/ThemeContext"
 import { useContext, useState, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import { Link, useNavigate, useLocation } from "react-router-dom"
-import { FiSearch } from "react-icons/fi"
+import { FiSearch, FiX } from "react-icons/fi"
 import { FaHeart, FaShoppingCart, FaUser, FaBars, FaMapMarkerAlt, FaBox, FaChevronDown, FaCog, FaSignOutAlt } from "react-icons/fa"
 import { IoSunnyOutline } from "react-icons/io5"
 import { HiOutlineMoon } from "react-icons/hi"
@@ -526,62 +526,91 @@ function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile menu ── */}
-      {menuOpen && (
-        <div className="lg:hidden bg-white dark:bg-black shadow-lg px-6 py-4 flex flex-col gap-4 text-base text-gray-700 dark:text-gray-300 max-h-[calc(100vh-108px)] overflow-y-auto">
+      {/* ── Mobile menu (Drawer) — بيترسم فوق الصفحة كأوفرلاي عن طريق Portal
+          بدل ما يدفع محتوى الصفحة لتحت، ومعاه خلفية غامقة شفافة وزرار X للإغلاق ── */}
+      {menuOpen && createPortal(
+        <div className="lg:hidden fixed inset-0 z-[9999]" dir={isAr ? "rtl" : "ltr"}>
 
-          <button
-            onClick={goToOrders}
-            className="flex items-center gap-3 cursor-pointer hover:text-[#C89072] transition"
-          >
-            <FaBox className="text-lg" />
-            <span>{t.orders}</span>
-          </button>
-
-          <Link
-            to="/wishlist"
+          {/* الخلفية الغامقة الشفافة — الضغط عليها بيقفل الدرج */}
+          <div
+            className="absolute inset-0 bg-black/50"
             onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-3 cursor-pointer hover:text-[#C89072] transition"
-          >
-            <FaHeart className="text-lg" />
-            <span>{t.wishlist}</span>
-          </Link>
+          />
 
-          <button className="flex items-center gap-3 cursor-pointer hover:text-[#C89072] transition">
-            <FaMapMarkerAlt className="text-lg" />
-            <span>{t.city}</span>
-          </button>
+          {/* الدرج نفسه — بياخد جزء من الشاشة بس (مش كامل العرض) وبيدخل من الجنب */}
+          <div className={`
+            absolute top-0 bottom-0 ${isAr ? "right-0" : "left-0"}
+            w-[80%] max-w-xs
+            bg-white dark:bg-black
+            shadow-xl overflow-y-auto
+            flex flex-col gap-4 px-6 py-4 text-base text-gray-700 dark:text-gray-300
+          `}>
 
-          <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
+            {/* Header فيه زرار الإغلاق X */}
+            <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">
+              <span className="font-bold text-lg text-black dark:text-white">{isAr ? "القائمة الرئيسية" : "Menu"}</span>
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition text-gray-500 dark:text-gray-300"
+              >
+                <FiX className="text-xl" />
+              </button>
+            </div>
 
-          {t.cats.map((cat, i) => (
-            <span
-              key={i}
-              onClick={() => handleCatClick(cat)}
-              className={`cursor-pointer transition ${isActiveCat(cat) ? "text-[#C89072] font-semibold" : "hover:text-[#C89072]"}`}
-            >
-              {cat}
-            </span>
-          ))}
-
-          <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
-
-          {/* ✅ الدارك مود واللغة اتنقلوا هنا من الهيدر الرئيسي عشان يوفروا مساحة على الموبايل */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm">{t.darkModeLabel}</span>
-            <DarkModeToggle />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm">{t.langLabel}</span>
             <button
-              onClick={() => setLanguage(isAr ? "en" : "ar")}
-              className="text-base font-semibold text-gray-600 dark:text-gray-300"
+              onClick={goToOrders}
+              className="flex items-center gap-3 cursor-pointer hover:text-[#C89072] transition"
             >
-              {isAr ? "English" : "العربية"}
+              <FaBox className="text-lg" />
+              <span>{t.orders}</span>
             </button>
+
+            <Link
+              to="/wishlist"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-3 cursor-pointer hover:text-[#C89072] transition"
+            >
+              <FaHeart className="text-lg" />
+              <span>{t.wishlist}</span>
+            </Link>
+
+            <button className="flex items-center gap-3 cursor-pointer hover:text-[#C89072] transition">
+              <FaMapMarkerAlt className="text-lg" />
+              <span>{t.city}</span>
+            </button>
+
+            <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
+
+            {t.cats.map((cat, i) => (
+              <span
+                key={i}
+                onClick={() => handleCatClick(cat)}
+                className={`cursor-pointer transition ${isActiveCat(cat) ? "text-[#C89072] font-semibold" : "hover:text-[#C89072]"}`}
+              >
+                {cat}
+              </span>
+            ))}
+
+            <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
+
+            {/* ✅ الدارك مود واللغة اتنقلوا هنا من الهيدر الرئيسي عشان يوفروا مساحة على الموبايل */}
+            <div className="flex items-center justify-between">
+              <span className="text-sm">{t.darkModeLabel}</span>
+              <DarkModeToggle />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-sm">{t.langLabel}</span>
+              <button
+                onClick={() => setLanguage(isAr ? "en" : "ar")}
+                className="text-base font-semibold text-gray-600 dark:text-gray-300"
+              >
+                {isAr ? "English" : "العربية"}
+              </button>
+            </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
