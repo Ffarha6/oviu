@@ -478,7 +478,7 @@ function GlassesPage() {
           {filtersContent}
         </aside>
 
-        <div className="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-10 pt-0 pb-8 flex gap-6 lg:gap-8 flex-row-reverse">
+        <div className="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-10 pt-0 pb-5 flex gap-6 lg:gap-8 flex-row-reverse">
 
           {/* حيّز فاضي مكانه بالظبط زي ما كان السايدبار قبل كده، عشان المحتوى
               يفضل في نفس مكانه الأصلي بالظبط ومايتحركش لمكان السايدبار الحقيقي */}
