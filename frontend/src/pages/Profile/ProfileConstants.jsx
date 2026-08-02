@@ -92,3 +92,40 @@ export function getOrderFilters(t) {
     { key: "cancelled", label: t("orderFilters.cancelled") },
   ]
 }
+
+
+
+
+
+
+// ==========================================
+// Backward compatibility
+// ==========================================
+
+export const EGYPT_GOVERNORATES = GOVERNORATE_KEYS.map(key => ({
+  value: key,
+  label: key,
+}))
+
+export const GENDER_OPTIONS = GENDER_KEYS.map(key => ({
+  value: key,
+  label: key,
+}))
+
+export const STATUS_CONFIG = Object.fromEntries(
+  Object.entries(STATUS_VISUALS).map(([key, value]) => [
+    key,
+    {
+      ...value,
+      label: key,
+    },
+  ])
+)
+
+export const DEFAULT_STATUS_CONFIG = {
+  label: "—",
+  color: "#888",
+  bg: "rgba(136,136,136,0.12)",
+  icon: <FaBox />,
+  border: "rgba(136,136,136,0.35)",
+}
