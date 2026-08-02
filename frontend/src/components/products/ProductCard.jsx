@@ -49,7 +49,11 @@ function StarRating({ rating = 0, count = 0 }) {
 function ColorSwatches({ colors = [], selectedColor, onSelect }) {
   if (!colors.length) return null
   return (
-    <div className="flex items-center gap-[6px] flex-wrap justify-end w-full">
+    <div
+  className={`flex items-center gap-[6px] flex-wrap ${
+    document.documentElement.dir === "rtl" ? "ml-auto" : "mr-auto"
+  }`}
+>
       {colors.map((color) => (
         <button
           key={color.id || color.name}
