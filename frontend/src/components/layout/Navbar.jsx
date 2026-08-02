@@ -260,59 +260,62 @@ function Navbar() {
     <div className="fixed top-0 left-0 w-full z-50 overflow-x-hidden overflow-y-visible" dir={isAr ? "rtl" : "ltr"}>
 
       {/* ── Main navbar — شريط مميز بلون الهوية زي نون ── */}
-      <div className="
-        bg-secondary
-        shadow-sm px-3 md:px-6 h-16 md:h-20
-        flex items-center justify-between gap-2 md:gap-4
-      ">
+<div className="
+  bg-secondary
+  shadow-sm px-3 md:px-6 h-16 md:h-20
+  flex items-center justify-between gap-2 md:gap-4
+">
 
-        {/* ✅ Hamburger — موبايل فقط. نقلناه ليبقى أول عنصر في صف الهيدر (قبل
-            اللوجو)، عشان في وضع RTL (عربي) أول عنصر بيترسم أقصى اليمين — فده
-            بيخلي الزرار يفضل ثابت على اليمين بدل ما يترمي شمال بسبب ترتيبه
-            القديم (كان آخر عنصر في Actions اللي هو نفسه آخر عنصر في الصف) */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="
-            lg:hidden p-2 rounded-xl transition shrink-0
-            text-white
-            hover:bg-white/15
-          "
-        >
-          <FaBars className="text-xl" />
-        </button>
+  {/* ✅ Hamburger — موبايل فقط، وثابت على اليمين دايمًا بفضل order-1.
+      lg:order-none بترجعه لترتيبه الطبيعي في الديسكتوب (مش هيبان أصلاً
+      لأنه lg:hidden، بس بنرجعه احتياطًا عشان الـ order ميأثرش على حاجة تانية) */}
+  <button
+    onClick={() => setMenuOpen(!menuOpen)}
+    className="
+      lg:hidden order-1 lg:order-none
+      p-2 rounded-xl transition shrink-0
+      text-white
+      hover:bg-white/15
+    "
+  >
+    <FaBars className="text-xl" />
+  </button>
 
-        {/* Logo */}
-        <Link to="/" className="shrink-0 flex items-center">
-          <img src={logo} alt="oviu" className="h-9 md:h-14 object-contain" />
-        </Link>
+  {/* Logo — على الموبايل بقى آخر عنصر (order-3) عشان يترسم في الناحية
+      التانية من الهامبرجر (الشمال في RTL)، وفي الديسكتوب بيرجع لترتيبه
+      الطبيعي الأول (lg:order-none) زي ما كان بالظبط */}
+  <Link to="/" className="order-3 lg:order-none shrink-0 flex items-center">
+    <img src={logo} alt="oviu" className="h-9 md:h-14 object-contain" />
+  </Link>
 
-        {/* Location — جمب اللوجو، ديسكتوب فقط */}
-        <button className="
-          hidden md:flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition text-sm shrink-0
-          text-white
-          hover:bg-white/15
-        ">
-          <FaMapMarkerAlt className="text-xl" />
-          <span>{t.city}</span>
-        </button>
+  {/* Location — جمب اللوجو، ديسكتوب فقط */}
+  <button className="
+    hidden md:flex lg:order-none flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition text-sm shrink-0
+    text-white
+    hover:bg-white/15
+  ">
+    <FaMapMarkerAlt className="text-xl" />
+    <span>{t.city}</span>
+  </button>
 
-        {/* Search */}
-        <div
-          onClick={() => setSearchOpen(true)}
-          className="
-            flex-1 flex items-center gap-2 md:gap-3
-            bg-gray-50 dark:bg-white
-            border border-gray-200 dark:border-gray-200
-            rounded-full px-3 md:px-5 h-10 md:h-12 cursor-pointer
-            hover:border-[#C89072] transition
-            min-w-0
-          "
-        >
-          <FiSearch className="text-gray-400 text-lg md:text-xl shrink-0" />
-          <span className="text-xs md:text-sm text-gray-400 dark:text-gray-500 truncate">
-            {t.search}
-          </span>
-        </div>
+  {/* Search — في النص بين الهامبرجر واللوجو على الموبايل بفضل order-2 */}
+  <div
+    onClick={() => setSearchOpen(true)}
+    className="
+      order-2 lg:order-none
+      flex-1 flex items-center gap-2 md:gap-3
+      bg-gray-50 dark:bg-white
+      border border-gray-200 dark:border-gray-200
+      rounded-full px-3 md:px-5 h-10 md:h-12 cursor-pointer
+      hover:border-[#C89072] transition
+      min-w-0
+    "
+  >
+    <FiSearch className="text-gray-400 text-lg md:text-xl shrink-0" />
+    <span className="text-xs md:text-sm text-gray-400 dark:text-gray-500 truncate">
+      {t.search}
+    </span>
+  </div>
 
         {/* Actions — دلوقتي على الموبايل بتبقى فاضية فعليًا (كل عناصرها hidden md:)
             بعد ما نقلنا الهامبرجر برّاها، وده مقصود عشان الهامبرجر يفضل في
