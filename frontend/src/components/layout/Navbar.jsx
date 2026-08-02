@@ -266,6 +266,21 @@ function Navbar() {
         flex items-center justify-between gap-2 md:gap-4
       ">
 
+        {/* ✅ Hamburger — موبايل فقط. نقلناه ليبقى أول عنصر في صف الهيدر (قبل
+            اللوجو)، عشان في وضع RTL (عربي) أول عنصر بيترسم أقصى اليمين — فده
+            بيخلي الزرار يفضل ثابت على اليمين بدل ما يترمي شمال بسبب ترتيبه
+            القديم (كان آخر عنصر في Actions اللي هو نفسه آخر عنصر في الصف) */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="
+            lg:hidden p-2 rounded-xl transition shrink-0
+            text-white
+            hover:bg-white/15
+          "
+        >
+          <FaBars className="text-xl" />
+        </button>
+
         {/* Logo */}
         <Link to="/" className="shrink-0 flex items-center">
           <img src={logo} alt="oviu" className="h-9 md:h-14 object-contain" />
@@ -299,7 +314,9 @@ function Navbar() {
           </span>
         </div>
 
-        {/* Actions */}
+        {/* Actions — دلوقتي على الموبايل بتبقى فاضية فعليًا (كل عناصرها hidden md:)
+            بعد ما نقلنا الهامبرجر برّاها، وده مقصود عشان الهامبرجر يفضل في
+            مكانه الصحيح على أقصى اليمين في العربي */}
         <div className="flex items-center gap-0.5 md:gap-1 shrink-0">
 
           {/* ✅ Login / Username — ديسكتوب فقط، القائمة بتفتح بالضغط وبترتسم في الـ body مباشرة (Portal) */}
@@ -417,8 +434,6 @@ function Navbar() {
             </Link>
           )}
 
-          
-
           {/* Orders — ديسكتوب فقط — بيفتح تاب الطلبات جوه البروفايل */}
           <button onClick={goToOrders} className="
             hidden md:flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition text-sm
@@ -440,11 +455,11 @@ function Navbar() {
           </Link>
 
           {/* Cart — ديسكتوب فقط، على الموبايل بقت في الـ BottomNav تحت */}
-<Link to="/cart" className="
-  hidden md:flex flex-col items-center gap-1 px-2 md:px-3 py-1.5 rounded-xl transition text-sm
-  text-white
-  hover:bg-white/15
-">
+          <Link to="/cart" className="
+            hidden md:flex flex-col items-center gap-1 px-2 md:px-3 py-1.5 rounded-xl transition text-sm
+            text-white
+            hover:bg-white/15
+          ">
             <div className="relative">
               <FaShoppingCart className="text-xl md:text-2xl" />
               {cartCount > 0 && (
@@ -470,18 +485,6 @@ function Navbar() {
             "
           >
             {isAr ? "English" : "العربية"}
-          </button>
-
-          {/* Hamburger — موبايل فقط */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="
-              lg:hidden p-2 rounded-xl transition
-              text-white
-              hover:bg-white/15
-            "
-          >
-            <FaBars className="text-xl" />
           </button>
         </div>
       </div>
@@ -531,13 +534,13 @@ function Navbar() {
           />
 
           {/* الدرج نفسه — بياخد جزء من الشاشة بس (مش كامل العرض) وبيدخل من الجنب */}
-          <div className={`
-  absolute top-0 bottom-0 right-0
-  w-[80%] max-w-xs
-  bg-white dark:bg-black
-  shadow-xl overflow-y-auto
-  flex flex-col gap-4 px-6 py-4 text-base text-gray-700 dark:text-gray-300
-`}>
+          <div className="
+            absolute top-0 bottom-0 right-0
+            w-[80%] max-w-xs
+            bg-white dark:bg-black
+            shadow-xl overflow-y-auto
+            flex flex-col gap-4 px-6 py-4 text-base text-gray-700 dark:text-gray-300
+          ">
 
             {/* Header فيه زرار الإغلاق X */}
             <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">

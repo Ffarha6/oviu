@@ -17,12 +17,12 @@ function BottomNav() {
     en: { home: "Home", categories: "Categories", offers: "Offers", account: "Account", cart: "Cart" },
   }[language]
 
-  // ✅ كل تاب بيودي لمسار موجود فعلًا في الراوتس، وحسابي بيفرق حسب حالة تسجيل الدخول
+  // ✅ حسابي بقى في النص (مكان العروض القديم)، والعروض بقت مكان حسابي القديم
   const items = [
     { key: "home", icon: FaHome, path: "/", label: t.home, active: location.pathname === "/" },
     { key: "categories", icon: FaThLarge, path: "/glasses/sunglasses", label: t.categories, active: location.pathname.startsWith("/glasses") },
-    { key: "offers", icon: FaPercent, path: "/offers", label: t.offers, active: location.pathname.startsWith("/offers") },
     { key: "account", icon: FaUser, path: user ? "/profile" : "/login", label: t.account, active: location.pathname.startsWith("/profile") || location.pathname.startsWith("/login") },
+    { key: "offers", icon: FaPercent, path: "/offers", label: t.offers, active: location.pathname.startsWith("/offers") },
     { key: "cart", icon: FaShoppingCart, path: "/cart", label: t.cart, active: location.pathname.startsWith("/cart"), badge: cartCount },
   ]
 
