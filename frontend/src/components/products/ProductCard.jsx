@@ -240,7 +240,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
 
       {/* ══════════ صورة المنتج ══════════ */}
       <div
-        className="relative aspect-square w-full overflow-hidden bg-white select-none shrink-0 rounded-t-2xl p-2.5 sm:p-3"
+        className="relative aspect-square w-full overflow-hidden bg-white select-none shrink-0 rounded-t-2xl p-2"
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
@@ -355,18 +355,12 @@ function ProductCard({ product, isAr = false, t = {} }) {
         {/* اسم المنتج — محمي من مشكلة البيانات المكسورة (راجع safeProductName فوق) */}
         <h3
           onClick={goToProduct}
-          className="text-[13px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.8em]"
+          className="text-[13px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.2em]"
         >
           {displayName}
         </h3>
 
-        {/* الألوان */}
-        {colors.length > 0 && (
-          <div className={`flex ${isAr ? "justify-end" : "justify-start"}`}>
-            <ColorSwatches colors={colors} selectedColor={selectedColor} onSelect={handleColorSelect} />
-          </div>
-        )}
-
+        
         {/* السعر */}
         <div className={`flex flex-nowrap items-baseline gap-1.5 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
           <span className="text-[#D9A066] font-extrabold text-[15px] sm:text-[18px] md:text-[22px] whitespace-nowrap flex items-center gap-1">
@@ -379,6 +373,17 @@ function ProductCard({ product, isAr = false, t = {} }) {
             </span>
           )}
         </div>
+
+        {/* الألوان */}
+{colors.length > 0 && (
+  <div className={`flex mt-1 ${isAr ? "justify-end" : "justify-start"}`}>
+    <ColorSwatches
+      colors={colors}
+      selectedColor={selectedColor}
+      onSelect={handleColorSelect}
+    />
+  </div>
+)}
 
         {cartError && (
           <p className="text-red-500 text-[11px] leading-snug -mt-1">{cartError}</p>
@@ -398,7 +403,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
             className={`
               flex-1 min-w-0 flex items-center justify-center gap-1.5
               text-[10px] sm:text-[12px] md:text-[13px] font-semibold
-              py-2.5 rounded-xl
+              py-2 rounded-xl
               transition-all duration-200 active:scale-95
               disabled:active:scale-100
               ${outOfStock
