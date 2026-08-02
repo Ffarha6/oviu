@@ -73,7 +73,7 @@ function BestSellers() {
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-black dark:text-white text-center mb-10">
             {content[language].heading}
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className={`rounded-[20px] overflow-hidden animate-pulse ${darkMode ? "bg-[#111]" : "bg-white"}`}>
                 <div className="h-[160px] bg-[#D9A066]/10" />
@@ -140,7 +140,7 @@ function BestSellers() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
           >
             {filteredProducts.map((product) => (
               <ProductCard

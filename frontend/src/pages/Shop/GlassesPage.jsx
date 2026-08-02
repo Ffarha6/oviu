@@ -473,7 +473,7 @@ function GlassesPage() {
           {filtersContent}
         </aside>
 
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-8 flex gap-6 lg:gap-8 flex-row-reverse">
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-10 py-8 flex gap-6 lg:gap-8 flex-row-reverse">
 
           {/* حيّز فاضي مكانه بالظبط زي ما كان السايدبار قبل كده، عشان المحتوى
               يفضل في نفس مكانه الأصلي بالظبط ومايتحركش لمكان السايدبار الحقيقي */}
@@ -654,7 +654,7 @@ function GlassesPage() {
           {!error && (
             <div className={
               viewMode === "grid"
-                ? "grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4"
+                ? "grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"
                 : "grid grid-cols-1 gap-4"
             }>
               {loading

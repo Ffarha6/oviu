@@ -221,7 +221,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
   return (
     <div
       className="
-        group relative flex flex-col cursor-pointer
+        group relative flex flex-col min-w-0 h-full cursor-pointer
         bg-white dark:bg-[#141414]
         rounded-2xl overflow-hidden
         border border-black/[0.07] dark:border-white/[0.06]
@@ -239,16 +239,16 @@ function ProductCard({ product, isAr = false, t = {} }) {
       */}
       <div
         className="
-          relative
-          aspect-[5/4]
-          w-full
-          overflow-hidden
-          bg-white
-          select-none
-          shrink-0
-          rounded-t-2xl
-          p-4
-        "
+  relative
+  aspect-square
+  w-full
+  overflow-hidden
+  bg-white
+  select-none
+  shrink-0
+  rounded-t-2xl
+  p-3
+"
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
@@ -370,7 +370,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
         {/* اسم المنتج */}
         <h3
           onClick={goToProduct}
-          className="text-[13.5px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2"
+          className="text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2"
         >
           {product.name}
         </h3>
@@ -384,7 +384,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
 
         {/* السعر - أكبر وأوضح عنصر في الكارت */}
         <div className={`flex items-baseline gap-2 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
-          <span className="text-[#D9A066] font-extrabold text-[20px] md:text-[22px]">
+          <span className="text-[#D9A066] font-extrabold text-[16px] sm:text-[18px] md:text-[22px]">
             {currentPrice.toLocaleString()} {currency}
           </span>
           {hasDiscount && originalPrice > currentPrice && (
@@ -409,8 +409,8 @@ function ProductCard({ product, isAr = false, t = {} }) {
             disabled={cartLoading || addedFeedback || outOfStock}
             className={`
               flex-1 flex items-center justify-center gap-1
-              text-[11.5px] font-semibold
-              py-2 rounded-xl
+              text-[10px] sm:text-[11px] md:text-[12px] font-semibold
+              py-2 sm:py-2.5 rounded-xl
               transition-all duration-200 active:scale-95
               disabled:active:scale-100
               ${outOfStock
@@ -434,8 +434,8 @@ function ProductCard({ product, isAr = false, t = {} }) {
               flex-1 flex items-center justify-center gap-1
               border border-[#D9A066]/50 text-[#D9A066]
               hover:bg-[#D9A066]/10 active:scale-95
-              text-[11.5px] font-semibold
-              py-2 rounded-xl
+             text-[10px] sm:text-[11px] md:text-[12px] font-semibold
+              py-2 sm:py-2.5 rounded-xl
               transition-all duration-200
             "
           >
