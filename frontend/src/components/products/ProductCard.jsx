@@ -247,7 +247,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
           select-none
           shrink-0
           rounded-t-2xl
-          p-3
+          p-2 sm:p-3
         "
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
@@ -355,8 +355,8 @@ function ProductCard({ product, isAr = false, t = {} }) {
       {/* ══════════ محتوى الكارت ══════════ */}
       <div
         className={`
-          flex flex-col gap-2.5 flex-1
-          px-3.5 pt-3 pb-3.5
+          flex flex-col gap-1.5 sm:gap-2.5 flex-1
+          px-2.5 pt-2.5 pb-3 sm:px-3.5 sm:pt-3 sm:pb-3.5
           ${isAr ? "text-right" : "text-left"}
         `}
       >
@@ -371,7 +371,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
         {/* اسم المنتج */}
         <h3
           onClick={goToProduct}
-          className="text-[14px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.6em]"
+          className="text-[13px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.4em] sm:min-h-[2.6em]"
         >
           {product.name}
         </h3>
@@ -387,11 +387,11 @@ function ProductCard({ product, isAr = false, t = {} }) {
             FIX: whitespace-nowrap على كل رقم لوحده عشان السعر ميتقطعش سطرين
             على الشاشات الضيقة، وflex-nowrap على الحاوية عشان متلفش تحت بعض */}
         <div className={`flex flex-nowrap items-baseline gap-1.5 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
-          <span className="text-[#D9A066] font-extrabold text-[15px] sm:text-[18px] md:text-[22px] whitespace-nowrap">
+          <span className="text-[#D9A066] font-extrabold text-[14px] sm:text-[18px] md:text-[22px] whitespace-nowrap">
             {currentPrice.toLocaleString()} {currency}
           </span>
           {hasDiscount && originalPrice > currentPrice && (
-            <span className="text-gray-400 text-[12px] sm:text-[13px] line-through whitespace-nowrap">
+            <span className="text-gray-400 text-[11px] sm:text-[13px] line-through whitespace-nowrap">
               {originalPrice.toLocaleString()}
             </span>
           )}
@@ -402,17 +402,20 @@ function ProductCard({ product, isAr = false, t = {} }) {
           <p className="text-red-500 text-[11px] leading-snug -mt-1">{cartError}</p>
         )}
 
-        {/* الأزرار — كبّرنا الخط الأساسي على الموبايل (كان 10px، بقى 11px) عشان يبقى مقروء */}
+        {/* الأزرار
+            ✅ FIX: على الموبايل (أصغر من sm) بيبقوا فوق بعض full-width بدل ما
+            يتزنقوا جنب بعض في نص المساحة، فبيبقى كل زرار واضح وسهل تدوسي
+            عليه بإصبعك. من sm فأكبر (الشاشات الأوسع) بيرجعوا جنب بعض تاني. */}
         <div
-          className={`flex items-center gap-1.5 mt-auto ${isAr ? "flex-row-reverse" : ""}`}
+          className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 mt-auto ${isAr ? "sm:flex-row-reverse" : ""}`}
           onClick={(e) => e.stopPropagation()}
         >
           <button
             onClick={handleAddToCart}
             disabled={cartLoading || addedFeedback || outOfStock}
             className={`
-              flex-1 flex items-center justify-center gap-1
-              text-[11px] sm:text-[11px] md:text-[12px] font-semibold
+              w-full sm:flex-1 flex items-center justify-center gap-1.5
+              text-[12px] sm:text-[11px] md:text-[12px] font-semibold
               py-2.5 rounded-xl
               transition-all duration-200 active:scale-95
               disabled:active:scale-100
@@ -423,7 +426,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
                   : "bg-[#D9A066] hover:bg-[#c98d54] text-white shadow-[0_3px_12px_rgba(217,160,102,0.3)] disabled:opacity-80"}
             `}
           >
-            <FiShoppingBag className="text-[12px] shrink-0" />
+            <FiShoppingBag className="text-[13px] sm:text-[12px] shrink-0" />
             <span className="truncate">
               {addedFeedback
                 ? (isAr ? "تمت الإضافة ✓" : "Added ✓")
@@ -434,15 +437,15 @@ function ProductCard({ product, isAr = false, t = {} }) {
           <button
             onClick={handleTryNow}
             className="
-              flex-1 flex items-center justify-center gap-1
+              w-full sm:flex-1 flex items-center justify-center gap-1.5
               border border-[#D9A066]/50 text-[#D9A066]
               hover:bg-[#D9A066]/10 active:scale-95
-              text-[11px] sm:text-[11px] md:text-[12px] font-semibold
+              text-[12px] sm:text-[11px] md:text-[12px] font-semibold
               py-2.5 rounded-xl
               transition-all duration-200
             "
           >
-            <FiEye className="text-[12px] shrink-0" />
+            <FiEye className="text-[13px] sm:text-[12px] shrink-0" />
             <span className="truncate">{tryNowLabel}</span>
           </button>
         </div>

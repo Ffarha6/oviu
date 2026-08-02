@@ -653,10 +653,10 @@ function GlassesPage() {
               كانوا كود ميت، ProductCard بيستخدم useWishlist() و useCart() بنفسه */}
           {!error && (
             <div className={
-              viewMode === "grid"
-                ? "grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"
-                : "grid grid-cols-1 gap-4"
-            }>
+  viewMode === "grid"
+    ? "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5 xl:grid-cols-4"
+    : "grid grid-cols-1 gap-4"
+}>
               {loading
                 ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
                 : products.length === 0
