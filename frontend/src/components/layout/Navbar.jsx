@@ -82,7 +82,9 @@ function Navbar() {
       // نفس نقاط التوقف بتاعة Tailwind: md = 768px
       const isMdUp = window.innerWidth >= 768
       const mainNavHeight = isMdUp ? 80 : 64      // h-20 (80px) على الديسكتوب، h-16 (64px) على الموبايل
-      const categoriesHeight = categoriesVisible ? 52 : 0
+      // ✅ شريط الفئات (Categories bar) بقى مخفي في الموبايل خالص (موجود جوه
+      // الدرج الجانبي بدل كده)، فارتفاعه بيتحسب بس على الديسكتوب
+      const categoriesHeight = isMdUp && categoriesVisible ? 52 : 0
       document.documentElement.style.setProperty(
         "--navbar-height",
         `${mainNavHeight + categoriesHeight}px`
@@ -501,9 +503,10 @@ function Navbar() {
         </div>
       </div>
 
-      {/* ── Categories bar — بيتطوى تلقائي مع اتجاه السكرول ── */}
+      {/* ── Categories bar — ديسكتوب فقط، بيتطوى تلقائي مع اتجاه السكرول.
+          على الموبايل بقى مخفي خالص لأنه موجود جوه الدرج الجانبي بدل كده ── */}
       <div
-        className="overflow-hidden transition-[height] duration-300 ease-in-out"
+        className="hidden md:block overflow-hidden transition-[height] duration-300 ease-in-out"
         style={{ height: categoriesVisible ? 52 : 0 }}
       >
         <div
