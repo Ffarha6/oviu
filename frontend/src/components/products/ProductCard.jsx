@@ -355,7 +355,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
         {/* اسم المنتج — محمي من مشكلة البيانات المكسورة (راجع safeProductName فوق) */}
         <h3
           onClick={goToProduct}
-          className="text-[13px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.4em] sm:min-h-[2.6em]"
+          className="text-[13px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.8em]"
         >
           {displayName}
         </h3>
@@ -369,9 +369,10 @@ function ProductCard({ product, isAr = false, t = {} }) {
 
         {/* السعر */}
         <div className={`flex flex-nowrap items-baseline gap-1.5 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
-          <span className="text-[#D9A066] font-extrabold text-[15px] sm:text-[18px] md:text-[22px] whitespace-nowrap">
-            {currentPrice.toLocaleString()} {currency}
-          </span>
+          <span className="text-[#D9A066] font-extrabold text-[15px] sm:text-[18px] md:text-[22px] whitespace-nowrap flex items-center gap-1">
+  <span>{currentPrice.toLocaleString()}</span>
+  <span className="text-[13px] sm:text-[15px]">{currency}</span>
+</span>
           {hasDiscount && originalPrice > currentPrice && (
             <span className="text-gray-400 text-[11px] sm:text-[13px] line-through whitespace-nowrap">
               {originalPrice.toLocaleString()}
@@ -396,7 +397,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
             disabled={cartLoading || addedFeedback || outOfStock}
             className={`
               flex-1 min-w-0 flex items-center justify-center gap-1.5
-              text-[12px] sm:text-[12px] md:text-[13px] font-semibold
+              text-[10px] sm:text-[12px] md:text-[13px] font-semibold
               py-2.5 rounded-xl
               transition-all duration-200 active:scale-95
               disabled:active:scale-100
@@ -420,7 +421,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
             title={tryNowLabel}
             aria-label={tryNowLabel}
             className="
-              shrink-0 w-[42px] h-[38px] flex items-center justify-center
+              shrink-0 w-[36px] h-[36px] sm:w-[42px] sm:h-[38px] flex items-center justify-center
               border border-[#D9A066]/50 text-[#D9A066]
               hover:bg-[#D9A066]/10 active:scale-95
               rounded-xl transition-all duration-200
