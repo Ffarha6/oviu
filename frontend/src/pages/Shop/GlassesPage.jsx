@@ -479,7 +479,7 @@ function GlassesPage() {
           {filtersContent}
         </aside>
 
-        <div className="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-10 py-8 flex gap-6 lg:gap-8 flex-row-reverse">
+        <div className="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-10 pt-0 pb-8 flex gap-6 lg:gap-8 flex-row-reverse">
 
           {/* حيّز فاضي مكانه بالظبط زي ما كان السايدبار قبل كده، عشان المحتوى
               يفضل في نفس مكانه الأصلي بالظبط ومايتحركش لمكان السايدبار الحقيقي */}
@@ -490,7 +490,7 @@ function GlassesPage() {
 
           {/* breadcrumb */}
           <div 
-            className={`flex items-center gap-2 text-gray-400 mb-5 ${isAr ? "flex-row" : "flex-row"}`}
+            className={`flex items-center gap-2 text-gray-400 mb-3 ${isAr ? "flex-row" : "flex-row"}`}
             style={{ fontSize: "20px", fontWeight: "500" }}
           >
             {isAr ? (
