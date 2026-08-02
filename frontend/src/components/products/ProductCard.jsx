@@ -239,16 +239,16 @@ function ProductCard({ product, isAr = false, t = {} }) {
       */}
       <div
         className="
-  relative
-  aspect-square
-  w-full
-  overflow-hidden
-  bg-white
-  select-none
-  shrink-0
-  rounded-t-2xl
-  p-3
-"
+          relative
+          aspect-square
+          w-full
+          overflow-hidden
+          bg-white
+          select-none
+          shrink-0
+          rounded-t-2xl
+          p-3
+        "
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
@@ -284,19 +284,19 @@ function ProductCard({ product, isAr = false, t = {} }) {
           </div>
         )}
 
-        {/* Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
+        {/* Badges — بتتحرك على حسب اتجاه اللغة عشان تفضل في نفس ركن البداية دايمًا */}
+        <div className={`absolute top-2.5 flex flex-col gap-1 z-10 pointer-events-none ${isAr ? "right-2.5" : "left-2.5"}`}>
           {hasDiscount && discountPct > 0 && !outOfStock && (
-            <span className="bg-[#D9A066] text-white text-[11px] font-bold px-2.5 py-[3px] rounded-full shadow-sm">
+            <span className="bg-[#D9A066] text-white text-[11px] font-bold px-2.5 py-[3px] rounded-full shadow-sm w-fit">
               -{discountPct}%
             </span>
           )}
           {outOfStock ? (
-            <span className="bg-black/80 text-white text-[11px] font-bold px-2.5 py-[3px] rounded-full shadow-sm">
+            <span className="bg-black/80 text-white text-[11px] font-bold px-2.5 py-[3px] rounded-full shadow-sm w-fit whitespace-nowrap">
               {outOfStockLabel}
             </span>
           ) : isLowStock ? (
-            <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-[3px] rounded-full shadow-sm">
+            <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-[3px] rounded-full shadow-sm w-fit whitespace-nowrap">
               {lowStockLabel}
             </span>
           ) : null}
@@ -305,13 +305,14 @@ function ProductCard({ product, isAr = false, t = {} }) {
         {/* Wishlist */}
         <button
           onClick={handleToggleWishlist}
-          className="
-            absolute top-2.5 right-2.5 z-10
+          className={`
+            absolute top-2.5 z-10
+            ${isAr ? "left-2.5" : "right-2.5"}
             w-[30px] h-[30px] rounded-full
             bg-white/90 backdrop-blur-sm
             flex items-center justify-center shadow
             hover:scale-110 transition-all duration-200
-          "
+          `}
         >
           {isInWishlist
             ? <FaHeart className="text-[#D9A066] text-[12px]" />
@@ -354,8 +355,8 @@ function ProductCard({ product, isAr = false, t = {} }) {
       {/* ══════════ محتوى الكارت ══════════ */}
       <div
         className={`
-          flex flex-col gap-2 flex-1
-          px-3.5 pt-2.5 pb-3
+          flex flex-col gap-2.5 flex-1
+          px-3.5 pt-3 pb-3.5
           ${isAr ? "text-right" : "text-left"}
         `}
       >
@@ -370,7 +371,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
         {/* اسم المنتج */}
         <h3
           onClick={goToProduct}
-          className="text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2"
+          className="text-[14px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.6em]"
         >
           {product.name}
         </h3>
@@ -382,13 +383,15 @@ function ProductCard({ product, isAr = false, t = {} }) {
           </div>
         )}
 
-        {/* السعر - أكبر وأوضح عنصر في الكارت */}
-        <div className={`flex items-baseline gap-2 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
-          <span className="text-[#D9A066] font-extrabold text-[16px] sm:text-[18px] md:text-[22px]">
+        {/* السعر - أكبر وأوضح عنصر في الكارت
+            FIX: whitespace-nowrap على كل رقم لوحده عشان السعر ميتقطعش سطرين
+            على الشاشات الضيقة، وflex-nowrap على الحاوية عشان متلفش تحت بعض */}
+        <div className={`flex flex-nowrap items-baseline gap-1.5 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
+          <span className="text-[#D9A066] font-extrabold text-[15px] sm:text-[18px] md:text-[22px] whitespace-nowrap">
             {currentPrice.toLocaleString()} {currency}
           </span>
           {hasDiscount && originalPrice > currentPrice && (
-            <span className="text-gray-400 text-[13px] line-through">
+            <span className="text-gray-400 text-[12px] sm:text-[13px] line-through whitespace-nowrap">
               {originalPrice.toLocaleString()}
             </span>
           )}
@@ -399,7 +402,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
           <p className="text-red-500 text-[11px] leading-snug -mt-1">{cartError}</p>
         )}
 
-        {/* الأزرار */}
+        {/* الأزرار — كبّرنا الخط الأساسي على الموبايل (كان 10px، بقى 11px) عشان يبقى مقروء */}
         <div
           className={`flex items-center gap-1.5 mt-auto ${isAr ? "flex-row-reverse" : ""}`}
           onClick={(e) => e.stopPropagation()}
@@ -409,8 +412,8 @@ function ProductCard({ product, isAr = false, t = {} }) {
             disabled={cartLoading || addedFeedback || outOfStock}
             className={`
               flex-1 flex items-center justify-center gap-1
-              text-[10px] sm:text-[11px] md:text-[12px] font-semibold
-              py-2 sm:py-2.5 rounded-xl
+              text-[11px] sm:text-[11px] md:text-[12px] font-semibold
+              py-2.5 rounded-xl
               transition-all duration-200 active:scale-95
               disabled:active:scale-100
               ${outOfStock
@@ -434,8 +437,8 @@ function ProductCard({ product, isAr = false, t = {} }) {
               flex-1 flex items-center justify-center gap-1
               border border-[#D9A066]/50 text-[#D9A066]
               hover:bg-[#D9A066]/10 active:scale-95
-             text-[10px] sm:text-[11px] md:text-[12px] font-semibold
-              py-2 sm:py-2.5 rounded-xl
+              text-[11px] sm:text-[11px] md:text-[12px] font-semibold
+              py-2.5 rounded-xl
               transition-all duration-200
             "
           >
