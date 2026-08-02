@@ -3,13 +3,11 @@ import { ThemeContext } from "../../context/ThemeContext"
 import { LanguageContext } from "../../context/LanguageContext"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
-import { FaSun, FaGlasses, FaBookOpen, FaEye } from "react-icons/fa"
+import menImg from "../../assets/images/men.png"
+import womenImg from "../../assets/images/women.png"
+import kidsImg from "../../assets/images/kids.png"
+import unisexImg from "../../assets/images/bannerUnisex.jpg"
 
-// ✅ FIX: القسم ده كان "تسوق حسب الفئة" (رجالي/نسائي/أطفال) واتحول
-// لـ "تسوق حسب النوع" (شمسية/طبية/قراءة/عدسات) زي التصميم الجديد.
-// شلنا الصور (men/women/kids) لأنها مش مناسبة للمحتوى الجديد، وبنستخدم
-// أيقونات بدلها لحد ما تبقى صور المنتجات الحقيقية جاهزة — لو عندك صور
-// مناسبة (نظارة شمسية / طبية / قراءة / عدسة) ابعتهالي وهبدلها بالصور.
 function CategoriesSection() {
   const { darkMode } = useContext(ThemeContext)
   const { language } = useContext(LanguageContext)
@@ -22,18 +20,20 @@ function CategoriesSection() {
     en: { heading: "Shop by Type", shop: "Shop Now" },
   }
 
+  // ✅ بقت مقسّمة حسب الفئة (رجالي/نسائي/أطفال/للجنسين) بدل النوع، وبصور
+  // حقيقية بدل الأيقونات
   const types = {
     ar: [
-      { title: "نظارات شمسية", icon: FaSun,      slug: "sunglasses" },
-      { title: "نظارات طبية",  icon: FaGlasses,  slug: "medical"    },
-      { title: "نظارات قراءة", icon: FaBookOpen, slug: "reading"    },
-      { title: "عدسات",        icon: FaEye,      slug: "lenses"     },
+      { title: "رجالي",   image: menImg,    slug: "men"    },
+      { title: "نسائي",   image: womenImg,  slug: "women"  },
+      { title: "أطفال",   image: kidsImg,   slug: "kids"   },
+      { title: "للجنسين", image: unisexImg, slug: "unisex" },
     ],
     en: [
-      { title: "Sunglasses",     icon: FaSun,      slug: "sunglasses" },
-      { title: "Optical",        icon: FaGlasses,  slug: "medical"    },
-      { title: "Reading Glasses",icon: FaBookOpen, slug: "reading"    },
-      { title: "Contact Lenses", icon: FaEye,      slug: "lenses"     },
+      { title: "Men",    image: menImg,    slug: "men"    },
+      { title: "Women",  image: womenImg,  slug: "women"  },
+      { title: "Kids",   image: kidsImg,   slug: "kids"   },
+      { title: "Unisex", image: unisexImg, slug: "unisex" },
     ],
   }
 
@@ -52,46 +52,48 @@ function CategoriesSection() {
         </motion.h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {types[language].map((item, index) => {
-            const Icon = item.icon
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                className={`
-                  rounded-[20px] overflow-hidden group
-                  transition-all duration-300
-                  hover:shadow-[0_10px_28px_rgba(217,160,102,0.2)]
-                  ${darkMode ? "bg-[#141414]" : "bg-white"}
-                  px-4 py-6 md:py-8
-                  flex flex-col items-center text-center
-                `}
+          {types[language].map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              className={`
+                rounded-[20px] overflow-hidden group
+                transition-all duration-300
+                hover:shadow-[0_10px_28px_rgba(217,160,102,0.2)]
+                ${darkMode ? "bg-[#141414]" : "bg-white"}
+                px-4 py-6 md:py-8
+                flex flex-col items-center text-center
+              `}
+            >
+              {/* الصورة بدل الأيقونة */}
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-4 ring-2 ring-[#D9A066]/15 group-hover:ring-[#D9A066] transition-all duration-300">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+
+              <h3 className="text-sm md:text-lg font-bold text-black dark:text-white mb-3">
+                {item.title}
+              </h3>
+
+              <button
+                onClick={() => navigate(`/glasses/${item.slug}`)}
+                className="
+                  text-xs md:text-sm font-semibold text-[#D9A066]
+                  border border-[#D9A066] rounded-full
+                  px-4 md:px-5 py-1.5 md:py-2
+                  hover:bg-[#D9A066] hover:text-white transition
+                "
               >
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#D9A066]/10 flex items-center justify-center text-[#D9A066] text-2xl md:text-3xl mb-4 transition-transform duration-300 group-hover:scale-105">
-                  <Icon />
-                </div>
-
-                <h3 className="text-sm md:text-lg font-bold text-black dark:text-white mb-3">
-                  {item.title}
-                </h3>
-
-                <button
-                  onClick={() => navigate(`/glasses/${item.slug}`)}
-                  className="
-                    text-xs md:text-sm font-semibold text-[#D9A066]
-                    border border-[#D9A066] rounded-full
-                    px-4 md:px-5 py-1.5 md:py-2
-                    hover:bg-[#D9A066] hover:text-white transition
-                  "
-                >
-                  {content[language].shop}
-                </button>
-              </motion.div>
-            )
-          })}
+                {content[language].shop}
+              </button>
+            </motion.div>
+          ))}
         </div>
 
       </div>

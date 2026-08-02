@@ -13,7 +13,7 @@ import bannerLenses from "../../assets/images/banner-lenses.png"
 import bannerMen from "../../assets/images/banner-men.png"
 import bannerWomen from "../../assets/images/banner-women.jpg"
 import bannerKids from "../../assets/images/banner-kids.png"
-
+import bannerUnisex from "../../assets/images/bannerUnisex.jpg"
 // ===== إعدادات كل فئة =====
 const categoryConfig = {
   sunglasses: {
@@ -51,6 +51,11 @@ const categoryConfig = {
     en: { title: "Contact Lenses", desc: "Contact lenses with the highest standards of comfort and safety for your eyes" },
     apiParam: { product_type: "lenses" },
   },
+  unisex: {
+  ar: { title: "نظارات للجنسين", desc: "تشكيلة نظارات تناسب الجنسين بتصاميم عصرية ومريحة" },
+  en: { title: "Unisex Glasses", desc: "A collection of glasses suited for everyone, with modern and comfortable designs" },
+  apiParam: { audience: "unisex" },
+},
 }
 
 
@@ -63,6 +68,7 @@ const categoryBanners = {
   men: bannerMen,
   women: bannerWomen,
   kids: bannerKids,
+  unisex: bannerUnisex,
 }
 
 // ===== SKELETON CARD =====
