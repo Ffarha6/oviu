@@ -539,12 +539,12 @@ function Navbar() {
 
           {/* الدرج نفسه — بياخد جزء من الشاشة بس (مش كامل العرض) وبيدخل من الجنب */}
           <div className={`
-            absolute top-0 bottom-0 ${isAr ? "right-0" : "left-0"}
-            w-[80%] max-w-xs
-            bg-white dark:bg-black
-            shadow-xl overflow-y-auto
-            flex flex-col gap-4 px-6 py-4 text-base text-gray-700 dark:text-gray-300
-          `}>
+  absolute top-0 bottom-0 right-0
+  w-[80%] max-w-xs
+  bg-white dark:bg-black
+  shadow-xl overflow-y-auto
+  flex flex-col gap-4 px-6 py-4 text-base text-gray-700 dark:text-gray-300
+`}>
 
             {/* Header فيه زرار الإغلاق X */}
             <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">
