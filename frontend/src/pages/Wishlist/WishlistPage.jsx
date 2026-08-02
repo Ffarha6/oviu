@@ -121,7 +121,7 @@ export default function Wishlist() {
   // شايلة بريدكرمب فوق بـ padding منفصل
   return (
     <div style={{ backgroundColor: bg, color: textMain }} className="min-h-screen transition-colors duration-500" dir={isAr ? "rtl" : "ltr"}>
-      <div className="max-w-[1400px] mx-auto px-10 pt-8 pb-12">
+      <div className="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-12">
 
         {/* ── Page Title ── */}
         <div className="flex items-start justify-between mb-8">
@@ -137,7 +137,7 @@ export default function Wishlist() {
 
         {/* ── Loading ── */}
         {loading && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6">
             {[...Array(8)].map((_, i) => (
               <div key={i} style={{ backgroundColor: cardBg }} className="rounded-2xl h-72 animate-pulse" />
             ))}
@@ -182,7 +182,7 @@ export default function Wishlist() {
             </div>
 
             {/* Cards — بقت دايمًا شبكة (grid) بما إن زرار التبديل اتشال */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6">
               {sortedItems.map(item => (
                 <ProductCard
                   key={item.id}
