@@ -319,13 +319,26 @@ aspect-square
                   animate={{ opacity: outOfStock ? 0.5 : 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
+                  drag="x"
+dragConstraints={{ left: 0, right: 0 }}
+dragElastic={0.2}
+
+onDragEnd={(e, info) => {
+  if (info.offset.x < -80) {
+    nextImg()
+  } else if (info.offset.x > 80) {
+    prevImg()
+  }
+}}
                   className="
-w-full
-h-full
-object-contain
-p-4
-"
-                />
+    w-full
+    h-full
+    object-contain
+    p-4
+    touch-pan-y
+    select-none
+  "
+/>
               </AnimatePresence>
 
               <button onClick={handleToggleWishlist}
