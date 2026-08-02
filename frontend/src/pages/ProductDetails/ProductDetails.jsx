@@ -260,10 +260,19 @@ function ProductDetail() {
             initial={{ opacity: 0, x: isAr ? 30 : -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex gap-3"
+            className="flex flex-col-reverse lg:flex-row gap-3"
           >
             {/* Thumbnails - عمودي على الجنب، وكبّرناها شوية */}
-            <div className="flex flex-col gap-2.5 w-[104px] shrink-0">
+            <div className="
+    flex
+    flex-row
+    lg:flex-col
+    gap-2.5
+    w-full
+    lg:w-[104px]
+    overflow-x-auto
+    shrink-0
+">
               {images.map((img, i) => (
                 <button key={i} onClick={() => setActiveImage(i)}
                   style={{
@@ -273,14 +282,27 @@ function ProductDetail() {
                   }}
                   className="rounded-[14px] overflow-hidden border-2 transition-all duration-200 hover:opacity-90 shrink-0">
                   <img src={imgUrl(img)} alt=""
-                    className="w-full h-[96px] object-contain" />
+                    className="
+w-[80px]
+h-[80px]
+lg:w-full
+lg:h-[96px]
+object-contain
+mx-auto
+" />
                 </button>
               ))}
             </div>
 
             {/* الصورة الرئيسية */}
             <div style={{ backgroundColor: photoBg, border: `1px solid ${border}` }}
-              className="relative flex-1 rounded-[24px] overflow-hidden">
+              className="
+relative
+flex-1
+rounded-[24px]
+overflow-hidden
+aspect-square
+">
               {/* ✅ شارة "نفذ من المخزون" فوق الصورة عشان تبان بوضوح من أول وهلة */}
               {outOfStock && (
                 <div className={`absolute top-4 ${isAr ? "right-4" : "left-4"} z-10 bg-black/70 text-white text-xs font-bold px-3 py-1.5 rounded-full`}>
@@ -297,7 +319,12 @@ function ProductDetail() {
                   animate={{ opacity: outOfStock ? 0.5 : 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
-                  className="w-full h-[440px] object-contain p-4"
+                  className="
+w-full
+h-full
+object-contain
+p-4
+"
                 />
               </AnimatePresence>
 
