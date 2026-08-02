@@ -49,7 +49,7 @@ function StarRating({ rating = 0, count = 0 }) {
 function ColorSwatches({ colors = [], selectedColor, onSelect }) {
   if (!colors.length) return null
   return (
-    <div className="flex items-center gap-[6px] flex-wrap">
+    <div className="flex items-center gap-[6px] flex-wrap justify-end w-full">
       {colors.map((color) => (
         <button
           key={color.id || color.name}
@@ -376,7 +376,14 @@ function ProductCard({ product, isAr = false, t = {} }) {
 
         {/* الألوان */}
 {colors.length > 0 && (
-  <div className={`flex mt-1 ${isAr ? "justify-end" : "justify-start"}`}>
+  <div
+    className={`
+      mt-1
+      flex
+      w-full
+      ${isAr ? "justify-end" : "justify-start"}
+    `}
+  >
     <ColorSwatches
       colors={colors}
       selectedColor={selectedColor}
@@ -384,7 +391,6 @@ function ProductCard({ product, isAr = false, t = {} }) {
     />
   </div>
 )}
-
         {cartError && (
           <p className="text-red-500 text-[11px] leading-snug -mt-1">{cartError}</p>
         )}
