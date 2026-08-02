@@ -31,7 +31,7 @@ function Layout({ children }) {
       */}
       <main
         className={`overflow-x-hidden w-full ${hideMobileBottomBar ? "" : "pb-20 lg:pb-0"}`}
-        style={{ paddingTop: "var(--navbar-height, 168px)" }}
+        style={{ paddingTop: "70px" }}
       >
         {children}
       </main>

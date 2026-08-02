@@ -440,7 +440,7 @@ function GlassesPage() {
   }
 
   return (
-    <div className={`min-h-screen bg-[#FAF8F5] dark:bg-[#0a0a0a] transition-all duration-500 ${isAr ? "font-[Cairo,sans-serif]" : ""}`} style={{ paddingTop: "20px" }}>
+    <div className={`min-h-screen bg-[#FAF8F5] dark:bg-[#0a0a0a] transition-all duration-500 ${isAr ? "font-[Cairo,sans-serif]" : ""}`} style={{ paddingTop: "0px" }}>
 
      
       {/* ===== CONTENT ===== */}
