@@ -417,14 +417,7 @@ function Navbar() {
             </Link>
           )}
 
-          {/* ✅ Login icon — موبايل فقط */}
-          <Link to={user ? "/profile" : "/login"} className="
-            md:hidden p-2 rounded-xl transition
-            text-white
-            hover:bg-white/15
-          ">
-            <FaUser className="text-xl" />
-          </Link>
+          
 
           {/* Orders — ديسكتوب فقط — بيفتح تاب الطلبات جوه البروفايل */}
           <button onClick={goToOrders} className="
@@ -446,12 +439,12 @@ function Navbar() {
             <span>{t.wishlist}</span>
           </Link>
 
-          {/* Cart — يظهر دايمًا */}
-          <Link to="/cart" className="
-            flex flex-col items-center gap-1 px-2 md:px-3 py-1.5 rounded-xl transition text-sm
-            text-white
-            hover:bg-white/15
-          ">
+          {/* Cart — ديسكتوب فقط، على الموبايل بقت في الـ BottomNav تحت */}
+<Link to="/cart" className="
+  hidden md:flex flex-col items-center gap-1 px-2 md:px-3 py-1.5 rounded-xl transition text-sm
+  text-white
+  hover:bg-white/15
+">
             <div className="relative">
               <FaShoppingCart className="text-xl md:text-2xl" />
               {cartCount > 0 && (
