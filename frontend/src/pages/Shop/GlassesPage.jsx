@@ -52,10 +52,10 @@ const categoryConfig = {
     apiParam: { product_type: "lenses" },
   },
   unisex: {
-  ar: { title: "نظارات للجنسين", desc: "تشكيلة نظارات تناسب الجنسين بتصاميم عصرية ومريحة" },
-  en: { title: "Unisex Glasses", desc: "A collection of glasses suited for everyone, with modern and comfortable designs" },
-  apiParam: { audience: "unisex" },
-},
+    ar: { title: "نظارات للجنسين", desc: "تشكيلة نظارات تناسب الجنسين بتصاميم عصرية ومريحة" },
+    en: { title: "Unisex Glasses", desc: "A collection of glasses suited for everyone, with modern and comfortable designs" },
+    apiParam: { audience: "unisex" },
+  },
 }
 
 
@@ -180,13 +180,15 @@ function GlassesPage() {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
+
+  // ✅ عدّلنا العدّادات دي عشان تبقى بس للفئة (شمسية/طبية/قراءة/عدسات)،
+  // شيلنا "kids" من هنا لأنه بقى في قسم "النوع" مش "الفئة"
   const [categoryCounts, setCategoryCounts] = useState({
-  sunglasses: "...",
-  medical:    "...",
-  reading:    "...",
-  kids:       "...",
-  lenses:     "...",
-})
+    sunglasses: "...",
+    medical:    "...",
+    reading:    "...",
+    lenses:     "...",
+  })
 
   const toggleShape = (s) => {
     setSelectedShapes(prev => prev.includes(s) ? prev.filter(i => i !== s) : [...prev, s])
@@ -210,28 +212,26 @@ function GlassesPage() {
 
 
   useEffect(() => {
-  const fetchCounts = async () => {
-    try {
-      const [sunglasses, medical, reading, kids, lenses] = await Promise.all([
-        api.get("/products/", { params: { product_type: "sunglasses", page_size: 1 } }),
-        api.get("/products/", { params: { product_type: "medical",    page_size: 1 } }),
-        api.get("/products/", { params: { product_type: "reading",    page_size: 1 } }),
-        api.get("/products/", { params: { audience: "kids",           page_size: 1 } }),
-        api.get("/products/", { params: { product_type: "lenses",     page_size: 1 } }),
-      ])
-      setCategoryCounts({
-        sunglasses: sunglasses.data.count ?? 0,
-        medical:    medical.data.count    ?? 0,
-        reading:    reading.data.count    ?? 0,
-        kids:       kids.data.count       ?? 0,
-        lenses:     lenses.data.count     ?? 0,
-      })
-    } catch (err) {
-      console.error("Error fetching category counts:", err)
+    const fetchCounts = async () => {
+      try {
+        const [sunglasses, medical, reading, lenses] = await Promise.all([
+          api.get("/products/", { params: { product_type: "sunglasses", page_size: 1 } }),
+          api.get("/products/", { params: { product_type: "medical",    page_size: 1 } }),
+          api.get("/products/", { params: { product_type: "reading",    page_size: 1 } }),
+          api.get("/products/", { params: { product_type: "lenses",     page_size: 1 } }),
+        ])
+        setCategoryCounts({
+          sunglasses: sunglasses.data.count ?? 0,
+          medical:    medical.data.count    ?? 0,
+          reading:    reading.data.count    ?? 0,
+          lenses:     lenses.data.count     ?? 0,
+        })
+      } catch (err) {
+        console.error("Error fetching category counts:", err)
+      }
     }
-  }
-  fetchCounts()
-}, [])
+    fetchCounts()
+  }, [])
 
 
   useEffect(() => { setCurrentPage(1) }, [category])
@@ -275,17 +275,18 @@ function GlassesPage() {
       gender: "النوع",
       price: "النطاق السعري",
       reset: "مسح كل الفلاتر",
+      // ✅ شيلنا "طيار" و"كات آي" من شكل الإطار
       shapes: {
-        round: "دائري", rectangle: "مستطيل", square: "مربع",
-        oval: "بيضاوي", pilot: "طيار", cat: "كات آي",
+        round: "دائري", rectangle: "مستطيل", square: "مربع", oval: "بيضاوي",
       },
-      genders: { men: "رجالي", women: "نسائي", kids: "أطفال" },
+      // ✅ ضفنا "للجنسين" في النوع
+      genders: { men: "رجالي", women: "نسائي", kids: "أطفال", unisex: "للجنسين" },
+      // ✅ الفئة بقت بس: شمسية / طبية / قراءة / عدسات (شلنا الأطفال من هنا)
       categories: [
-        { label: "نظارات شمسية",   key: "sunglasses", count: categoryCounts.sunglasses },
-        { label: "نظارات طبية",    key: "medical",    count: categoryCounts.medical    },
-        { label: "نظارات قراءة",   key: "reading",    count: categoryCounts.reading    },
-        { label: "نظارات الأطفال", key: "kids",       count: categoryCounts.kids       },
-        { label: "عدسات لاصقة",    key: "lenses",     count: categoryCounts.lenses     },
+        { label: "نظارات شمسية", key: "sunglasses", count: categoryCounts.sunglasses },
+        { label: "نظارات طبية",  key: "medical",    count: categoryCounts.medical    },
+        { label: "نظارات قراءة", key: "reading",    count: categoryCounts.reading    },
+        { label: "عدسات لاصقة",  key: "lenses",     count: categoryCounts.lenses     },
       ],
       newest: "الأحدث", priceAsc: "السعر: الأقل", priceDesc: "السعر: الأعلى",
       showing: "عرض", of: "من", product: "منتج",
@@ -302,15 +303,13 @@ function GlassesPage() {
       price: "Price Range",
       reset: "Clear All Filters",
       shapes: {
-        round: "Round", rectangle: "Rectangle", square: "Square",
-        oval: "Oval", pilot: "Pilot", cat: "Cat Eye",
+        round: "Round", rectangle: "Rectangle", square: "Square", oval: "Oval",
       },
-      genders: { men: "Men", women: "Women", kids: "Kids" },
+      genders: { men: "Men", women: "Women", kids: "Kids", unisex: "Unisex" },
       categories: [
         { label: "Sunglasses",      key: "sunglasses", count: categoryCounts.sunglasses },
         { label: "Medical Glasses", key: "medical",    count: categoryCounts.medical    },
-        { label: "Sports Glasses",  key: "reading",    count: categoryCounts.reading    },
-        { label: "Kids Glasses",    key: "kids",       count: categoryCounts.kids       },
+        { label: "Reading Glasses", key: "reading",    count: categoryCounts.reading    },
         { label: "Contact Lenses",  key: "lenses",     count: categoryCounts.lenses     },
       ],
       newest: "Newest", priceAsc: "Price: Low to High", priceDesc: "Price: High to Low",
