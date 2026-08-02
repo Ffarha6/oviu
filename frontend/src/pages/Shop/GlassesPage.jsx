@@ -13,7 +13,7 @@ import bannerLenses from "../../assets/images/banner-lenses.png"
 import bannerMen from "../../assets/images/banner-men.png"
 import bannerWomen from "../../assets/images/banner-women.jpg"
 import bannerKids from "../../assets/images/banner-kids.png"
-import bannerUnisex from "../../assets/images/bannerUnisex.jpg"
+import bannerUnisex from "../../assets/images/bannerUnisex.png"
 // ===== إعدادات كل فئة =====
 const categoryConfig = {
   sunglasses: {

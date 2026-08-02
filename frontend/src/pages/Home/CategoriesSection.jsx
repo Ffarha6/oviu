@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import menImg from "../../assets/images/men.png"
 import womenImg from "../../assets/images/women.png"
 import kidsImg from "../../assets/images/kids.png"
-import unisexImg from "../../assets/images/bannerUnisex.jpg"
+import unisexImg from "../../assets/images/bannerUnisex.png"
 
 function CategoriesSection() {
   const { darkMode } = useContext(ThemeContext)
