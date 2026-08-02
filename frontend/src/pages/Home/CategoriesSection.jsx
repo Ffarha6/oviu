@@ -64,12 +64,11 @@ function CategoriesSection() {
                 transition-all duration-300
                 hover:shadow-[0_10px_28px_rgba(217,160,102,0.2)]
                 ${darkMode ? "bg-[#141414]" : "bg-white"}
-                px-4 py-6 md:py-8
                 flex flex-col items-center text-center
               `}
             >
-              {/* الصورة بدل الأيقونة */}
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-4 ring-2 ring-[#D9A066]/15 group-hover:ring-[#D9A066] transition-all duration-300">
+              {/* ✅ الصورة بقت مربعة وبتاخد عرض الكارت كامل بدل الدايرة الصغيرة */}
+              <div className="w-full aspect-square overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
@@ -77,21 +76,23 @@ function CategoriesSection() {
                 />
               </div>
 
-              <h3 className="text-sm md:text-lg font-bold text-black dark:text-white mb-3">
-                {item.title}
-              </h3>
+              <div className="px-4 py-5 md:py-6 flex flex-col items-center">
+                <h3 className="text-sm md:text-lg font-bold text-black dark:text-white mb-3">
+                  {item.title}
+                </h3>
 
-              <button
-                onClick={() => navigate(`/glasses/${item.slug}`)}
-                className="
-                  text-xs md:text-sm font-semibold text-[#D9A066]
-                  border border-[#D9A066] rounded-full
-                  px-4 md:px-5 py-1.5 md:py-2
-                  hover:bg-[#D9A066] hover:text-white transition
-                "
-              >
-                {content[language].shop}
-              </button>
+                <button
+                  onClick={() => navigate(`/glasses/${item.slug}`)}
+                  className="
+                    text-xs md:text-sm font-semibold text-[#D9A066]
+                    border border-[#D9A066] rounded-full
+                    px-4 md:px-5 py-1.5 md:py-2
+                    hover:bg-[#D9A066] hover:text-white transition
+                  "
+                >
+                  {content[language].shop}
+                </button>
+              </div>
             </motion.div>
           ))}
         </div>
