@@ -23,14 +23,14 @@ export default function AddAdmin() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    api.get("/admin/admins/permission-modules/").then((res) => setPermissionModules(res.data)).catch(() => {});
+    api.get("/dashboard/admins/permission-modules/").then((res) => setPermissionModules(res.data)).catch(() => {});
   }, []);
 
   useEffect(() => {
     if (search.trim().length < 2) { setResults([]); return; }
     setSearching(true);
     const timeout = setTimeout(() => {
-      api.get("/admin/users/", { params: { search, role: "customer" } })
+      api.get("/dashboard/users/", { params: { search, role: "customer" } })
         .then((res) => setResults(res.data.results))
         .catch(() => setResults([]))
         .finally(() => setSearching(false));
@@ -47,7 +47,7 @@ export default function AddAdmin() {
     setSaving(true);
     try {
       await api.post(`/admin/admins/${selectedUser.id}/promote/`, { admin_role: role, admin_permissions: permissions });
-      navigate("/admin/admins");
+      navigate("/dashboard/admins");
     } catch (err) {
       alert(err.response?.data?.error || "حصل خطأ أثناء التعيين");
     } finally {
@@ -60,9 +60,9 @@ export default function AddAdmin() {
       <div>
         <h1 className="text-2xl font-bold text-primary">إضافة مشرف جديد</h1>
         <div className="flex items-center gap-1.5 text-xs text-primary/40 mt-1.5">
-          <Link to="/admin" className="hover:text-secondary">لوحة التحكم</Link>
+          <Link to="/dashboard" className="hover:text-secondary">لوحة التحكم</Link>
           <ChevronLeft size={12} />
-          <Link to="/admin/admins" className="hover:text-secondary">المشرفون</Link>
+          <Link to="/dashboard/admins" className="hover:text-secondary">المشرفون</Link>
           <ChevronLeft size={12} />
           <span className="text-primary/60">إضافة</span>
         </div>
