@@ -1,6 +1,5 @@
 import { useEffect } from "react"
 import api from "../../api/axios"
-import Navbar from "../../components/layout/Navbar"
 import HeroSection from "./HeroSection"
 import CategoriesSection from "./CategoriesSection"
 import SocialSidebar from "./SocialSidebar"
@@ -23,7 +22,10 @@ function Home() {
 
   return (
     <div className="bg-[#F7F2EE] dark:bg-[#050505] transition-colors duration-500 min-h-screen">
-      <Navbar />
+      {/* ✅ الـ Navbar اتشالت من هنا — كانت بترسم مرتين لأن App.jsx بيلف
+          الصفحة دي أصلاً بـ <Layout><Home /></Layout>، والـ Layout بيرسم
+          Navbar واحدة بنفسه. فكان فيه Navbar مكرر بيدي فراغ زيادة غريب فوق
+          صفحة الهوم بالذات، وهو سبب الفراغ اللي شايفاه */}
       <SocialSidebar />
       <HeroSection />
       <CategoriesSection />
