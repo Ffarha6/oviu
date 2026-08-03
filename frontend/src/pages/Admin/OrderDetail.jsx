@@ -16,7 +16,7 @@ import {
   ClipboardCheck,
 } from "lucide-react";
 import api from "../../api/axios";
-import SectionCard from "../../components/admin/shared/SectionCard";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
 
 const steps = [
   { key: "pending", label: "قيد الانتظار", icon: Hourglass },
@@ -53,7 +53,7 @@ export default function OrderDetail() {
 
   const fetchOrder = () => {
     setLoading(true);
-    api.get(`/admin/orders/${id}/`)
+    api.get(`/dashboard/orders/${id}/`)
       .then((res) => {
         setOrder(res.data);
         setTrackingInput(res.data.tracking_number || "");
@@ -112,7 +112,7 @@ export default function OrderDetail() {
   const updateOrderField = async (field, value) => {
     setSavingField(field);
     try {
-      const res = await api.patch(`/admin/orders/${order.id}/`, { [field]: value });
+      const res = await api.patch(`/dashboard/orders/${order.id}/`, { [field]: value });
       setOrder((prev) => ({ ...prev, ...res.data }));
     } catch (err) {
       alert("حصل خطأ أثناء الحفظ");

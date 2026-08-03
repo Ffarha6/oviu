@@ -22,7 +22,7 @@ import api from "../../../api/axios";
 
 const bottomItems = [
   { label: "الإعدادات", to: "/dashboard/settings", icon: Settings },
-  { label: "المشرفين", to: "/dashboard/admins", icon: ShieldCheck },
+  { label: "المشرفين", to: "/dashboard/dashboards", icon: ShieldCheck },
 ];
 
 export default function Sidebar() {

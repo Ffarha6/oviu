@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ChevronLeft, Save, Loader2 } from "lucide-react";
 import api from "../../api/axios";
-import SectionCard from "../../components/admin/shared/SectionCard";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
 
 const GOVERNORATES = [
   "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "البحر الأحمر", "البحيرة",
@@ -49,7 +49,7 @@ export default function CouponForm() {
 
   useEffect(() => {
     if (!isEditMode) return;
-    api.get(`/admin/coupons/${id}/`)
+    api.get(`/dashboard/coupons/${id}/`)
       .then((res) => {
         const d = res.data;
         let audience = "all";
@@ -115,7 +115,7 @@ export default function CouponForm() {
 
     try {
       if (isEditMode) {
-        await api.patch(`/admin/coupons/${id}/`, payload);
+        await api.patch(`/dashboard/coupons/${id}/`, payload);
       } else {
         await api.post("/dashboard/coupons/", payload);
       }

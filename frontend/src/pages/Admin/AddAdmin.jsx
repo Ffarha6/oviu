@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ChevronLeft, Search, Check, Loader2 } from "lucide-react";
 import api from "../../api/axios";
-import SectionCard from "../../components/admin/shared/SectionCard";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
 
 const roleOptions = [
   { value: "admin", label: "أدمن" },
@@ -23,7 +23,7 @@ export default function AddAdmin() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    api.get("/dashboard/admins/permission-modules/").then((res) => setPermissionModules(res.data)).catch(() => {});
+    api.get("/dashboard/dashboards/permission-modules/").then((res) => setPermissionModules(res.data)).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -46,8 +46,8 @@ export default function AddAdmin() {
     if (!selectedUser) return;
     setSaving(true);
     try {
-      await api.post(`/admin/admins/${selectedUser.id}/promote/`, { admin_role: role, admin_permissions: permissions });
-      navigate("/dashboard/admins");
+      await api.post(`/dashboard/dashboards/${selectedUser.id}/promote/`, { admin_role: role, admin_permissions: permissions });
+      navigate("/dashboard/dashboards");
     } catch (err) {
       alert(err.response?.data?.error || "حصل خطأ أثناء التعيين");
     } finally {
@@ -62,7 +62,7 @@ export default function AddAdmin() {
         <div className="flex items-center gap-1.5 text-xs text-primary/40 mt-1.5">
           <Link to="/dashboard" className="hover:text-secondary">لوحة التحكم</Link>
           <ChevronLeft size={12} />
-          <Link to="/dashboard/admins" className="hover:text-secondary">المشرفون</Link>
+          <Link to="/dashboard/dashboards" className="hover:text-secondary">المشرفون</Link>
           <ChevronLeft size={12} />
           <span className="text-primary/60">إضافة</span>
         </div>

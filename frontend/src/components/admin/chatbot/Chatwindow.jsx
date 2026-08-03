@@ -20,7 +20,7 @@ export default function ChatWindow({ conversationId, onStatusChanged }) {
   const fetchMessages = () => {
     if (!conversationId) return;
     setLoading(true);
-    api.get(`/admin/chatbot/${conversationId}/messages/`)
+    api.get(`/dashboard/chatbot/${conversationId}/messages/`)
       .then((res) => {
         setSession(res.data.session);
         setMessages(res.data.messages);
@@ -42,7 +42,7 @@ export default function ChatWindow({ conversationId, onStatusChanged }) {
     if (!message.trim()) return;
     setSending(true);
     try {
-      const res = await api.post(`/admin/chatbot/${conversationId}/reply/`, { message: message.trim() });
+      const res = await api.post(`/dashboard/chatbot/${conversationId}/reply/`, { message: message.trim() });
       setMessages((prev) => [...prev, res.data]);
       setMessage("");
     } catch (err) {
@@ -54,7 +54,7 @@ export default function ChatWindow({ conversationId, onStatusChanged }) {
 
   const handleToggleStatus = async () => {
     try {
-      const res = await api.patch(`/admin/chatbot/${conversationId}/toggle-status/`);
+      const res = await api.patch(`/dashboard/chatbot/${conversationId}/toggle-status/`);
       setSession((prev) => ({ ...prev, is_closed: res.data.is_closed }));
       onStatusChanged?.();
     } catch (err) {

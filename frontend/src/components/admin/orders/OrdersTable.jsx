@@ -72,7 +72,7 @@ export default function OrdersTable({ orders, loading }) {
                   <input type="checkbox" className="accent-secondary" />
                 </td>
                 <td className="py-3.5">
-                  <Link to={`/admin/orders/${o.id}`} className="font-medium text-primary hover:text-secondary transition">#{o.id}</Link>
+                  <Link to={`/dashboard/orders/${o.id}`} className="font-medium text-primary hover:text-secondary transition">#{o.id}</Link>
                   <p className="text-xs text-primary/40">{o.items_count} عناصر</p>
                 </td>
                 <td className="py-3.5">
@@ -104,7 +104,7 @@ export default function OrdersTable({ orders, loading }) {
                 <td className="py-3.5">
                   <div className="flex items-center gap-1">
                     <Link
-                      to={`/admin/orders/${o.id}`}
+                      to={`/dashboard/orders/${o.id}`}
                       aria-label="عرض التفاصيل"
                       className="w-8 h-8 rounded-lg flex items-center justify-center text-primary/50 hover:bg-surface hover:text-primary transition"
                     >

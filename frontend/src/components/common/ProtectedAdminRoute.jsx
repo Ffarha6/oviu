@@ -2,7 +2,7 @@ import { Navigate, useLocation } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 
 // ✅ نفس فكرة ProtectedRoute بالظبط، بس بيتأكد كمان إن اليوزر أدمن
-// (is_staff أو is_superuser) قبل ما يسمحله يدخل أي صفحة تحت /admin
+// (is_staff أو is_superuser) قبل ما يسمحله يدخل أي صفحة تحت /dashboard
 function ProtectedAdminRoute({ children }) {
   const { isLoggedIn, isAdmin, authLoading } = useAuth()
   const location = useLocation()
@@ -20,7 +20,7 @@ function ProtectedAdminRoute({ children }) {
   }
 
   if (!isAdmin) {
-    // ✅ يوزر عادي حاول يدخل /admin مباشرة عن طريق اللينك -> يترد للهوم
+    // ✅ يوزر عادي حاول يدخل /dashboard مباشرة عن طريق اللينك -> يترد للهوم
     return <Navigate to="/" replace />
   }
 

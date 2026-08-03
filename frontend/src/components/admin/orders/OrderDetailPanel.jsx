@@ -86,7 +86,7 @@ export default function OrderDetailPanel({ order, onClose, onStatusChanged, onOr
   const updateOrderField = async (field, value) => {
     setSavingField(field);
     try {
-      const res = await api.patch(`/admin/orders/${order.id}/`, { [field]: value });
+      const res = await api.patch(`/dashboard/orders/${order.id}/`, { [field]: value });
       onOrderUpdated(order.id, res.data);
     } catch (err) {
       console.error(`فشل تحديث ${field}:`, err);

@@ -23,7 +23,7 @@ export default function CannedResponsesPanel({ onClose, onPick }) {
     setSaving(true);
     try {
       if (editing.id) {
-        await api.patch(`/admin/chatbot/canned-responses/${editing.id}/`, { title: editing.title, text: editing.text });
+        await api.patch(`/dashboard/chatbot/canned-responses/${editing.id}/`, { title: editing.title, text: editing.text });
       } else {
         await api.post("/dashboard/chatbot/canned-responses/", { title: editing.title, text: editing.text });
       }
@@ -39,7 +39,7 @@ export default function CannedResponsesPanel({ onClose, onPick }) {
   const handleDelete = async (id) => {
     if (!confirm("هل أنتِ متأكدة من حذف هذا الرد؟")) return;
     try {
-      await api.delete(`/admin/chatbot/canned-responses/${id}/`);
+      await api.delete(`/dashboard/chatbot/canned-responses/${id}/`);
       fetchItems();
     } catch (err) {
       alert("حصل خطأ أثناء الحذف");

@@ -12,10 +12,10 @@ import {
 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/admin/shared/SectionCard";
-import CustomersToolbar from "../../components/admin/customers/CustomersToolbar";
-import CustomersTable from "../../components/admin/customers/CustomersTable";
-import CustomerDetailPanel from "../../components/admin/customers/CustomerDetailPanel";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
+import CustomersToolbar from "../../components/dashboard/customers/CustomersToolbar";
+import CustomersTable from "../../components/dashboard/customers/CustomersTable";
+import CustomerDetailPanel from "../../components/dashboard/customers/CustomerDetailPanel";
 
 export default function Customers() {
   const [search, setSearch] = useState("");
@@ -75,7 +75,7 @@ export default function Customers() {
   const handleToggleStatus = async (userId) => {
     setActionLoading("status");
     try {
-      const res = await api.patch(`/admin/users/${userId}/toggle-status/`);
+      const res = await api.patch(`/dashboard/users/${userId}/toggle-status/`);
       setCustomers((prev) =>
         prev.map((c) => (c.id === userId ? { ...c, is_active: res.data.is_active } : c))
       );
@@ -90,7 +90,7 @@ export default function Customers() {
   const handleToggleStaff = async (userId) => {
     setActionLoading("staff");
     try {
-      const res = await api.patch(`/admin/users/${userId}/toggle-staff/`);
+      const res = await api.patch(`/dashboard/users/${userId}/toggle-staff/`);
       setCustomers((prev) =>
         prev.map((c) => (c.id === userId ? { ...c, is_staff: res.data.is_staff } : c))
       );

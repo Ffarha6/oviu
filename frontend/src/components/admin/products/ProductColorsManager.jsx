@@ -78,7 +78,7 @@ export default function ProductColorsManager({ productId, colors, onColorsChange
     if (!newColorName.trim()) return;
     setAddingColor(true);
     try {
-      const res = await api.post(`/admin/products/${productId}/colors/`, {
+      const res = await api.post(`/dashboard/products/${productId}/colors/`, {
         name: newColorName.trim(),
         code: newColorCode,
       });
@@ -95,7 +95,7 @@ export default function ProductColorsManager({ productId, colors, onColorsChange
   const handleDeleteColor = async (colorId) => {
     if (!confirm("هل تريدين حذف هذا اللون وكل صوره؟")) return;
     try {
-      await api.delete(`/admin/products/colors/${colorId}/`);
+      await api.delete(`/dashboard/products/colors/${colorId}/`);
       onColorsChange(colors.filter((c) => c.id !== colorId));
     } catch (err) {
       console.error("فشل حذف اللون:", err);
@@ -107,7 +107,7 @@ export default function ProductColorsManager({ productId, colors, onColorsChange
     formData.append("image", file);
     formData.append("is_primary", (colors.find((c) => c.id === colorId)?.images || []).length === 0);
     try {
-      const res = await api.post(`/admin/products/colors/${colorId}/images/`, formData);
+      const res = await api.post(`/dashboard/products/colors/${colorId}/images/`, formData);
       onColorsChange(
         colors.map((c) => (c.id === colorId ? { ...c, images: [...(c.images || []), res.data] } : c))
       );
@@ -118,7 +118,7 @@ export default function ProductColorsManager({ productId, colors, onColorsChange
 
   const handleDeleteImage = async (colorId, imageId) => {
     try {
-      await api.delete(`/admin/products/images/${imageId}/`);
+      await api.delete(`/dashboard/products/images/${imageId}/`);
       onColorsChange(
         colors.map((c) =>
           c.id === colorId ? { ...c, images: c.images.filter((img) => img.id !== imageId) } : c
@@ -131,7 +131,7 @@ export default function ProductColorsManager({ productId, colors, onColorsChange
 
   const handleSetPrimary = async (colorId, imageId) => {
     try {
-      await api.patch(`/admin/products/images/${imageId}/`, { is_primary: true });
+      await api.patch(`/dashboard/products/images/${imageId}/`, { is_primary: true });
       onColorsChange(
         colors.map((c) =>
           c.id === colorId

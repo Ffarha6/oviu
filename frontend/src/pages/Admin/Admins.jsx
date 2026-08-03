@@ -4,12 +4,12 @@ import { Plus, Users, ShieldCheck, UserPlus, Ban, ChevronLeft, ShieldAlert } fro
 
 import api from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
-import SectionCard from "../../components/admin/shared/SectionCard";
-import AdminsToolbar from "../../components/admin/admins/Adminstoolbar";
-import AdminsTable from "../../components/admin/admins/Adminstable";
-import AdminDetailPanel from "../../components/admin/admins/AdminDetailPanel";
-import RolesPermissionsPanel from "../../components/admin/admins/Rolespermissionspanel";
-import AdminActivityPanel from "../../components/admin/admins/Adminactivitypanel";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
+import AdminsToolbar from "../../components/dashboard/dashboards/dashboardstoolbar";
+import AdminsTable from "../../components/dashboard/dashboards/dashboardstable";
+import AdminDetailPanel from "../../components/dashboard/dashboards/dashboardDetailPanel";
+import RolesPermissionsPanel from "../../components/dashboard/dashboards/Rolespermissionspanel";
+import AdminActivityPanel from "../../components/dashboard/dashboards/dashboardactivitypanel";
 
 export default function Admins() {
   const { user } = useAuth();
@@ -35,18 +35,18 @@ export default function Admins() {
   const [detailLoading, setDetailLoading] = useState(false);
 
   const loadStats = () => {
-    api.get("/dashboard/admins/stats/").then((res) => setStats(res.data)).catch(() => {});
+    api.get("/dashboard/dashboards/stats/").then((res) => setStats(res.data)).catch(() => {});
   };
 
   useEffect(() => {
     loadStats();
     setStatsLoading(false);
-    api.get("/dashboard/admins/permission-modules/").then((res) => setPermissionModules(res.data)).catch(() => {});
+    api.get("/dashboard/dashboards/permission-modules/").then((res) => setPermissionModules(res.data)).catch(() => {});
   }, []);
 
   const fetchAdmins = useCallback(() => {
     setAdminsLoading(true);
-    api.get("/dashboard/admins/", {
+    api.get("/dashboard/dashboards/", {
       params: { search: search || undefined, role: role || undefined, status: status || undefined, page },
     })
       .then((res) => {
@@ -63,7 +63,7 @@ export default function Admins() {
   useEffect(() => {
     if (!selectedId) { setSelectedAdmin(null); return; }
     setDetailLoading(true);
-    api.get(`/admin/admins/${selectedId}/`)
+    api.get(`/dashboard/dashboards/${selectedId}/`)
       .then((res) => setSelectedAdmin(res.data))
       .catch((err) => console.error("فشل تحميل تفاصيل المشرف:", err))
       .finally(() => setDetailLoading(false));
@@ -71,7 +71,7 @@ export default function Admins() {
 
   const handleToggleStatus = async (userId) => {
     try {
-      const res = await api.patch(`/admin/users/${userId}/toggle-status/`);
+      const res = await api.patch(`/dashboard/users/${userId}/toggle-status/`);
       setAdmins((prev) => prev.map((a) => (a.id === userId ? { ...a, is_active: res.data.is_active } : a)));
       setSelectedAdmin((prev) => (prev && prev.id === userId ? { ...prev, is_active: res.data.is_active } : prev));
       loadStats();
@@ -89,7 +89,7 @@ export default function Admins() {
   const handleDemote = async (userId) => {
     if (!confirm("هل أنتِ متأكدة من إلغاء صلاحيات هذا المشرف نهائيًا؟")) return;
     try {
-      await api.delete(`/admin/admins/${userId}/demote/`);
+      await api.delete(`/dashboard/dashboards/${userId}/demote/`);
       setAdmins((prev) => prev.filter((a) => a.id !== userId));
       setSelectedId(null);
       loadStats();
@@ -111,7 +111,7 @@ export default function Admins() {
         </div>
 
         {canManage && (
-          <Link to="/dashboard/admins/add" className="flex items-center gap-2 bg-secondary text-primary text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition">
+          <Link to="/dashboard/dashboards/add" className="flex items-center gap-2 bg-secondary text-primary text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition">
             <Plus size={16} /> إضافة مشرف جديد
           </Link>
         )}

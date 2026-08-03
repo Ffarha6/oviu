@@ -13,16 +13,16 @@ import {
   ChevronLeft,
 } from "lucide-react";
 
-import SectionCard from "../../components/admin/shared/SectionCard";
-import AnalyticsTabs from "../../components/admin/analytics/Analyticstabs";
-import RevenueOverviewChart from "../../components/admin/analytics/Revenueoverviewchart";
-import SalesByChannelDonut from "../../components/admin/analytics/Salesbychanneldonut";
-import VisitorsOverviewPanel from "../../components/admin/analytics/Visitorsoverviewpanel";
-import TrafficSourcesTable from "../../components/admin/analytics/Trafficsourcestable";
-import TopSellingProductsTable from "../../components/admin/analytics/Topsellingproductstable";
-import RecentOrdersMiniTable from "../../components/admin/analytics/Recentordersminitable";
-import DeviceBreakdownPanel from "../../components/admin/analytics/Devicebreakdownpanel";
-import CustomerDemographicsPanel from "../../components/admin/analytics/Customerdemographicspanel";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
+import AnalyticsTabs from "../../components/dashboard/analytics/Analyticstabs";
+import RevenueOverviewChart from "../../components/dashboard/analytics/Revenueoverviewchart";
+import SalesByChannelDonut from "../../components/dashboard/analytics/Salesbychanneldonut";
+import VisitorsOverviewPanel from "../../components/dashboard/analytics/Visitorsoverviewpanel";
+import TrafficSourcesTable from "../../components/dashboard/analytics/Trafficsourcestable";
+import TopSellingProductsTable from "../../components/dashboard/analytics/Topsellingproductstable";
+import RecentOrdersMiniTable from "../../components/dashboard/analytics/Recentordersminitable";
+import DeviceBreakdownPanel from "../../components/dashboard/analytics/Devicebreakdownpanel";
+import CustomerDemographicsPanel from "../../components/dashboard/analytics/Customerdemographicspanel";
 
 export default function Analytics() {
   const [activeTab, setActiveTab] = useState("نظرة عامة");

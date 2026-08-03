@@ -121,8 +121,8 @@ export default function ProductsTable({ products, loading, onToggleStatus }) {
                 </td>
                 <td className="py-3.5">
                   <div className="flex items-center gap-1">
-                    <IconLink to={`/admin/products/${p.id}/edit`} icon={Eye} label="عرض" />
-                    <IconLink to={`/admin/products/${p.id}/edit`} icon={Pencil} label="تعديل" />
+                    <IconLink to={`/dashboard/products/${p.id}/edit`} icon={Eye} label="عرض" />
+                    <IconLink to={`/dashboard/products/${p.id}/edit`} icon={Pencil} label="تعديل" />
                     <IconBtn icon={MoreVertical} label="المزيد" />
                   </div>
                 </td>

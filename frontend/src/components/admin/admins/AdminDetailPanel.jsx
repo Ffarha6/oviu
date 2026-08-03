@@ -45,7 +45,7 @@ export default function AdminDetailPanel({ admin, loading, canManage, currentUse
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await api.patch(`/admin/admins/${admin.id}/permissions/`, { admin_role: role, admin_permissions: permissions });
+      const res = await api.patch(`/dashboard/dashboards/${admin.id}/permissions/`, { admin_role: role, admin_permissions: permissions });
       onPermissionsUpdated(res.data);
     } catch (err) {
       alert(err.response?.data?.error || "حصل خطأ أثناء الحفظ");

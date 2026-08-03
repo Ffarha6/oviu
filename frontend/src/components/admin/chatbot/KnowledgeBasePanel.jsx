@@ -23,7 +23,7 @@ export default function KnowledgeBasePanel({ onClose }) {
     setSaving(true);
     try {
       if (editing.id) {
-        await api.patch(`/admin/chatbot/faqs/${editing.id}/`, { question: editing.question, answer: editing.answer });
+        await api.patch(`/dashboard/chatbot/faqs/${editing.id}/`, { question: editing.question, answer: editing.answer });
       } else {
         await api.post("/dashboard/chatbot/faqs/", { question: editing.question, answer: editing.answer });
       }
@@ -38,7 +38,7 @@ export default function KnowledgeBasePanel({ onClose }) {
 
   const handleToggleActive = async (faq) => {
     try {
-      await api.patch(`/admin/chatbot/faqs/${faq.id}/`, { is_active: !faq.is_active });
+      await api.patch(`/dashboard/chatbot/faqs/${faq.id}/`, { is_active: !faq.is_active });
       fetchFaqs();
     } catch (err) {
       alert("حصل خطأ");
@@ -48,7 +48,7 @@ export default function KnowledgeBasePanel({ onClose }) {
   const handleDelete = async (id) => {
     if (!confirm("هل أنتِ متأكدة من حذف هذا السؤال؟")) return;
     try {
-      await api.delete(`/admin/chatbot/faqs/${id}/`);
+      await api.delete(`/dashboard/chatbot/faqs/${id}/`);
       fetchFaqs();
     } catch (err) {
       alert("حصل خطأ أثناء الحذف");

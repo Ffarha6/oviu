@@ -13,10 +13,10 @@ import {
 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/admin/shared/SectionCard";
-import CouponsToolbar from "../../components/admin/coupons/Couponstoolbar";
-import CouponsTable from "../../components/admin/coupons/Couponstable";
-import CouponDetailPanel from "../../components/admin/coupons/Coupondetailpanel";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
+import CouponsToolbar from "../../components/dashboard/coupons/Couponstoolbar";
+import CouponsTable from "../../components/dashboard/coupons/Couponstable";
+import CouponDetailPanel from "../../components/dashboard/coupons/Coupondetailpanel";
 
 export default function Coupons() {
   const [search, setSearch] = useState("");
@@ -80,7 +80,7 @@ export default function Coupons() {
       return;
     }
     setDetailLoading(true);
-    api.get(`/admin/coupons/${selectedId}/`)
+    api.get(`/dashboard/coupons/${selectedId}/`)
       .then((res) => setSelectedCoupon(res.data))
       .catch((err) => console.error("فشل تحميل تفاصيل الكوبون:", err))
       .finally(() => setDetailLoading(false));
@@ -95,7 +95,7 @@ export default function Coupons() {
   const handleToggleStatus = async (couponId) => {
     setActionLoading("toggle");
     try {
-      const res = await api.patch(`/admin/coupons/${couponId}/toggle-status/`);
+      const res = await api.patch(`/dashboard/coupons/${couponId}/toggle-status/`);
       setCoupons((prev) => prev.map((c) => (c.id === couponId ? { ...c, is_active: res.data.is_active } : c)));
       setSelectedCoupon((prev) => (prev && prev.id === couponId ? { ...prev, is_active: res.data.is_active } : prev));
       loadStats();
@@ -110,7 +110,7 @@ export default function Coupons() {
     if (!confirm("هل أنتِ متأكدة من حذف هذا الكوبون نهائيًا؟")) return;
     setActionLoading("delete");
     try {
-      await api.delete(`/admin/coupons/${couponId}/`);
+      await api.delete(`/dashboard/coupons/${couponId}/`);
       setCoupons((prev) => prev.filter((c) => c.id !== couponId));
       setSelectedId(null);
       loadStats();

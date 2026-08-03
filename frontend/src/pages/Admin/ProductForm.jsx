@@ -3,9 +3,9 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { ChevronLeft, Save, Loader2 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/admin/shared/SectionCard";
-import ProductBasicInfoForm from "../../components/admin/products/ProductBasicInfoForm";
-import ProductColorsManager from "../../components/admin/products/ProductColorsManager";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
+import ProductBasicInfoForm from "../../components/dashboard/products/ProductBasicInfoForm";
+import ProductColorsManager from "../../components/dashboard/products/ProductColorsManager";
 
 const emptyProduct = {
   name: "",
@@ -40,7 +40,7 @@ export default function ProductForm() {
 
   useEffect(() => {
     if (!isEditMode) return;
-    api.get(`/admin/products/${id}/`)
+    api.get(`/dashboard/products/${id}/`)
       .then((res) => {
         const data = res.data;
         setForm({
@@ -84,12 +84,12 @@ export default function ProductForm() {
 
     try {
       if (isEditMode) {
-        await api.patch(`/admin/products/${id}/`, payload);
+        await api.patch(`/dashboard/products/${id}/`, payload);
         navigate("/dashboard/products");
       } else {
         const res = await api.post("/dashboard/products/", payload);
         // بعد الإنشاء، حوّليها لوضع التعديل لنفس المنتج عشان تضيف الألوان والصور
-        navigate(`/admin/products/${res.data.id}/edit`, { replace: true });
+        navigate(`/dashboard/products/${res.data.id}/edit`, { replace: true });
       }
     } catch (err) {
       console.error("فشل حفظ المنتج:", err);

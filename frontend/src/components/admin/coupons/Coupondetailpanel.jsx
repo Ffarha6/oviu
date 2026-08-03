@@ -93,7 +93,7 @@ export default function CouponDetailPanel({ coupon, loading, onClose, onToggleSt
       {/* Actions */}
       <div className="flex flex-col gap-2 pt-1">
         <Link
-          to={`/admin/coupons/${coupon.id}/edit`}
+          to={`/dashboard/coupons/${coupon.id}/edit`}
           className="flex items-center justify-center gap-2 bg-primary text-background text-sm font-semibold py-2.5 rounded-xl hover:opacity-90 transition"
         >
           <Pencil size={15} /> تعديل الكوبون

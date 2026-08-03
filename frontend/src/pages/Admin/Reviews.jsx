@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/admin/shared/SectionCard";
-import ReviewsToolbar from "../../components/admin/reviews/Reviewstoolbar";
-import ReviewsTable from "../../components/admin/reviews/Reviewstable";
-import ReviewDetailPanel from "../../components/admin/reviews/Reviewdetailpanel";
+import SectionCard from "../../components/dashboard/shared/SectionCard";
+import ReviewsToolbar from "../../components/dashboard/reviews/Reviewstoolbar";
+import ReviewsTable from "../../components/dashboard/reviews/Reviewstable";
+import ReviewDetailPanel from "../../components/dashboard/reviews/Reviewdetailpanel";
 
 export default function Reviews() {
   const [search, setSearch] = useState("");
@@ -73,7 +73,7 @@ export default function Reviews() {
 
   const loadDetail = (id) => {
     setDetailLoading(true);
-    api.get(`/admin/reviews/${id}/`)
+    api.get(`/dashboard/reviews/${id}/`)
       .then((res) => setSelectedReview(res.data))
       .catch((err) => console.error("فشل تحميل تفاصيل التقييم:", err))
       .finally(() => setDetailLoading(false));
@@ -101,7 +101,7 @@ export default function Reviews() {
   const handleApprove = async (reviewId) => {
     setActionLoading("approve");
     try {
-      const res = await api.patch(`/admin/reviews/${reviewId}/approve/`);
+      const res = await api.patch(`/dashboard/reviews/${reviewId}/approve/`);
       updateLocalReview(reviewId, res.data);
       loadStats();
     } catch (err) {
@@ -114,7 +114,7 @@ export default function Reviews() {
   const handleReject = async (reviewId) => {
     setActionLoading("reject");
     try {
-      const res = await api.patch(`/admin/reviews/${reviewId}/reject/`);
+      const res = await api.patch(`/dashboard/reviews/${reviewId}/reject/`);
       updateLocalReview(reviewId, res.data);
       loadStats();
     } catch (err) {
@@ -127,7 +127,7 @@ export default function Reviews() {
   const handleResetStatus = async (reviewId) => {
     setActionLoading("reset");
     try {
-      const res = await api.patch(`/admin/reviews/${reviewId}/reset-status/`);
+      const res = await api.patch(`/dashboard/reviews/${reviewId}/reset-status/`);
       updateLocalReview(reviewId, res.data);
       loadStats();
     } catch (err) {
@@ -140,7 +140,7 @@ export default function Reviews() {
   const handleReply = async (reviewId, replyText) => {
     setActionLoading("reply");
     try {
-      const res = await api.patch(`/admin/reviews/${reviewId}/reply/`, { admin_reply: replyText });
+      const res = await api.patch(`/dashboard/reviews/${reviewId}/reply/`, { admin_reply: replyText });
       updateLocalReview(reviewId, res.data);
     } catch (err) {
       alert("حصل خطأ أثناء حفظ الرد");
@@ -153,7 +153,7 @@ export default function Reviews() {
     if (!confirm("هل أنتِ متأكدة من حذف هذا التقييم نهائيًا؟")) return;
     setActionLoading("delete");
     try {
-      await api.delete(`/admin/reviews/${reviewId}/`);
+      await api.delete(`/dashboard/reviews/${reviewId}/`);
       setReviews((prev) => prev.filter((r) => r.id !== reviewId));
       setSelectedId(null);
       loadStats();
