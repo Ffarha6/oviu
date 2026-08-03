@@ -71,8 +71,21 @@ function Login() {
         password: form.password,
       })
       const data = res.data
-      login({ id: data.user_id, username: data.username, email: data.email }, data.token)
-      navigate(from, { replace: true })
+
+const profile = await login(
+  {
+    id: data.user_id,
+    username: data.username,
+    email: data.email,
+  },
+  data.token
+)
+
+if (profile?.is_staff || profile?.is_superuser) {
+  navigate("/dashboard", { replace: true })
+} else {
+  navigate(from, { replace: true })
+}
     } catch (err) {
       setError(
         err.response?.data?.error ||

@@ -32,16 +32,20 @@ function OAuthCallback() {
       return
     }
 
-    if (token && user_id) {
-      login(
-        { id: Number(user_id), username, email },
-        token
-      )
-      navigate("/", { replace: true })
+   if (token && user_id) {
+  ;(async () => {
+    const profile = await login(
+      { id: Number(user_id), username, email },
+      token
+    )
+
+    if (profile?.is_staff || profile?.is_superuser) {
+      navigate("/dashboard", { replace: true })
     } else {
-      // مفيش بيانات — روح login
-      navigate("/login", { replace: true })
+      navigate("/", { replace: true })
     }
+  })()
+}
   }, [])
 
   return (
