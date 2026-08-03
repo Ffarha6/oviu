@@ -148,14 +148,15 @@ export default function FloatingChatbot() {
 
   return (
     <>
-      {/* FAB Button */}
+      {/* FAB Button — ✅ position بقت جوه class اسمه oviu-chat-fab بدل inline
+          style ثابتة، عشان نقدر نستخدم media query تحت وترفعه فوق الـ
+          BottomNav على الموبايل بس، وتسيبه في مكانه الأصلي على الديسكتوب */}
       <button
         onClick={toggleChat}
         aria-label="فتح المحادثة"
+        className="oviu-chat-fab"
         style={{
           position: "fixed",
-          bottom: 30,
-          left: 30,
           width: 60,
           height: 60,
           borderRadius: "50%",
@@ -167,7 +168,7 @@ export default function FloatingChatbot() {
           justifyContent: "center",
           boxShadow: "0 4px 20px rgba(249,115,22,0.45)",
           zIndex: 9999,
-          transition: "transform 0.2s",
+          transition: "transform 0.2s, bottom 0.2s",
         }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
         onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
@@ -198,14 +199,14 @@ export default function FloatingChatbot() {
         )}
       </button>
 
-      {/* Chat Window */}
+      {/* Chat Window — ✅ نفس فكرة الـ class عشان الشات كمان يرتفع شوية على
+          الموبايل ومايبقاش لاصق تحت البار السفلي مباشرة */}
       <div
+        className="oviu-chat-window"
         style={{
           position: "fixed",
-          bottom: 0,
           left: 0,
           width: "min(480px, 100vw)",
-          height: "calc(100vh - 80px)",
           background: "#fff",
           borderRadius: "0 22px 0 0",
           border: "0.5px solid #e5e7eb",
@@ -330,6 +331,31 @@ export default function FloatingChatbot() {
         @keyframes typingBounce {
           0%, 60%, 100% { transform: translateY(0); background: #d1d5db; }
           30% { transform: translateY(-5px); background: #f97316; }
+        }
+
+        /* ✅ الديسكتوب: زرار الشات في مكانه الأصلي تحت وعلى الشمال */
+        .oviu-chat-fab {
+          bottom: 30px;
+          left: 30px;
+        }
+        .oviu-chat-window {
+          bottom: 0;
+          height: calc(100vh - 80px);
+        }
+
+        /* ✅ الموبايل: بنرفع زرار الشات ونافذته فوق الـ BottomNav الثابت تحت
+           (ارتفاعه تقريبًا 56-64px + مساحة الأمان)، بدل ما يتراكبوا فوقه */
+        @media (max-width: 1023px) {
+          .oviu-chat-fab {
+            bottom: calc(72px + env(safe-area-inset-bottom));
+            left: 16px;
+            width: 52px;
+            height: 52px;
+          }
+          .oviu-chat-window {
+            bottom: calc(72px + env(safe-area-inset-bottom));
+            height: calc(100vh - 152px);
+          }
         }
       `}</style>
     </>
