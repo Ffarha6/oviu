@@ -66,7 +66,21 @@ function ChatbotGate() {
   return <FloatingChatbot />
 }
 
-function App() {
+function App() {function ChatbotGate() {
+  const { pathname } = useLocation()
+
+  const isAuthPage = AUTH_ROUTES_PREFIXES.some(prefix =>
+    pathname.startsWith(prefix)
+  )
+
+  const isAdminPage = pathname.startsWith("/dashboard")
+
+  if (isAuthPage || isAdminPage) {
+    return null
+  }
+
+  return <FloatingChatbot />
+}
   return (
     <CartProvider>
       <BrowserRouter>
