@@ -116,7 +116,7 @@ function App() {
           <Route path="/order-confirmation/:orderId" element={<OrderConfirmationPage />} />
 
           {/* ✅ أدمن بانل — محمية بـ ProtectedAdminRoute (is_staff / is_superuser بس) */}
-          <Route path="/admin" element={
+          <Route path="/dashboard" element={
             <ProtectedAdminRoute><AdminLayout /></ProtectedAdminRoute>
           }>
             <Route index element={<Dashboard />} />

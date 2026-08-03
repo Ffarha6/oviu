@@ -6,7 +6,7 @@ import Topbar from "./Topbar";
 
 // ✅ الـ Layout الرئيسي لكل صفحات الأدمن
 // استخدميه كـ parent route في الراوتر بتاعك:
-// <Route path="/admin" element={<AdminLayout />}>
+// <Route path="/dashboard" element={<AdminLayout />}>
 //   <Route index element={<Dashboard />} />
 //   <Route path="products" element={<Products />} />
 //   ...

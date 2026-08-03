@@ -29,7 +29,7 @@ export default function Offers() {
         <div>
           <h1 className="text-2xl font-bold text-primary">العروض</h1>
           <div className="flex items-center gap-1.5 text-xs text-primary/40 mt-1.5">
-            <Link to="/admin" className="hover:text-secondary">لوحة التحكم</Link>
+            <Link to="/dashboard" className="hover:text-secondary">لوحة التحكم</Link>
             <ChevronLeft size={12} />
             <span className="text-primary/60">العروض</span>
           </div>

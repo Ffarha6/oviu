@@ -40,7 +40,7 @@ export default function Sidebar() {
   }, []);
 
   const navItems = [
-    { label: "لوحة التحكم", to: "/admin", icon: LayoutDashboard, end: true },
+    { label: "لوحة التحكم", to: "/dashboard", icon: LayoutDashboard, end: true },
     { label: "المنتجات", to: "/admin/products", icon: Package, end: true },
     { label: "الطلبات", to: "/admin/orders", icon: ShoppingBag, badge: pendingOrdersCount },
     { label: "العملاء", to: "/admin/customers", icon: Users },

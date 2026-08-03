@@ -171,7 +171,7 @@ export default function Reviews() {
         <div>
           <h1 className="text-2xl font-bold text-primary">التقييمات</h1>
           <div className="flex items-center gap-1.5 text-xs text-primary/40 mt-1.5">
-            <Link to="/admin" className="hover:text-secondary">لوحة التحكم</Link>
+            <Link to="/dashboard" className="hover:text-secondary">لوحة التحكم</Link>
             <ChevronLeft size={12} />
             <span>التقييمات</span>
             <ChevronLeft size={12} />

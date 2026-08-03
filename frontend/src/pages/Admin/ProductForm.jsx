@@ -111,7 +111,7 @@ export default function ProductForm() {
             {isEditMode ? "تعديل المنتج" : "إضافة منتج جديد"}
           </h1>
           <div className="flex items-center gap-1.5 text-xs text-primary/40 mt-1.5">
-            <Link to="/admin" className="hover:text-secondary">لوحة التحكم</Link>
+            <Link to="/dashboard" className="hover:text-secondary">لوحة التحكم</Link>
             <ChevronLeft size={12} />
             <Link to="/admin/products" className="hover:text-secondary">المنتجات</Link>
             <ChevronLeft size={12} />
