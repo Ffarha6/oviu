@@ -21,11 +21,11 @@ import {
   Repeat,
 } from "lucide-react";
 
-import StatCard from "../../components/dashboard/shared/StatCard";
-import MiniStatCard from "../../components/dashboard/shared/MiniStatCard";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import RevenueChart from "../../components/dashboard/charts/RevenueChart";
-import DonutChart from "../../components/dashboard/charts/DonutChart";
+import StatCard from "../../components/admin/shared/StatCard";
+import MiniStatCard from "../../components/admin/shared/MiniStatCard";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import RevenueChart from "../../components/admin/charts/RevenueChart";
+import DonutChart from "../../components/admin/charts/DonutChart";
 
 // بيانات تجريبية — استبدليها بالـ API بتاعتك (services/viona/...)
 const recentOrders = [

@@ -12,12 +12,12 @@ import {
   ChevronLeft,
 } from "lucide-react";
 
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import OffersToolbar from "../../components/dashboard/offers/Offerstoolbar";
-import OffersTable, { offers } from "../../components/dashboard/offers/Offerstable";
-import OffersOverviewDonut from "../../components/dashboard/offers/Offersoverviewdonut";
-import DiscountPerformanceChart from "../../components/dashboard/offers/Discountperformancechart";
-import TopPerformingOffersTable from "../../components/dashboard/offers/Topperformingofferstable";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import OffersToolbar from "../../components/admin/offers/Offerstoolbar";
+import OffersTable, { offers } from "../../components/admin/offers/Offerstable";
+import OffersOverviewDonut from "../../components/admin/offers/Offersoverviewdonut";
+import DiscountPerformanceChart from "../../components/admin/offers/Discountperformancechart";
+import TopPerformingOffersTable from "../../components/admin/offers/Topperformingofferstable";
 
 export default function Offers() {
   const [selectedCode, setSelectedCode] = useState(offers[0].code);

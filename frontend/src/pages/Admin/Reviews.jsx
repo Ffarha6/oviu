@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import ReviewsToolbar from "../../components/dashboard/reviews/Reviewstoolbar";
-import ReviewsTable from "../../components/dashboard/reviews/Reviewstable";
-import ReviewDetailPanel from "../../components/dashboard/reviews/Reviewdetailpanel";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import ReviewsToolbar from "../../components/admin/reviews/Reviewstoolbar";
+import ReviewsTable from "../../components/admin/reviews/Reviewstable";
+import ReviewDetailPanel from "../../components/admin/reviews/Reviewdetailpanel";
 
 export default function Reviews() {
   const [search, setSearch] = useState("");

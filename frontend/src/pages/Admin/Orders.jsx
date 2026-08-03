@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import OrdersToolbar from "../../components/dashboard/orders/OrdersToolbar";
-import OrdersTable from "../../components/dashboard/orders/OrdersTable";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import OrdersToolbar from "../../components/admin/orders/OrdersToolbar";
+import OrdersTable from "../../components/admin/orders/OrdersTable";
 
 const statusToBackend = {
   "كل الحالات": "",

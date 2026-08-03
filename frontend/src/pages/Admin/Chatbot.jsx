@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import api from "../../api/axios";
 
-import ConversationsList from "../../components/dashboard/chatbot/Conversationslist";
-import ChatWindow from "../../components/dashboard/chatbot/Chatwindow";
-import ChatbotOverviewPanel from "../../components/dashboard/chatbot/Chatbotoverviewpanel";
+import ConversationsList from "../../components/admin/chatbot/Conversationslist";
+import ChatWindow from "../../components/admin/chatbot/Chatwindow";
+import ChatbotOverviewPanel from "../../components/admin/chatbot/Chatbotoverviewpanel";
 
 export default function Chatbot() {
   const [activeId, setActiveId] = useState(null);

@@ -13,10 +13,10 @@ import {
 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import CouponsToolbar from "../../components/dashboard/coupons/Couponstoolbar";
-import CouponsTable from "../../components/dashboard/coupons/Couponstable";
-import CouponDetailPanel from "../../components/dashboard/coupons/Coupondetailpanel";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import CouponsToolbar from "../../components/admin/coupons/Couponstoolbar";
+import CouponsTable from "../../components/admin/coupons/Couponstable";
+import CouponDetailPanel from "../../components/admin/coupons/Coupondetailpanel";
 
 export default function Coupons() {
   const [search, setSearch] = useState("");

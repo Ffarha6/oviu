@@ -12,10 +12,10 @@ import {
 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import CustomersToolbar from "../../components/dashboard/customers/CustomersToolbar";
-import CustomersTable from "../../components/dashboard/customers/CustomersTable";
-import CustomerDetailPanel from "../../components/dashboard/customers/CustomerDetailPanel";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import CustomersToolbar from "../../components/admin/customers/CustomersToolbar";
+import CustomersTable from "../../components/admin/customers/CustomersTable";
+import CustomerDetailPanel from "../../components/admin/customers/CustomerDetailPanel";
 
 export default function Customers() {
   const [search, setSearch] = useState("");

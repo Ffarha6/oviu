@@ -16,7 +16,7 @@ import {
   ClipboardCheck,
 } from "lucide-react";
 import api from "../../api/axios";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
+import SectionCard from "../../components/admin/shared/SectionCard";
 
 const steps = [
   { key: "pending", label: "قيد الانتظار", icon: Hourglass },

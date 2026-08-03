@@ -15,13 +15,13 @@ import {
   ChevronLeft,
 } from "lucide-react";
 
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import DonutChart from "../../components/dashboard/charts/DonutChart";
-import TryOnSessionsChart from "../../components/dashboard/tryon/Tryonsessionschart";
-import TopTriedGlasses from "../../components/dashboard/tryon/Toptriedglasses";
-import TryOnToolbar from "../../components/dashboard/tryon/Tryontoolbar";
-import TryOnTable, { sessions } from "../../components/dashboard/tryon/Tryontable";
-import SessionDetailPanel from "../../components/dashboard/tryon/Sessiondetailpanel";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import DonutChart from "../../components/admin/charts/DonutChart";
+import TryOnSessionsChart from "../../components/admin/tryon/Tryonsessionschart";
+import TopTriedGlasses from "../../components/admin/tryon/Toptriedglasses";
+import TryOnToolbar from "../../components/admin/tryon/Tryontoolbar";
+import TryOnTable, { sessions } from "../../components/admin/tryon/Tryontable";
+import SessionDetailPanel from "../../components/admin/tryon/Sessiondetailpanel";
 
 export default function AiTryOn() {
   const [selectedId, setSelectedId] = useState(sessions[0].id);

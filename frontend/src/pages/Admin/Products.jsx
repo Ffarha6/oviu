@@ -15,11 +15,11 @@ import {
 } from "lucide-react";
 
 import api from "../../api/axios";
-import MiniStatCard from "../../components/dashboard/shared/MiniStatCard";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import ProductsToolbar from "../../components/dashboard/products/ProductsToolbar";
-import ProductsTable from "../../components/dashboard/products/ProductsTable";
-import ProductFiltersSidebar from "../../components/dashboard/products/ProductFiltersSidebar";
+import MiniStatCard from "../../components/admin/shared/MiniStatCard";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import ProductsToolbar from "../../components/admin/products/ProductsToolbar";
+import ProductsTable from "../../components/admin/products/ProductsTable";
+import ProductFiltersSidebar from "../../components/admin/products/ProductFiltersSidebar";
 
 export default function Products() {
   const [view, setView] = useState("list");

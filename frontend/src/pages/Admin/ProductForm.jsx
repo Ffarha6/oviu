@@ -3,9 +3,9 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { ChevronLeft, Save, Loader2 } from "lucide-react";
 
 import api from "../../api/axios";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import ProductBasicInfoForm from "../../components/dashboard/products/ProductBasicInfoForm";
-import ProductColorsManager from "../../components/dashboard/products/ProductColorsManager";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import ProductBasicInfoForm from "../../components/admin/products/ProductBasicInfoForm";
+import ProductColorsManager from "../../components/admin/products/ProductColorsManager";
 
 const emptyProduct = {
   name: "",

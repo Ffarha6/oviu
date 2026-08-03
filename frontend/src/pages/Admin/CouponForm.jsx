@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ChevronLeft, Save, Loader2 } from "lucide-react";
 import api from "../../api/axios";
-import SectionCard from "../../components/dashboard/shared/SectionCard";
+import SectionCard from "../../components/admin/shared/SectionCard";
 
 const GOVERNORATES = [
   "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "البحر الأحمر", "البحيرة",

@@ -14,10 +14,10 @@ import {
   ChevronLeft,
 } from "lucide-react";
 
-import SectionCard from "../../components/dashboard/shared/SectionCard";
-import PaymentsToolbar from "../../components/dashboard/payments/Paymentstoolbar";
-import PaymentsTable, { payments } from "../../components/dashboard/payments/Paymentstable";
-import PaymentDetailPanel from "../../components/dashboard/payments/Paymentdetailpanel";
+import SectionCard from "../../components/admin/shared/SectionCard";
+import PaymentsToolbar from "../../components/admin/payments/Paymentstoolbar";
+import PaymentsTable, { payments } from "../../components/admin/payments/Paymentstable";
+import PaymentDetailPanel from "../../components/admin/payments/Paymentdetailpanel";
 
 export default function Payments() {
   const [selectedId, setSelectedId] = useState(payments[0].id);
