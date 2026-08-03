@@ -12,11 +12,11 @@ from django.views.generic import RedirectView
 urlpatterns = [
     # ========== Admin ==========
     path('admin/', admin.site.urls),
-    path('admin-add-product/', RedirectView.as_view(url='/admin/products/product/add/')),
+    path('admin-add-product/', RedirectView.as_view(url='/dashboard/products/product/add/')),
 
     # ========== APIs ==========
     path('api/auth/', include('accounts.urls')),
-    path('api/admin/orders/', include('orders.admin_urls')),
+    path('api/dashboard/orders/', include('orders.admin_urls')),
     path('api/orders/', include('orders.urls')),
     path('api/dashboard/products/', include('products.admin_urls')),
     path('api/dashboard/orders/', include('orders.admin_urls')),
@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/chatbot/', include('chatbot.urls')),
     path('accounts/', include('allauth.urls')),
     path('api/auth/', include('accounts.urls', namespace='accounts')),
+    path('api/reports/', include('reports.urls')),
 
 
     

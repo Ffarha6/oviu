@@ -46,7 +46,7 @@ export default function AddAdmin() {
     if (!selectedUser) return;
     setSaving(true);
     try {
-      await api.post(`/admin/admins/${selectedUser.id}/promote/`, { admin_role: role, admin_permissions: permissions });
+      await api.post(`/dashboard/admins/${selectedUser.id}/promote/`, { admin_role: role, admin_permissions: permissions });
       navigate("/dashboard/admins");
     } catch (err) {
       alert(err.response?.data?.error || "حصل خطأ أثناء التعيين");
