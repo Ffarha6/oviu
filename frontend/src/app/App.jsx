@@ -22,6 +22,7 @@ import ForgotPassword from "../pages/Login/ForgotPassword.jsx"
 import ResetPassword   from "../pages/Login/ResetPassword.jsx"
 // ✅ صفحة العروض — كانت ناقصة من الراوتس، عشان كده الصفحة كانت بتفضل بيضا لما تدوسي "العروض"
 import OffersPage from "../pages/Shop/OffersPage.jsx"
+import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy.jsx"
 // ✅ أدمن بانل
 import AdminLayout        from "../components/admin/layout/AdminLayout.jsx"
 
@@ -102,6 +103,7 @@ function App() {function ChatbotGate() {
           <Route path="/wishlist"          element={<Layout><Wishlist /></Layout>} />
           {/* ✅ الراوت الناقص: صفحة العروض */}
           <Route path="/offers"            element={<Layout><OffersPage /></Layout>} />
+          <Route path="/privacy-policy"    element={<Layout><PrivacyPolicy /></Layout>} />
 
           <Route path="/cart" element={
             <Layout><CartPage /></Layout>
