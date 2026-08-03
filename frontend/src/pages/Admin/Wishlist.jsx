@@ -24,7 +24,7 @@ export default function Wishlist() {
   const totalPages = Math.max(1, Math.ceil(count / pageSize));
 
   useEffect(() => {
-    api.get("/admin/wishlist/stats/")
+    api.get("/dashboard/wishlist/stats/")
       .then((res) => setStats(res.data))
       .catch((err) => console.error("فشل تحميل إحصائيات المفضلة:", err))
       .finally(() => setStatsLoading(false));
@@ -32,7 +32,7 @@ export default function Wishlist() {
 
   const fetchUsers = useCallback(() => {
     setUsersLoading(true);
-    api.get("/admin/wishlist/", { params: { search: search || undefined, page } })
+    api.get("/dashboardwishlist/", { params: { search: search || undefined, page } })
       .then((res) => {
         setUsers(res.data.results);
         setCount(res.data.count);

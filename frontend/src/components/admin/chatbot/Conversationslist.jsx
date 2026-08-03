@@ -25,7 +25,7 @@ export default function ConversationsList({ activeId, onSelect, activeTab, onTab
 
   const fetchConversations = () => {
     setLoading(true);
-    api.get("/admin/chatbot/", { params: { search: search || undefined, tab: activeTab } })
+    api.get("/dashboard/chatbot/", { params: { search: search || undefined, tab: activeTab } })
       .then((res) => {
         setConversations(res.data.results);
         setCounts((prev) => ({ ...prev, [activeTab]: res.data.count }));

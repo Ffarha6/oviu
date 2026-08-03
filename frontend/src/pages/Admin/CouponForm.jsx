@@ -117,9 +117,9 @@ export default function CouponForm() {
       if (isEditMode) {
         await api.patch(`/admin/coupons/${id}/`, payload);
       } else {
-        await api.post("/admin/coupons/", payload);
+        await api.post("/dashboard/coupons/", payload);
       }
-      navigate("/admin/coupons");
+      navigate("/dashboard/coupons");
     } catch (err) {
       console.error("فشل حفظ الكوبون:", err);
       if (err.response?.data) setErrors(err.response.data);
@@ -142,7 +142,7 @@ export default function CouponForm() {
           <div className="flex items-center gap-1.5 text-xs text-primary/40 mt-1.5">
             <Link to="/dashboard" className="hover:text-secondary">لوحة التحكم</Link>
             <ChevronLeft size={12} />
-            <Link to="/admin/coupons" className="hover:text-secondary">الكوبونات</Link>
+            <Link to="/dashboard/coupons" className="hover:text-secondary">الكوبونات</Link>
             <ChevronLeft size={12} />
             <span className="text-primary/60">{isEditMode ? "تعديل" : "إضافة"}</span>
           </div>

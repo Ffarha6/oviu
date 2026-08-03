@@ -14,7 +14,7 @@ export default function Chatbot() {
   const [statsLoading, setStatsLoading] = useState(true);
 
   const loadStats = () => {
-    api.get("/admin/chatbot/stats/")
+    api.get("/dashboard/chatbot/stats/")
       .then((res) => setStats(res.data))
       .catch((err) => console.error("فشل تحميل إحصائيات الشات بوت:", err))
       .finally(() => setStatsLoading(false));

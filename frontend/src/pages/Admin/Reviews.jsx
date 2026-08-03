@@ -36,7 +36,7 @@ export default function Reviews() {
   const [actionLoading, setActionLoading] = useState(null);
 
   const loadStats = () => {
-    api.get("/admin/reviews/stats/").then((res) => setStats(res.data)).catch(() => {});
+    api.get("/dashboard/reviews/stats/").then((res) => setStats(res.data)).catch(() => {});
   };
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Reviews() {
 
   const fetchReviews = useCallback(() => {
     setReviewsLoading(true);
-    api.get("/admin/reviews/", {
+    api.get("/dashboard/reviews/", {
       params: {
         search: search || undefined,
         status: status || undefined,

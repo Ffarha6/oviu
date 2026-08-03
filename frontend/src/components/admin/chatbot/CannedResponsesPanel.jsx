@@ -10,7 +10,7 @@ export default function CannedResponsesPanel({ onClose, onPick }) {
 
   const fetchItems = () => {
     setLoading(true);
-    api.get("/admin/chatbot/canned-responses/")
+    api.get("/dashboard/chatbot/canned-responses/")
       .then((res) => setItems(res.data))
       .catch((err) => console.error("فشل تحميل الردود الجاهزة:", err))
       .finally(() => setLoading(false));
@@ -25,7 +25,7 @@ export default function CannedResponsesPanel({ onClose, onPick }) {
       if (editing.id) {
         await api.patch(`/admin/chatbot/canned-responses/${editing.id}/`, { title: editing.title, text: editing.text });
       } else {
-        await api.post("/admin/chatbot/canned-responses/", { title: editing.title, text: editing.text });
+        await api.post("/dashboard/chatbot/canned-responses/", { title: editing.title, text: editing.text });
       }
       setEditing(null);
       fetchItems();

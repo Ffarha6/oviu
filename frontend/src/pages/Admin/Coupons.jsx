@@ -39,7 +39,7 @@ export default function Coupons() {
   const [actionLoading, setActionLoading] = useState(null);
 
   const loadStats = () => {
-    api.get("/admin/coupons/stats/").then((res) => setStats(res.data)).catch(() => {});
+    api.get("/dashboard/coupons/stats/").then((res) => setStats(res.data)).catch(() => {});
   };
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function Coupons() {
 
   const fetchCoupons = useCallback(() => {
     setCouponsLoading(true);
-    api.get("/admin/coupons/", {
+    api.get("/dashboard/coupons/", {
       params: {
         search: search || undefined,
         status: status || undefined,
@@ -141,7 +141,7 @@ export default function Coupons() {
             <Upload size={15} /> تصدير
           </button>
           <Link
-            to="/admin/coupons/add"
+            to="/dashboard/coupons/add"
             className="flex items-center gap-2 bg-primary text-background text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition"
           >
             <Plus size={16} /> إضافة كوبون

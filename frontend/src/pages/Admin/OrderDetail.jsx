@@ -127,7 +127,7 @@ export default function OrderDetail() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate("/admin/orders")}
+            onClick={() => navigate("/dashboard/orders")}
             className="w-9 h-9 rounded-xl bg-surface flex items-center justify-center text-primary/60 hover:text-primary transition"
             aria-label="رجوع"
           >

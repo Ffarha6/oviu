@@ -85,9 +85,9 @@ export default function ProductForm() {
     try {
       if (isEditMode) {
         await api.patch(`/admin/products/${id}/`, payload);
-        navigate("/admin/products");
+        navigate("/dashboard/products");
       } else {
-        const res = await api.post("/admin/products/", payload);
+        const res = await api.post("/dashboard/products/", payload);
         // بعد الإنشاء، حوّليها لوضع التعديل لنفس المنتج عشان تضيف الألوان والصور
         navigate(`/admin/products/${res.data.id}/edit`, { replace: true });
       }
@@ -113,7 +113,7 @@ export default function ProductForm() {
           <div className="flex items-center gap-1.5 text-xs text-primary/40 mt-1.5">
             <Link to="/dashboard" className="hover:text-secondary">لوحة التحكم</Link>
             <ChevronLeft size={12} />
-            <Link to="/admin/products" className="hover:text-secondary">المنتجات</Link>
+            <Link to="/dashboard/products" className="hover:text-secondary">المنتجات</Link>
             <ChevronLeft size={12} />
             <span className="text-primary/60">{isEditMode ? "تعديل" : "إضافة"}</span>
           </div>

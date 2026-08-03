@@ -13,7 +13,6 @@ import Topbar from "./Topbar";
 // </Route>
 export default function AdminLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar />

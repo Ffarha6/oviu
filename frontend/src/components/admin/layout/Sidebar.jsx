@@ -21,8 +21,8 @@ import {
 import api from "../../../api/axios";
 
 const bottomItems = [
-  { label: "الإعدادات", to: "/admin/settings", icon: Settings },
-  { label: "المشرفين", to: "/admin/admins", icon: ShieldCheck },
+  { label: "الإعدادات", to: "/dashboard/settings", icon: Settings },
+  { label: "المشرفين", to: "/dashboard/admins", icon: ShieldCheck },
 ];
 
 export default function Sidebar() {
@@ -30,29 +30,29 @@ export default function Sidebar() {
   const [pendingReviewsCount, setPendingReviewsCount] = useState(null);
 
   useEffect(() => {
-    api.get("/admin/orders/stats/")
+    api.get("/dashboard/orders/stats/")
       .then((res) => setPendingOrdersCount(res.data.pending || null))
       .catch(() => setPendingOrdersCount(null));
 
-    api.get("/admin/reviews/stats/")
+    api.get("/dashboard/reviews/stats/")
       .then((res) => setPendingReviewsCount(res.data.pending || null))
       .catch(() => setPendingReviewsCount(null));
   }, []);
 
   const navItems = [
     { label: "لوحة التحكم", to: "/dashboard", icon: LayoutDashboard, end: true },
-    { label: "المنتجات", to: "/admin/products", icon: Package, end: true },
-    { label: "الطلبات", to: "/admin/orders", icon: ShoppingBag, badge: pendingOrdersCount },
-    { label: "العملاء", to: "/admin/customers", icon: Users },
-    { label: "المدفوعات", to: "/admin/payments", icon: CreditCard },
-    { label: "الكوبونات", to: "/admin/coupons", icon: Ticket },
-    { label: "التقييمات", to: "/admin/reviews", icon: Star, badge: pendingReviewsCount },
-    { label: "المفضلة", to: "/admin/wishlist", icon: Heart },
-    { label: "التجربة الافتراضية", to: "/admin/ai-try-on", icon: Glasses },
-    { label: "الشات بوت", to: "/admin/chatbot", icon: MessageCircle },
-    { label: "التحليلات", to: "/admin/analytics", icon: BarChart3 },
-    { label: "العروض", to: "/admin/offers", icon: Gift },
-    { label: "التقارير", to: "/admin/reports", icon: FileText },
+    { label: "المنتجات", to: "/dashboard/products", icon: Package, end: true },
+    { label: "الطلبات", to: "/dashboard/orders", icon: ShoppingBag, badge: pendingOrdersCount },
+    { label: "العملاء", to: "/dashboard/customers", icon: Users },
+    { label: "المدفوعات", to: "/dashboard/payments", icon: CreditCard },
+    { label: "الكوبونات", to: "/dashboard/coupons", icon: Ticket },
+    { label: "التقييمات", to: "/dashboard/reviews", icon: Star, badge: pendingReviewsCount },
+    { label: "المفضلة", to: "/dashboard/wishlist", icon: Heart },
+    { label: "التجربة الافتراضية", to: "/dashboard/ai-try-on", icon: Glasses },
+    { label: "الشات بوت", to: "/dashboard/chatbot", icon: MessageCircle },
+    { label: "التحليلات", to: "/dashboard/analytics", icon: BarChart3 },
+    { label: "العروض", to: "/dashboard/offers", icon: Gift },
+    { label: "التقارير", to: "/dashboard/reports", icon: FileText },
   ];
 
   return (

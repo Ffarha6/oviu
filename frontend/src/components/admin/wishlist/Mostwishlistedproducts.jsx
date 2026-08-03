@@ -6,7 +6,7 @@ export default function MostWishlistedProducts() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/admin/wishlist/top-products/")
+    api.get("/dashboard/wishlist/top-products/")
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("فشل تحميل المنتجات الأكثر إضافة:", err))
       .finally(() => setLoading(false));

@@ -20,7 +20,7 @@ export default function TopWishlistedCategories() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/admin/wishlist/top-categories/")
+    api.get("/dashboard/wishlist/top-categories/")
       .then((res) => setCategories(res.data))
       .catch((err) => console.error("فشل تحميل الفئات الأكثر إضافة:", err))
       .finally(() => setLoading(false));

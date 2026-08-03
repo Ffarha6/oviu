@@ -97,7 +97,7 @@ export default function Orders() {
   const effectiveRange = datePreset === "custom" ? { from: dateFrom, to: dateTo } : getPresetRange(datePreset);
 
   useEffect(() => {
-    api.get("/admin/orders/stats/")
+    api.get("/dashboard/orders/stats/")
       .then((res) => setStats(res.data))
       .catch((err) => console.error("فشل تحميل إحصائيات الطلبات:", err))
       .finally(() => setStatsLoading(false));
@@ -105,7 +105,7 @@ export default function Orders() {
 
   const fetchOrders = useCallback(() => {
     setOrdersLoading(true);
-    api.get("/admin/orders/", {
+    api.get("/dashboard/orders/", {
       params: {
         search: search || undefined,
         status: statusToBackend[status] || undefined,
@@ -144,7 +144,7 @@ export default function Orders() {
   const runExport = async (range) => {
     setExporting(true);
     try {
-      const res = await api.get("/admin/orders/export/", {
+      const res = await api.get("/dashboard/orders/export/", {
         params: {
           date_from: range.from || undefined,
           date_to: range.to || undefined,

@@ -17,7 +17,7 @@ export default function WishlistOverviewChart() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/admin/wishlist/overview/")
+    api.get("/dashboard/wishlist/overview/")
       .then((res) => {
         setData(
           res.data.map((d) => ({

@@ -42,7 +42,7 @@ export default function Products() {
 
   // ── هاتي الإحصائيات مرة واحدة عند فتح الصفحة ──
   useEffect(() => {
-    api.get("/admin/products/stats/")
+    api.get("/dashboard/products/stats/")
       .then((res) => setStats(res.data))
       .catch((err) => console.error("فشل تحميل إحصائيات المنتجات:", err))
       .finally(() => setStatsLoading(false));
@@ -51,7 +51,7 @@ export default function Products() {
   // ── هاتي قائمة المنتجات كل ما البحث/الفلتر/الصفحة تتغير ──
   const fetchProducts = useCallback(() => {
     setProductsLoading(true);
-    api.get("/admin/products/", {
+    api.get("/dashboard/products/", {
       params: {
         search: search || undefined,
         category: category || undefined,
@@ -119,7 +119,7 @@ export default function Products() {
             إجراءات جماعية <ChevronDown size={14} className="text-primary/40" />
           </button>
           <Link
-            to="/admin/products/add"
+            to="/dashboard/products/add"
             className="flex items-center gap-2 bg-primary text-background text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition"
           >
             <Plus size={16} /> إضافة منتج

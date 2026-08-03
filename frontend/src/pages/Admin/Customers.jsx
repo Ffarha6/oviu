@@ -36,7 +36,7 @@ export default function Customers() {
   const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
-    api.get("/admin/users/stats/")
+    api.get("/dashboard/users/stats/")
       .then((res) => setStats(res.data))
       .catch((err) => console.error("فشل تحميل إحصائيات المستخدمين:", err))
       .finally(() => setStatsLoading(false));
@@ -44,7 +44,7 @@ export default function Customers() {
 
   const fetchCustomers = useCallback(() => {
     setCustomersLoading(true);
-    api.get("/admin/users/", {
+    api.get("/dashboard/users/", {
       params: {
         search: search || undefined,
         status: status || undefined,

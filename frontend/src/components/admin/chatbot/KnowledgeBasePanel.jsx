@@ -10,7 +10,7 @@ export default function KnowledgeBasePanel({ onClose }) {
 
   const fetchFaqs = () => {
     setLoading(true);
-    api.get("/admin/chatbot/faqs/")
+    api.get("/dashboard/chatbot/faqs/")
       .then((res) => setFaqs(res.data))
       .catch((err) => console.error("فشل تحميل الأسئلة الشائعة:", err))
       .finally(() => setLoading(false));
@@ -25,7 +25,7 @@ export default function KnowledgeBasePanel({ onClose }) {
       if (editing.id) {
         await api.patch(`/admin/chatbot/faqs/${editing.id}/`, { question: editing.question, answer: editing.answer });
       } else {
-        await api.post("/admin/chatbot/faqs/", { question: editing.question, answer: editing.answer });
+        await api.post("/dashboard/chatbot/faqs/", { question: editing.question, answer: editing.answer });
       }
       setEditing(null);
       fetchFaqs();

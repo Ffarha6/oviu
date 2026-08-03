@@ -35,18 +35,18 @@ export default function Admins() {
   const [detailLoading, setDetailLoading] = useState(false);
 
   const loadStats = () => {
-    api.get("/admin/admins/stats/").then((res) => setStats(res.data)).catch(() => {});
+    api.get("/dashboard/admins/stats/").then((res) => setStats(res.data)).catch(() => {});
   };
 
   useEffect(() => {
     loadStats();
     setStatsLoading(false);
-    api.get("/admin/admins/permission-modules/").then((res) => setPermissionModules(res.data)).catch(() => {});
+    api.get("/dashboard/admins/permission-modules/").then((res) => setPermissionModules(res.data)).catch(() => {});
   }, []);
 
   const fetchAdmins = useCallback(() => {
     setAdminsLoading(true);
-    api.get("/admin/admins/", {
+    api.get("/dashboard/admins/", {
       params: { search: search || undefined, role: role || undefined, status: status || undefined, page },
     })
       .then((res) => {
@@ -111,7 +111,7 @@ export default function Admins() {
         </div>
 
         {canManage && (
-          <Link to="/admin/admins/add" className="flex items-center gap-2 bg-secondary text-primary text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition">
+          <Link to="/dashboard/admins/add" className="flex items-center gap-2 bg-secondary text-primary text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition">
             <Plus size={16} /> إضافة مشرف جديد
           </Link>
         )}
