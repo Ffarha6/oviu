@@ -5,7 +5,6 @@ import CategoriesSection from "./CategoriesSection"
 import SocialSidebar from "./SocialSidebar"
 import BestSellers from "./Bestsellers"
 import PromoBanners from "./Promobanners"
-import TrustBar from "./Trustbar"
 
 function Home() {
   useEffect(() => {
@@ -31,7 +30,6 @@ function Home() {
       <CategoriesSection />
       <BestSellers />
       <PromoBanners />
-      <TrustBar />
       {/* لو عندك Footer component جاهز، ضيفيه هنا تحت TrustBar مباشرة */}
     </div>
   )
