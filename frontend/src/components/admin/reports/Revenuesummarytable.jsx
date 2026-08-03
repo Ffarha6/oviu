@@ -1,56 +1,58 @@
-import { Download, ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+import api from "../../../api/axios"; // ✅ عدّلي المسار حسب مكان الملف عندك
 
-const reports = [
-  { name: "تقرير ملخص المبيعات", type: "المبيعات", date: "18 يونيو 2025", time: "10:30 ص" },
-  { name: "تقرير تحليل الطلبات", type: "الطلبات", date: "18 يونيو 2025", time: "10:15 ص" },
-  { name: "تقرير العملاء", type: "العملاء", date: "18 يونيو 2025", time: "09:45 ص" },
-  { name: "تقرير أداء المنتجات", type: "المنتجات", date: "18 يونيو 2025", time: "09:20 ص" },
-  { name: "تقرير المخزون", type: "المخزون", date: "18 يونيو 2025", time: "08:50 ص" },
-];
+export default function RevenueSummaryTable({ dateRange }) {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const typeStyles = {
-  "المبيعات": "bg-secondary/15 text-secondary",
-  "الطلبات": "bg-blue-50 text-blue-600",
-  "العملاء": "bg-purple-50 text-purple-600",
-  "المنتجات": "bg-emerald-50 text-emerald-700",
-  "المخزون": "bg-amber-50 text-amber-700",
-};
+  useEffect(() => {
+    setLoading(true);
+    api
+      .get("/reports/revenue-summary/", { params: dateRange })
+      .then((res) => setRows(res.data))
+      .catch((err) => {
+        console.log(err);
+        setRows([]);
+      })
+      .finally(() => setLoading(false));
+  }, [dateRange]);
 
-export default function RecentReportsTable() {
+  if (loading) {
+    return <div className="h-64 animate-pulse bg-background rounded-xl" />;
+  }
+
+  if (rows.length === 0) {
+    return <p className="text-center text-sm text-primary/40 py-10">لا توجد بيانات في هذه الفترة</p>;
+  }
+
+  const fmt = (n) => `${Number(n).toLocaleString()} ج.م`;
+
   return (
-    <div>
+    <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="text-primary/40 text-xs border-b border-primary/10">
-            <th className="py-2.5 text-right font-medium">اسم التقرير</th>
-            <th className="py-2.5 text-right font-medium">النوع</th>
-            <th className="py-2.5 text-right font-medium">تاريخ الإنشاء</th>
-            <th className="py-2.5 text-right font-medium">إجراء</th>
+            <th className="py-2.5 text-right font-medium">التاريخ</th>
+            <th className="py-2.5 text-right font-medium">عدد الطلبات</th>
+            <th className="py-2.5 text-right font-medium">الإيرادات</th>
+            <th className="py-2.5 text-right font-medium">المرتجعات</th>
+            <th className="py-2.5 text-right font-medium">صافي الإيرادات</th>
           </tr>
         </thead>
         <tbody>
-          {reports.map((r) => (
-            <tr key={r.name} className="border-b border-primary/5 last:border-0">
-              <td className="py-2.5 text-primary font-medium">{r.name}</td>
-              <td className="py-2.5">
-                <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${typeStyles[r.type]}`}>{r.type}</span>
+          {rows.map((r) => (
+            <tr key={r.date} className="border-b border-primary/5 last:border-0">
+              <td className="py-2.5 text-primary font-medium">
+                {new Date(r.date).toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" })}
               </td>
-              <td className="py-2.5 text-primary/50">
-                <p>{r.date}</p>
-                <p className="text-xs">{r.time}</p>
-              </td>
-              <td className="py-2.5">
-                <button className="w-8 h-8 rounded-lg bg-background flex items-center justify-center text-primary/50 hover:text-secondary transition">
-                  <Download size={14} />
-                </button>
-              </td>
+              <td className="py-2.5 text-primary/70">{r.orders_count.toLocaleString()}</td>
+              <td className="py-2.5 text-primary/70">{fmt(r.revenue)}</td>
+              <td className="py-2.5 text-red-500">{r.refunds > 0 ? `- ${fmt(r.refunds)}` : "—"}</td>
+              <td className="py-2.5 text-primary font-semibold">{fmt(r.net_revenue)}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button className="flex items-center gap-1.5 text-sm font-medium text-secondary mt-3">
-        عرض كل التقارير <ArrowLeft size={14} />
-      </button>
     </div>
   );
 }

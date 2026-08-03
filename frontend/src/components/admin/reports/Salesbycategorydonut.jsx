@@ -1,16 +1,33 @@
+import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-
-const data = [
-  { label: "نظارات شمسية", percent: 40.2, value: 502215 },
-  { label: "نظارات طبية", percent: 27.6, value: 344568 },
-  { label: "عدسات لاصقة", percent: 15.3, value: 191284 },
-  { label: "إكسسوارات", percent: 11.8, value: 147200 },
-  { label: "أخرى", percent: 5.1, value: 63295 },
-];
+import api from "../../../api/axios"; // ✅ عدّلي المسار حسب مكان الملف عندك
 
 const palette = ["var(--color-secondary)", "#8C6A52", "#E8C9AE", "#7A9B76", "#C9C4BC"];
 
-export default function SalesByCategoryDonut() {
+export default function SalesByCategoryDonut({ dateRange }) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    api
+      .get("/reports/sales-by-category/", { params: dateRange })
+      .then((res) => setData(res.data))
+      .catch((err) => {
+        console.log(err);
+        setData([]);
+      })
+      .finally(() => setLoading(false));
+  }, [dateRange]);
+
+  if (loading) {
+    return <div className="h-56 animate-pulse bg-background rounded-xl" />;
+  }
+
+  if (data.length === 0) {
+    return <p className="text-center text-sm text-primary/40 py-10">لا توجد بيانات في هذه الفترة</p>;
+  }
+
   return (
     <div>
       <div className="w-36 h-36 mx-auto mb-4">
