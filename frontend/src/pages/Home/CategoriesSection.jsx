@@ -38,7 +38,7 @@ function CategoriesSection() {
   }
 
   return (
-    <section className="px-6 xl:px-24 pt-4 pb-8 md:pt-5 md:pb-10 bg-[#F7F2EE] dark:bg-[#050505] transition-colors duration-500">
+    <section className="px-2 sm:px-6 xl:px-24 pt-4 pb-8 md:pt-5 md:pb-10 bg-[#F7F2EE] dark:bg-[#050505] transition-colors duration-500">
       <div className="max-w-[1750px] mx-auto">
 
         <motion.h2
@@ -51,7 +51,7 @@ function CategoriesSection() {
           {content[language].heading}
         </motion.h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
           {types[language].map((item, index) => (
             <motion.div
               key={index}
