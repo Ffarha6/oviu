@@ -4,7 +4,7 @@ import {
   Package, MessageCircle, Send, Database, Download, Trash2, Loader2,
 } from "lucide-react";
 import SectionCard from "../shared/SectionCard";
-import api from "../../api/axios";
+import api from "../../../api/axios";
 const PREFERENCE_FIELDS = [
   { key: "enable_multilanguage", icon: Globe, label: "دعم تعدد اللغات", desc: "السماح للعملاء بتصفح الموقع بأكثر من لغة" },
   { key: "enable_low_stock_alerts", icon: Package, label: "تنبيهات المخزون المنخفض", desc: "إشعار عند اقتراب نفاد مخزون منتج" },
