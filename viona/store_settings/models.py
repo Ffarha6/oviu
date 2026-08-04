@@ -15,13 +15,42 @@ class SiteSettings(models.Model):
     secondary_color = models.CharField(max_length=7, default="#C89072")
     background_color = models.CharField(max_length=7, default="#F7F2EE")
 
-    # ========== تفضيلات المتجر (Feature Toggles) ==========
-    enable_multilanguage = models.BooleanField(default=False)
-    enable_low_stock_alerts = models.BooleanField(default=True)
-    enable_dark_mode = models.BooleanField(default=False)
+    # ========== تفضيلات المتجر ==========
+    enable_multilanguage = models.BooleanField(default=True)
+    enable_dark_mode = models.BooleanField(default=True)
+
+    # Chatbot
     enable_chatbot = models.BooleanField(default=True)
+    show_chatbot_button = models.BooleanField(default=True)
+
+    # AI Try-On
+    enable_virtual_tryon = models.BooleanField(default=False)
+    show_virtual_tryon_in_home = models.BooleanField(default=False)
+    show_virtual_tryon_in_navbar = models.BooleanField(default=False)
+
+    # Store Features
     enable_wishlist = models.BooleanField(default=True)
+    enable_reviews = models.BooleanField(default=True)
+    enable_offers = models.BooleanField(default=True)
+    enable_coupons = models.BooleanField(default=True)
+
+    # Homepage
+    show_home_banner = models.BooleanField(default=True)
+    show_categories = models.BooleanField(default=True)
+    show_featured_products = models.BooleanField(default=True)
+    show_brands = models.BooleanField(default=True)
+    show_newsletter = models.BooleanField(default=True)
+
+    # Store Control
+    allow_registration = models.BooleanField(default=True)
+    allow_orders = models.BooleanField(default=True)
+
+    # Notifications
+    enable_low_stock_alerts = models.BooleanField(default=True)
     enable_marketing_messages = models.BooleanField(default=False)
+
+    # Maintenance
+    maintenance_mode = models.BooleanField(default=False)
 
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -38,7 +67,7 @@ class SiteSettings(models.Model):
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        pass  # ما نسمحش بحذف الصف ده خالص
+        pass  # لا نسمح بحذف الإعدادات
 
     @classmethod
     def load(cls):
