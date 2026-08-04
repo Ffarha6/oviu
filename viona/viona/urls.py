@@ -37,6 +37,8 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('api/auth/', include('accounts.urls', namespace='accounts')),
     path('api/reports/', include('reports.urls')),
+    path('api/dashboard/settings/', include('store_settings.admin_urls')),
+    path('api/settings/', include('store_settings.urls')),
 
 
     

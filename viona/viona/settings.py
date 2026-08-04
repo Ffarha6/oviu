@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'reviews',
     'chatbot',
     'reports',
+    'store_settings',
 ]
 
 # ========== JAZZMIN ==========
