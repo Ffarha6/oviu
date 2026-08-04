@@ -58,30 +58,31 @@ function ScrollToTop() {
 // ✅ الشات بوت العائم كان ظاهر في كل الصفحات لأنه متحط برا الـ <Routes> في
 // App، حتى في صفحات تسجيل الدخول/التسجيل اللي مفروض تبقى نضيفة بدون عناصر
 // زيادة فوق الكارد. الكومبوننت ده بيقفل عرضه في الصفحات دي بس.
-const AUTH_ROUTES_PREFIXES = ["/login", "/register", "/forgot-password", "/reset-password", "/oauth/callback"]
+const AUTH_ROUTES_PREFIXES = [
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/reset-password",
+  "/oauth/callback",
+];
 
 function ChatbotGate() {
-  const { pathname } = useLocation()
-  const isAuthPage = AUTH_ROUTES_PREFIXES.some(prefix => pathname.startsWith(prefix))
-  if (isAuthPage) return null
-  return <FloatingChatbot />
-}
+  const { pathname } = useLocation();
 
-function App() {function ChatbotGate() {
-  const { pathname } = useLocation()
-
-  const isAuthPage = AUTH_ROUTES_PREFIXES.some(prefix =>
+  const isAuthPage = AUTH_ROUTES_PREFIXES.some((prefix) =>
     pathname.startsWith(prefix)
-  )
+  );
 
-  const isAdminPage = pathname.startsWith("/dashboard")
+  const isAdminPage = pathname.startsWith("/dashboard");
 
   if (isAuthPage || isAdminPage) {
-    return null
+    return null;
   }
 
-  return <FloatingChatbot />
+  return <FloatingChatbot />;
 }
+
+function App() {
   return (
     <CartProvider>
       <BrowserRouter>

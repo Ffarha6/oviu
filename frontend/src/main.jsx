@@ -3,6 +3,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './app/App.jsx'
+import { SettingsProvider } from "./context/SettingsContext";
 import ThemeProvider from "./context/ThemeContext"
 import LanguageProvider from "./context/LanguageContext"
 import { AuthProvider } from "./context/AuthContext"
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')).render(
                 لأن WishlistContext بيستخدم useToast() جواه */}
             <ToastProvider>
               <WishlistProvider>
+                  <SettingsProvider>
                 <App />
+                  </SettingsProvider>
               </WishlistProvider>
             </ToastProvider>
           </CartProvider>

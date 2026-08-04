@@ -6,12 +6,138 @@ import {
 import SectionCard from "../shared/SectionCard";
 import api from "../../../api/axios";
 const PREFERENCE_FIELDS = [
-  { key: "enable_multilanguage", icon: Globe, label: "دعم تعدد اللغات", desc: "السماح للعملاء بتصفح الموقع بأكثر من لغة" },
-  { key: "enable_low_stock_alerts", icon: Package, label: "تنبيهات المخزون المنخفض", desc: "إشعار عند اقتراب نفاد مخزون منتج" },
-  { key: "enable_dark_mode", icon: Moon, label: "الوضع الليلي", desc: "السماح للمستخدمين بالتبديل بين الوضع الفاتح والداكن" },
-  { key: "enable_chatbot", icon: MessageCircle, label: "الشات المباشر / الشات بوت", desc: "تفعيل الشات بوت لدعم العملاء" },
-  { key: "enable_wishlist", icon: Heart, label: "المفضلة", desc: "تفعيل خاصية المفضلة للعملاء" },
-  { key: "enable_marketing_messages", icon: Send, label: "الرسائل التسويقية", desc: "إرسال رسائل ترويجية للعملاء" },
+  {
+    key: "enable_multilanguage",
+    icon: Globe,
+    label: "تعدد اللغات",
+    desc: "السماح للمستخدمين بتغيير لغة الموقع",
+  },
+
+  {
+    key: "enable_dark_mode",
+    icon: Moon,
+    label: "الوضع الليلي",
+    desc: "السماح للمستخدمين باستخدام الوضع الداكن",
+  },
+
+  {
+    key: "enable_chatbot",
+    icon: MessageCircle,
+    label: "تشغيل الشات بوت",
+    desc: "تفعيل نظام الشات بوت",
+  },
+
+  {
+    key: "show_chatbot_button",
+    icon: MessageCircle,
+    label: "إظهار زر الشات",
+    desc: "إظهار الزر العائم الخاص بالشات",
+  },
+
+  {
+    key: "enable_virtual_tryon",
+    icon: Heart,
+    label: "التجربة الافتراضية",
+    desc: "تشغيل خدمة تجربة النظارات",
+  },
+
+  {
+    key: "show_virtual_tryon_in_home",
+    icon: Heart,
+    label: "إظهار التجربة في الصفحة الرئيسية",
+    desc: "إظهار قسم التجربة الافتراضية داخل الصفحة الرئيسية",
+  },
+
+  {
+    key: "show_virtual_tryon_in_navbar",
+    icon: Heart,
+    label: "إظهار التجربة في القائمة",
+    desc: "إظهار رابط التجربة الافتراضية داخل الـ Navbar",
+  },
+
+  {
+    key: "enable_wishlist",
+    icon: Heart,
+    label: "المفضلة",
+    desc: "السماح باستخدام قائمة المفضلة",
+  },
+
+  {
+    key: "enable_reviews",
+    icon: Heart,
+    label: "التقييمات",
+    desc: "السماح بعرض وإضافة التقييمات",
+  },
+
+  {
+    key: "enable_offers",
+    icon: Package,
+    label: "العروض",
+    desc: "تشغيل قسم العروض بالموقع",
+  },
+
+  {
+    key: "enable_coupons",
+    icon: Package,
+    label: "الكوبونات",
+    desc: "تشغيل أكواد الخصم",
+  },
+
+  {
+    key: "allow_registration",
+    icon: Mail,
+    label: "السماح بالتسجيل",
+    desc: "السماح بإنشاء حسابات جديدة",
+  },
+
+  {
+    key: "allow_orders",
+    icon: Package,
+    label: "السماح بالطلبات",
+    desc: "السماح بإتمام عمليات الشراء",
+  },
+
+  {
+    key: "show_home_banner",
+    icon: Globe,
+    label: "بانر الصفحة الرئيسية",
+    desc: "إظهار البانر الرئيسي",
+  },
+
+  {
+    key: "show_categories",
+    icon: Globe,
+    label: "التصنيفات",
+    desc: "إظهار قسم التصنيفات",
+  },
+
+  {
+    key: "show_featured_products",
+    icon: Package,
+    label: "المنتجات المميزة",
+    desc: "إظهار قسم المنتجات المميزة",
+  },
+
+  {
+    key: "show_brands",
+    icon: Globe,
+    label: "العلامات التجارية",
+    desc: "إظهار قسم العلامات التجارية",
+  },
+
+  {
+    key: "show_newsletter",
+    icon: Send,
+    label: "النشرة البريدية",
+    desc: "إظهار الاشتراك في النشرة البريدية",
+  },
+
+  {
+    key: "maintenance_mode",
+    icon: Database,
+    label: "وضع الصيانة",
+    desc: "إيقاف الموقع للزوار مع السماح للأدمن بالدخول",
+  },
 ];
 
 export default function GeneralTab({ settings, onSaved }) {
