@@ -21,12 +21,6 @@ class ProductPagination(PageNumberPagination):
 def get_products(request):
     """Get all active products with filtering, searching, and pagination."""
 
-    cache_key = f"products_{request.GET.urlencode()}"
-    cached_data = cache.get(cache_key)
-
-    if cached_data is not None:
-        return Response(cached_data)
-
     products = Product.objects.filter(
         is_active=True
     ).prefetch_related(
@@ -109,8 +103,6 @@ def get_products(request):
 
     response = paginator.get_paginated_response(serializer.data)
 
-    cache.set(cache_key, response.data, 300)
-
     return response
 
 
@@ -118,12 +110,6 @@ def get_products(request):
 @permission_classes([AllowAny])
 def product_detail(request, slug):
     """Get detailed information about a specific product."""
-
-    cache_key = f"product_detail_{slug}"
-    cached_data = cache.get(cache_key)
-
-    if cached_data is not None:
-        return Response(cached_data)
 
     product = get_object_or_404(
         Product.objects.prefetch_related('colors__images'),
@@ -136,8 +122,6 @@ def product_detail(request, slug):
         context={'request': request}
     )
 
-    cache.set(cache_key, serializer.data, 600)
-
     return Response(serializer.data)
 
 
@@ -145,12 +129,6 @@ def product_detail(request, slug):
 @permission_classes([AllowAny])
 def product_detail_by_id(request, product_id):
     """Get product by ID (fallback for old links)."""
-
-    cache_key = f"product_detail_id_{product_id}"
-    cached_data = cache.get(cache_key)
-
-    if cached_data is not None:
-        return Response(cached_data)
 
     product = get_object_or_404(
         Product.objects.prefetch_related('colors__images'),
@@ -162,8 +140,6 @@ def product_detail_by_id(request, product_id):
         product,
         context={'request': request}
     )
-
-    cache.set(cache_key, serializer.data, 600)
 
     return Response(serializer.data)
 
