@@ -1,37 +1,64 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  Save,
-  Mail,
-  Phone,
-  MapPin,
-  Globe,
-  Moon,
-  Heart,
-  Package,
-  MessageCircle,
-  Send,
-  Database,
-  Download,
-  Trash2,
+  Save, Mail, Phone, MapPin, Globe, Moon, Heart,
+  Package, MessageCircle, Send, Database, Download, Trash2, Loader2,
 } from "lucide-react";
 import SectionCard from "../shared/SectionCard";
+import api from "../../../services/api";
 
-const preferences = [
-  { icon: Globe, label: "دعم تعدد اللغات", desc: "السماح للعملاء بتصفح الموقع بأكثر من لغة", checked: true },
-  { icon: Package, label: "تنبيهات المخزون المنخفض", desc: "إشعار عند اقتراب نفاد مخزون منتج", checked: true },
-  { icon: Moon, label: "الوضع الليلي", desc: "السماح للمستخدمين بالتبديل بين الوضع الفاتح والداكن", checked: true },
-  { icon: MessageCircle, label: "الشات المباشر / الشات بوت", desc: "تفعيل الشات بوت لدعم العملاء", checked: true },
-  { icon: Heart, label: "المفضلة", desc: "تفعيل خاصية المفضلة للعملاء", checked: true },
-  { icon: Send, label: "الرسائل التسويقية", desc: "إرسال رسائل ترويجية للعملاء", checked: true },
+const PREFERENCE_FIELDS = [
+  { key: "enable_multilanguage", icon: Globe, label: "دعم تعدد اللغات", desc: "السماح للعملاء بتصفح الموقع بأكثر من لغة" },
+  { key: "enable_low_stock_alerts", icon: Package, label: "تنبيهات المخزون المنخفض", desc: "إشعار عند اقتراب نفاد مخزون منتج" },
+  { key: "enable_dark_mode", icon: Moon, label: "الوضع الليلي", desc: "السماح للمستخدمين بالتبديل بين الوضع الفاتح والداكن" },
+  { key: "enable_chatbot", icon: MessageCircle, label: "الشات المباشر / الشات بوت", desc: "تفعيل الشات بوت لدعم العملاء" },
+  { key: "enable_wishlist", icon: Heart, label: "المفضلة", desc: "تفعيل خاصية المفضلة للعملاء" },
+  { key: "enable_marketing_messages", icon: Send, label: "الرسائل التسويقية", desc: "إرسال رسائل ترويجية للعملاء" },
 ];
 
-export default function GeneralTab() {
-  const [toggles, setToggles] = useState(preferences.map((p) => p.checked));
-  const [description, setDescription] = useState(
-    "OVIU هي وجهتك المميزة للنظارات الأنيقة وعالية الجودة. من النظارات الشمسية للنظارات الطبية، بنساعدك تشوف الجمال بطريقتك."
-  );
+export default function GeneralTab({ settings, onSaved }) {
+  const [form, setForm] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  const toggle = (i) => setToggles((t) => t.map((v, idx) => (idx === i ? !v : v)));
+  useEffect(() => {
+    if (settings) setForm(settings);
+  }, [settings]);
+
+  if (!form) return null;
+
+  const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
+
+  const saveGeneralInfo = async () => {
+    setSaving(true);
+    try {
+      const { data } = await api.patch("/dashboard/settings/", {
+        store_name: form.store_name,
+        store_tagline: form.store_tagline,
+        store_email: form.store_email,
+        store_phone: form.store_phone,
+        store_address: form.store_address,
+        store_description: form.store_description,
+      });
+      onSaved(data);
+    } catch (err) {
+      console.error(err);
+      alert("حصل خطأ أثناء الحفظ");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const savePreference = async (key, value) => {
+    // Optimistic update
+    setField(key, value);
+    try {
+      const { data } = await api.patch("/dashboard/settings/", { [key]: value });
+      onSaved(data);
+    } catch (err) {
+      console.error(err);
+      setField(key, !value); // رجّع القيمة القديمة لو حصل خطأ
+      alert("حصل خطأ أثناء تحديث الإعداد");
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -42,35 +69,43 @@ export default function GeneralTab() {
             <h3 className="text-base font-bold text-primary">المعلومات العامة</h3>
             <p className="text-xs text-primary/50 mt-0.5">إدارة المعلومات الأساسية لمتجرك</p>
           </div>
-          <button className="flex items-center gap-2 bg-secondary text-primary text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition shrink-0">
-            <Save size={15} /> حفظ التغييرات
+          <button
+            onClick={saveGeneralInfo}
+            disabled={saving}
+            className="flex items-center gap-2 bg-secondary text-primary text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition shrink-0 disabled:opacity-50"
+          >
+            {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />} حفظ التغييرات
           </button>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4 mt-4">
-          <Field label="اسم المتجر" defaultValue="OVIU" />
-          <Field label="شعار المتجر" defaultValue="أسلوبك، رؤيتك" />
-          <Field label="البريد الإلكتروني للمتجر" defaultValue="contact@oviu.com" icon={Mail} dir="ltr" />
-          <Field label="هاتف المتجر" defaultValue="+20 10 1234 5678" icon={Phone} dir="ltr" />
+          <Field label="اسم المتجر" value={form.store_name} onChange={(v) => setField("store_name", v)} />
+          <Field label="شعار المتجر" value={form.store_tagline} onChange={(v) => setField("store_tagline", v)} />
+          <Field label="البريد الإلكتروني للمتجر" value={form.store_email} onChange={(v) => setField("store_email", v)} icon={Mail} dir="ltr" />
+          <Field label="هاتف المتجر" value={form.store_phone} onChange={(v) => setField("store_phone", v)} icon={Phone} dir="ltr" />
         </div>
 
         <div className="mt-4">
           <label className="text-sm font-medium text-primary mb-1.5 block">عنوان المتجر</label>
           <div className="flex items-center gap-2 bg-background border border-primary/10 rounded-xl px-3.5 py-2.5">
             <MapPin size={15} className="text-secondary shrink-0" />
-            <input defaultValue="القاهرة، مصر" className="bg-transparent outline-none text-sm flex-1 text-primary" />
+            <input
+              value={form.store_address}
+              onChange={(e) => setField("store_address", e.target.value)}
+              className="bg-transparent outline-none text-sm flex-1 text-primary"
+            />
           </div>
         </div>
 
         <div className="mt-4">
           <label className="text-sm font-medium text-primary mb-1.5 block">وصف المتجر</label>
           <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value.slice(0, 500))}
+            value={form.store_description}
+            onChange={(e) => setField("store_description", e.target.value.slice(0, 500))}
             rows={3}
             className="w-full bg-background border border-primary/10 rounded-xl px-3.5 py-2.5 text-sm text-primary outline-none resize-none"
           />
-          <p className="text-left text-xs text-primary/30 mt-1">{description.length}/500</p>
+          <p className="text-left text-xs text-primary/30 mt-1">{(form.store_description || "").length}/500</p>
         </div>
       </SectionCard>
 
@@ -80,8 +115,8 @@ export default function GeneralTab() {
         <p className="text-xs text-primary/50 mt-0.5 mb-4">إعداد خيارات متجرك</p>
 
         <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4">
-          {preferences.map((p, i) => (
-            <div key={p.label} className="flex items-center justify-between gap-3">
+          {PREFERENCE_FIELDS.map((p) => (
+            <div key={p.key} className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-lg bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
                   <p.icon size={16} />
@@ -92,14 +127,14 @@ export default function GeneralTab() {
                 </div>
               </div>
               <button
-                onClick={() => toggle(i)}
+                onClick={() => savePreference(p.key, !form[p.key])}
                 className={`w-10 h-5 rounded-full relative transition-colors shrink-0 ${
-                  toggles[i] ? "bg-secondary" : "bg-primary/15"
+                  form[p.key] ? "bg-secondary" : "bg-primary/15"
                 }`}
               >
                 <span
                   className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
-                    toggles[i] ? "left-0.5" : "right-0.5"
+                    form[p.key] ? "left-0.5" : "right-0.5"
                   }`}
                 />
               </button>
@@ -108,7 +143,7 @@ export default function GeneralTab() {
         </div>
       </SectionCard>
 
-      {/* Data management */}
+      {/* Data management — لسه مش متربطة، خطوة جاية */}
       <SectionCard>
         <h3 className="text-base font-bold text-primary">إدارة البيانات</h3>
         <p className="text-xs text-primary/50 mt-0.5 mb-4">إدارة بيانات متجرك</p>
@@ -149,13 +184,13 @@ export default function GeneralTab() {
   );
 }
 
-function Field({ label, defaultValue, icon: Icon, dir }) {
+function Field({ label, value, onChange, icon: Icon, dir }) {
   return (
     <div>
       <label className="text-sm font-medium text-primary mb-1.5 block">{label}</label>
       <div className="flex items-center gap-2 bg-background border border-primary/10 rounded-xl px-3.5 py-2.5">
         {Icon && <Icon size={15} className="text-secondary shrink-0" />}
-        <input defaultValue={defaultValue} dir={dir} className="bg-transparent outline-none text-sm flex-1 text-primary" />
+        <input value={value || ""} onChange={(e) => onChange(e.target.value)} dir={dir} className="bg-transparent outline-none text-sm flex-1 text-primary" />
       </div>
     </div>
   );
