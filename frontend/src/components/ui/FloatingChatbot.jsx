@@ -44,7 +44,6 @@ useEffect(() => {
     .catch(() => {});
 }, []);
 
-if (!enabled) return null;
 
   useEffect(() => {
     msgsEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -156,6 +155,10 @@ if (!enabled) return null;
     ]);
     setShowQuick(true);
   };
+
+  if (!enabled) {
+  return null;
+}
 
   return (
     <>
