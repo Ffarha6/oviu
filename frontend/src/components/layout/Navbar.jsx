@@ -48,6 +48,17 @@ function Navbar() {
     setLanguage("ar");
   }
 }, [settings, language, setLanguage]);
+
+
+useEffect(() => {
+  if (!settings) return;
+
+  if (!settings.enable_dark_mode && darkMode) {
+    setDarkMode(false);
+  }
+}, [settings, darkMode, setDarkMode]);
+
+
   // ✅ FIX: نعرض الاسم الكامل (الأول + العائلة) لو موجود، ولو مش موجود
   // نرجع لليوزرنيم، ولو برضو مش موجود نرجع للإيميل كحل أخير.
   const displayName = user
@@ -510,7 +521,12 @@ function Navbar() {
 
           {/* ✅ Dark Mode Toggle — بقى ديسكتوب بس، اتنقل نسخته للموبايل جوه قائمة الهامبرجر
               عشان يفضى مساحة لشريط البحث في الهيدر الضيق */}
-          <DarkModeToggle className="hidden md:flex" colorClass="text-white" />
+          {settings?.enable_dark_mode && (
+  <DarkModeToggle
+    className="hidden md:flex"
+    colorClass="text-white"
+  />
+)}
 
           {/* ✅ Language — بقى ديسكتوب بس، نص عادي من غير مربع أو هايلايت، وبيكتب اسم اللغة كامل */}
           {settings?.enable_multilanguage && (
@@ -630,11 +646,12 @@ function Navbar() {
             <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
 
             {/* ✅ الدارك مود واللغة اتنقلوا هنا من الهيدر الرئيسي عشان يوفروا مساحة على الموبايل */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm">{t.darkModeLabel}</span>
-              <DarkModeToggle />
-            </div>
-
+            {settings?.enable_dark_mode && (
+  <div className="flex items-center justify-between">
+    <span className="text-sm">{t.darkModeLabel}</span>
+    <DarkModeToggle />
+  </div>
+)}
             {settings?.enable_multilanguage && (
   <div className="flex items-center justify-between">
     <span className="text-sm">{t.langLabel}</span>
