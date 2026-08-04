@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronRight, AlertTriangle, Trash2, Loader2 } from "lucide-react";
 import SectionCard from "../shared/SectionCard";
-import api from "../../api/axios";
-
+import api from "../../../api/axios";
 const integrations = [
   { name: "جوجل OAuth", status: "متصل", statusColor: "bg-emerald-100 text-emerald-700", emoji: "🔵" },
   { name: "فيسبوك OAuth", status: "متصل", statusColor: "bg-emerald-100 text-emerald-700", emoji: "🔷" },
