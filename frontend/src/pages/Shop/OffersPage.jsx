@@ -1,5 +1,7 @@
 import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
+import { useSettings } from "../../context/SettingsContext"
 import { LanguageContext } from "../../context/LanguageContext"
 import { ThemeContext } from "../../context/ThemeContext"
 import { motion } from "framer-motion"
@@ -333,6 +335,7 @@ function OffersPage() {
   const { language } = useContext(LanguageContext)
   const { darkMode }  = useContext(ThemeContext)
   const navigate      = useNavigate()
+  const { settings, loading } = useSettings()
   const isAr          = language === "ar"
   const t             = offersData[language]
 
@@ -343,6 +346,14 @@ function OffersPage() {
   const filteredCards = activeCategory === "all"
     ? t.cards
     : t.cards.filter(c => c.cat === activeCategory)
+
+    if (loading) {
+  return null;
+}
+
+if (!settings?.enable_offers) {
+  return <Navigate to="/" replace />;
+}
 
   return (
     <div

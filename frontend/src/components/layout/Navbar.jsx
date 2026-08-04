@@ -294,7 +294,14 @@ useEffect(() => {
   const isTryOn =
     cat === "تجربة افتراضية" || cat === "Virtual Try-On";
 
+  const isOffers =
+    cat === "العروض" || cat === "Offers";
+
   if (isTryOn && !settings?.show_virtual_tryon_in_navbar) {
+    return false;
+  }
+
+  if (isOffers && !settings?.enable_offers) {
     return false;
   }
 
