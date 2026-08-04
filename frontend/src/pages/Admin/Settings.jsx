@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, Loader2 } from "lucide-react";
-import api from "../../../api/axios";
+import api from "../../api/axios";
 import SettingsTabs from "../../components/admin/settings/Settingstabs";
 import GeneralTab from "../../components/admin/settings/Generaltab";
 import SettingsSidePanel from "../../components/admin/settings/Settingssidepanel";
