@@ -1,5 +1,5 @@
+import { useSettings } from "../context/SettingsContext";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom"
-import { CartProvider } from "../context/CartContext.jsx"
 import { useEffect } from "react"
 
 import Register      from "../pages/Login/Register.jsx"
@@ -83,8 +83,15 @@ function ChatbotGate() {
 }
 
 function App() {
+  const { loading } = useSettings();
+  if (loading) {
   return (
-    <CartProvider>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-10 h-10 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+}
+  return (
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
@@ -163,7 +170,7 @@ function App() {
 
         <ChatbotGate />
       </BrowserRouter>
-    </CartProvider>
+    
   )
 }
 
