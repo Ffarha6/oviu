@@ -682,7 +682,7 @@ function GlassesPage() {
                       <ProductCard
                         product={product}
                         isAr={isAr}
-                        t={t}
+                       
                       />
                     </motion.div>
                   ))
