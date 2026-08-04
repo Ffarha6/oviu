@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import api from "../../api/axios";
+import { useSettings } from "../../context/SettingsContext";
 const BASE_URL = "https://oviu-production.up.railway.app/api";
 
 function getCookie(name) {
@@ -34,17 +35,7 @@ export default function FloatingChatbot() {
 
   // ✅ historyLoaded في ref عشان نقدر نوصله جوه الـ event handler
   const historyLoadedRef = useRef(false);
-  const [enabled, setEnabled] = useState(true);
-
-useEffect(() => {
-  api.get("/settings/")
-    .then((res) => {
-      setEnabled(res.data.enable_chatbot);
-    })
-    .catch(() => {});
-}, []);
-
-
+  const { settings, loading } = useSettings();
   useEffect(() => {
     msgsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
@@ -156,7 +147,11 @@ useEffect(() => {
     setShowQuick(true);
   };
 
-  if (!enabled) {
+  if (loading) {
+  return null;
+}
+
+if (!settings?.enable_chatbot) {
   return null;
 }
 
