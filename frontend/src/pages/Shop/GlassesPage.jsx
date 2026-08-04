@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext, useRef } from "react"
 import api from "../../api/axios"
+
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { LanguageContext } from "../../context/LanguageContext"
 import { ThemeContext } from "../../context/ThemeContext"
@@ -117,6 +118,15 @@ function GlassesPage() {
   
   const { language } = useContext(LanguageContext)
   const { darkMode } = useContext(ThemeContext)
+  const [showBanner, setShowBanner] = useState(true);
+
+useEffect(() => {
+  api.get("/settings/")
+    .then((res) => {
+      setShowBanner(res.data.show_home_banner);
+    })
+    .catch(() => {});
+}, []);
   const navigate = useNavigate()
   const isAr = language === "ar"
 
@@ -515,6 +525,8 @@ function GlassesPage() {
               ✅ على الموبايل (أصغر من lg): الصورة بقت خلفية كاملة، والنص بيترسم فوقيها
               بتدرج غامق خفيف عشان يبان واضح.
               من lg فأكبر: رجعنا لنفس الشكل القديم بالظبط (نص جنب الصورة) زي ما هو. */}
+              {showBanner && (
+
           <div className="relative overflow-hidden rounded-[32px] mb-8 min-h-[320px] lg:min-h-0">
             <div className="grid lg:grid-cols-2 items-center min-h-[320px]">
 
@@ -563,6 +575,7 @@ function GlassesPage() {
               </div>
             </div>
           </div>
+          )}
 
           {/* TOOLBAR */}
           {/* ✅ FIX: الصفحة أصلاً RTL، يعني justify-end بتوّدي العناصر أقصى الشمال
