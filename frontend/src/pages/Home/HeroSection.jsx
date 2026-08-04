@@ -51,8 +51,8 @@ function HeroSection() {
           السفلي فقط (مش الصورة كلها) عشان وش الشخص يفضل واضح فوق،
           والنص يقرا كويس تحت من غير ما يتعارض مع الدائرة الدهبية.
       ══════════════════════════════════════════════════════════ */}
-      <div className="sm:hidden px-4 pt-3 pb-6">
-        <div className="relative rounded-[28px] overflow-hidden h-[430px]">
+      <div className="sm:hidden px-0 pt-0 pb-6">
+        <div className="relative overflow-hidden h-[430px]">
           <img
             src={bannerImg}
             alt=""
