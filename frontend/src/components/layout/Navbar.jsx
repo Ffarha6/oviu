@@ -41,7 +41,13 @@ function Navbar() {
   const { cartCount } = useCart();
   const { user, logout } = useAuth();
   const { settings } = useSettings();   // ✅ logout إضافة جديدة عشان زرار تسجيل الخروج جوه الـ dropdown
+  useEffect(() => {
+  if (!settings) return;
 
+  if (!settings.enable_multilanguage && language !== "ar") {
+    setLanguage("ar");
+  }
+}, [settings, language, setLanguage]);
   // ✅ FIX: نعرض الاسم الكامل (الأول + العائلة) لو موجود، ولو مش موجود
   // نرجع لليوزرنيم، ولو برضو مش موجود نرجع للإيميل كحل أخير.
   const displayName = user
@@ -507,16 +513,18 @@ function Navbar() {
           <DarkModeToggle className="hidden md:flex" colorClass="text-white" />
 
           {/* ✅ Language — بقى ديسكتوب بس، نص عادي من غير مربع أو هايلايت، وبيكتب اسم اللغة كامل */}
-          <button
-            onClick={() => setLanguage(isAr ? "en" : "ar")}
-            className="
-              hidden md:inline-flex
-              text-base font-semibold px-2
-              text-white
-            "
-          >
-            {isAr ? "English" : "العربية"}
-          </button>
+          {settings?.enable_multilanguage && (
+  <button
+    onClick={() => setLanguage(isAr ? "en" : "ar")}
+    className="
+      hidden md:inline-flex
+      text-base font-semibold px-2
+      text-white
+    "
+  >
+    {isAr ? "English" : "العربية"}
+  </button>
+)}
         </div>
       </div>
 
@@ -627,15 +635,18 @@ function Navbar() {
               <DarkModeToggle />
             </div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-sm">{t.langLabel}</span>
-              <button
-                onClick={() => setLanguage(isAr ? "en" : "ar")}
-                className="text-base font-semibold text-gray-600 dark:text-gray-300"
-              >
-                {isAr ? "English" : "العربية"}
-              </button>
-            </div>
+            {settings?.enable_multilanguage && (
+  <div className="flex items-center justify-between">
+    <span className="text-sm">{t.langLabel}</span>
+
+    <button
+      onClick={() => setLanguage(isAr ? "en" : "ar")}
+      className="text-base font-semibold text-gray-600 dark:text-gray-300"
+    >
+      {isAr ? "English" : "العربية"}
+    </button>
+  </div>
+)}
           </div>
         </div>,
         document.body
