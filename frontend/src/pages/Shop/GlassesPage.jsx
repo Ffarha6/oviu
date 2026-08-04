@@ -581,8 +581,8 @@ function GlassesPage() {
                 مشتركة، والقائمتين بقوا جوه صف flex واحد بعدها بدل ما كل واحدة
                 تتمركز تحت زرارها الصغير لوحدها — كده بيترصوا جنب بعض تلقائيًا
                 من غير ما يتلامسوا أو يتراكبوا فوق بعض، أيًا كان حجم كل واحدة */}
-            <div className="relative inline-flex" ref={dropdownsRef}>
-              <div className="flex items-center gap-3 relative">
+            <div className="relative" ref={dropdownsRef}>
+              <div className="flex items-center gap-3">
                 {/* Sort trigger */}
                 <button
                   onClick={() => setSortDropdownOpen(o => !o)}
@@ -609,9 +609,7 @@ function GlassesPage() {
 
               {/* صف واحد فيه القائمتين، flexbox بيرصهم جنب بعض من غير تراكب */}
               {(sortDropdownOpen || mobileFiltersOpen) && (
-                <div
-  className={`absolute z-30 top-full mt-2 ${isAr ? "left-0" : "right-0"} flex items-start gap-2`}
->
+                <div className={`absolute z-30 top-full mt-2 flex items-start gap-2 ${isAr ? "right-0" : "left-0"}`}>
 
                   {sortDropdownOpen && (
                     <div className="w-36 shrink-0 bg-white dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-xl shadow-lg overflow-hidden">
