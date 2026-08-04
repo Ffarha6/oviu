@@ -95,22 +95,7 @@ function BestSellers() {
           </motion.div>
         </AnimatePresence>
 
-        {/* View all button */}
-        <div className="flex justify-center mt-10">
-          <button
-            onClick={() => navigate("/glasses/all")}
-            className="
-              flex items-center gap-2
-              border-2 border-[#D9A066] text-[#D9A066]
-              hover:bg-[#D9A066] hover:text-white transition-all duration-300
-              font-semibold text-sm md:text-base
-              px-6 md:px-8 py-2.5 md:py-3 rounded-full
-            "
-          >
-            <span>{content[language].viewAll}</span>
-            <ArrowIcon className="text-xs" />
-          </button>
-        </div>
+        
 
       </div>
     </section>
