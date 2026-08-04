@@ -7,7 +7,7 @@ function PromoBanners() {
   return (
     // ✅ FIX: وحّدنا الـ padding الأفقي (px-6 بدل ما كانت px-4 md:px-6) عشان
     // تتماشى بالظبط مع باقي الأقسام، وضفنا xl:px-24 (مسافة متساوية يمين وشمال)
-    <section className="px-6 xl:px-24 py-6 md:py-8 bg-[#F7F2EE] dark:bg-[#050505] transition-all duration-500">
+    <section className="px-6 xl:px-24 pt-2 pb-2 md:pt-4 md:pb-4 bg-[#F7F2EE] dark:bg-[#050505] transition-all duration-500">
       <div className="max-w-[1750px] mx-auto">
         <motion.div
   initial={{ opacity: 0, y: 40 }}

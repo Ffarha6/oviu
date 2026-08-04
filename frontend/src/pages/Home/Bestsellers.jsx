@@ -42,7 +42,7 @@ function BestSellers() {
 
   if (loading) {
     return (
-      <section className="px-2 sm:px-6 xl:px-24 py-12 sm:py-16 bg-[#F7F2EE] dark:bg-[#050505] transition-all duration-500">
+      <section className="px-2 sm:px-6 xl:px-24 py-12 bg-[#F7F2EE] dark:bg-[#050505] transition-all duration-500">
         <div className="max-w-[1750px] mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6">
             {[...Array(6)].map((_, i) => (
