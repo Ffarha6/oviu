@@ -17,15 +17,6 @@ function resolveImageUrl(url) {
   return `${API_BASE}${url.startsWith("/") ? "" : "/"}${url}`
 }
 
-// ⚠️ حماية مؤقتة: بعض المنتجات راجعة من الباك إند وحقل الاسم بتاعها فيه
-// كود اللغة نفسه ("ar" أو "en") بدل الاسم الحقيقي — على الأغلب مشكلة بيانات
-// في قاعدة البيانات مش مشكلة فرونت إند. لحد ما يتصلح من هناك، منعرضش النص
-// المكسور ده للزبون، ونستبدله ببديل نضيف بدل ما يبين اسم غريب على الموقع.
-function safeProductName(rawName, isAr) {
-  const isBroken = !rawName || /^(ar|en)$/i.test(String(rawName).trim())
-  if (!isBroken) return rawName
-  return isAr ? "منتج بدون اسم" : "Unnamed product"
-}
 
 // ===== STAR RATING =====
 function StarRating({ rating = 0, count = 0 }) {
@@ -86,7 +77,7 @@ function ColorSwatches({ colors = [], selectedColor, onSelect }) {
 // ضيقة، بقى فيه زرار رئيسي واحد واضح "أضف للسلة"، وزرار "جرّب الآن" بقى
 // أيقونة مربعة صغيرة جنبه — نفس فكرة مواقع كبيرة (Amazon/ASOS): فعل أساسي
 // بارز + فعل ثانوي مضغوط، بدل ما الاتنين ياخدوا نفس الوزن البصري.
-function ProductCard({ product, isAr = false, t = {} }) {
+function ProductCard({ product, isAr = false }) {
   const navigate = useNavigate()
   const { addToCart, loading: cartLoading } = useCart()
   const { isWishlisted, toggleWishlist } = useWishlist()
@@ -97,8 +88,7 @@ function ProductCard({ product, isAr = false, t = {} }) {
   const colors = product.colors || []
   const [selectedColor, setSelectedColor] = useState(colors[0] || null)
 
-  const displayName = safeProductName(product.name, isAr)
-
+  const displayName = product.name || (isAr ? "منتج بدون اسم" : "Unnamed product")
   // ─────────────────────────────────────────────
   // FIX: الصور المعروضة دلوقتي بتتبع اللون المختار فقط
   // مش كل صور كل الألوان مجمّعة في قايمة واحدة
