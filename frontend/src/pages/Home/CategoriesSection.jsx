@@ -68,7 +68,7 @@ function CategoriesSection() {
               `}
             >
               {/* ✅ الصورة بقت مربعة وبتاخد عرض الكارت كامل بدل الدايرة الصغيرة */}
-              <div className="w-full aspect-square overflow-hidden">
+              <div className="w-full aspect-[5/4] overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
