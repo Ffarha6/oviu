@@ -119,7 +119,7 @@ function GlassesPage() {
   
   const { language } = useContext(LanguageContext)
   const { darkMode } = useContext(ThemeContext)
-  const { settings, loading } = useSettings();
+  const { settings, loading: settingsLoading } = useSettings();
   const navigate = useNavigate()
   const isAr = language === "ar"
 

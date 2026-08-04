@@ -1,3 +1,4 @@
+import { useSettings } from "../../context/SettingsContext";
 import logo from "../../assets/images/logo.png"
 import { LanguageContext } from "../../context/LanguageContext"
 import { ThemeContext } from "../../context/ThemeContext"
@@ -37,8 +38,9 @@ function Navbar() {
   const location = useLocation()
   const { language, setLanguage } = useContext(LanguageContext)
   const { darkMode, setDarkMode } = useContext(ThemeContext)
-  const { cartCount } = useCart()
-  const { user, logout } = useAuth()   // ✅ logout إضافة جديدة عشان زرار تسجيل الخروج جوه الـ dropdown
+  const { cartCount } = useCart();
+  const { user, logout } = useAuth();
+  const { settings } = useSettings();   // ✅ logout إضافة جديدة عشان زرار تسجيل الخروج جوه الـ dropdown
 
   // ✅ FIX: نعرض الاسم الكامل (الأول + العائلة) لو موجود، ولو مش موجود
   // نرجع لليوزرنيم، ولو برضو مش موجود نرجع للإيميل كحل أخير.
@@ -264,8 +266,23 @@ function Navbar() {
         ? <IoSunnyOutline className="text-xl" />
         : <HiOutlineMoon className="text-xl" />
       }
+
+      
     </button>
   )
+
+
+
+  const categories = t.cats.filter((cat) => {
+  const isTryOn =
+    cat === "تجربة افتراضية" || cat === "Virtual Try-On";
+
+  if (isTryOn && !settings?.show_virtual_tryon_in_navbar) {
+    return false;
+  }
+
+  return true;
+});
 
   return (
     <div className="fixed top-0 left-0 w-full z-50 overflow-x-hidden overflow-y-visible" dir={isAr ? "rtl" : "ltr"}>
@@ -518,7 +535,7 @@ function Navbar() {
             border-b border-gray-100 dark:border-gray-800
             px-3 md:px-6 flex items-center overflow-x-auto scrollbar-hide
           ">
-            {t.cats.map((cat, i) => (
+            {categories.map((cat, i) => (
               <span
                 key={i}
                 onClick={() => handleCatClick(cat)}
@@ -592,7 +609,7 @@ function Navbar() {
 
             <div className="w-full h-px bg-gray-100 dark:bg-gray-800" />
 
-            {t.cats.map((cat, i) => (
+           {categories.map((cat, i) => (
               <span
                 key={i}
                 onClick={() => handleCatClick(cat)}

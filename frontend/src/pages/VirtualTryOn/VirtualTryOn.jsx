@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect, useContext } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { LanguageContext } from "../../context/LanguageContext";
+import { useSettings } from "../../context/SettingsContext";
 
 const BASE_URL = "https://oviu-production.up.railway.app";
 
@@ -96,6 +97,15 @@ export default function VirtualTryOn({ onBack }) {
   const { darkMode } = useContext(ThemeContext);
   const { language } = useContext(LanguageContext);
   const isAr = language === "ar";
+  const { settings, loading: settingsLoading } = useSettings();
+  if (settingsLoading) {
+  return null;
+}
+
+if (settings && !settings.enable_virtual_tryon) {
+  navigate("/");
+  return null;
+}
 
   const c = {
     pageBg:   darkMode ? "#000000" : "#F7F2EE",
