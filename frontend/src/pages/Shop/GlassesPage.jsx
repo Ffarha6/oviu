@@ -643,15 +643,7 @@ function GlassesPage() {
             </div>
 
             {/* نص "عرض X من Y منتج" — آخر حاجة، تفضل أقصى الشمال */}
-            <p className="text-gray-400 text-sm">
-              {t.showing}{" "}
-              <span className="text-black dark:text-white font-semibold">
-                {(currentPage - 1) * 20 + 1}–{Math.min(currentPage * 20, totalCount)}
-              </span>{" "}
-              {t.of}{" "}
-              <span className="text-black dark:text-white font-semibold">{totalCount}</span>{" "}
-              {t.product}
-            </p>
+            
           </div>
 
           {/* ERROR */}
