@@ -99,7 +99,8 @@ export default function CheckoutPage() {
 
   // ── العنوان المحفوظ ──
   // savedAddress = null لحد ما نتأكد إن مفيش عنوان (بنفرق بينه وبين "لسه بيحمل" بـ addressLoading)
-  const [savedAddress, setSavedAddress] = useState(null)
+ const [addresses, setAddresses] = useState([])
+const [selectedAddress, setSelectedAddress] = useState(null)
   const [addressLoading, setAddressLoading] = useState(true)
   // بدل ما الفورم يتوسّع جوه الصفحة، دلوقتي addressModalOpen بيفتح مودال منبثق فوق الصفحة كلها
   // (نفس فكرة جوميا: كارت مختصر + زرار "تغيير"/"إضافة عنوان" يفتح بوب أب)
@@ -117,23 +118,31 @@ export default function CheckoutPage() {
   }, [])
 
   useEffect(() => {
-    // العنوان مش object منفصل، هو أصلاً حقول جوه اليوزر نفسه (User model):
-    // address (نص), phone, governorate (بنستخدمه كـ "مدينة"), first_name, last_name
-    // اليوزر ده جاي من AuthContext اللي بيجيبه من /api/auth/user/
-    setAddressLoading(true)
-    if (user && (user.address || user.phone)) {
-      setSavedAddress({
-        full_name: `${user.first_name || ""} ${user.last_name || ""}`.trim() || user.username || "",
-        phone: user.phone || "",
-        city: user.governorate || "",
-        address: user.address || "",
-      })
-    } else {
-      setSavedAddress(null)
-    }
-    setAddressLoading(false)
-  }, [user])
+  const loadAddresses = async () => {
+    try {
+      setAddressLoading(true)
 
+      const res = await authFetch("/api/auth/addresses/")
+
+      if (!res.ok) throw new Error()
+
+      const data = await res.json()
+
+      setAddresses(data)
+
+      if (data.length > 0) {
+        const selected = data.find(a => a.is_default) || data[0]
+        setSelectedAddress(selected)
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setAddressLoading(false)
+    }
+  }
+
+  loadAddresses()
+}, [])
   // لو لقينا عنوان محفوظ، نملى بيه الفورم تلقائيًا (يظهر في الكارت المختصر، ويبقى أساس المودال لو "تغيير")
   useEffect(() => {
     if (savedAddress) {

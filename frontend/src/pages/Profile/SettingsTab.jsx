@@ -1,5 +1,6 @@
 import { useState, useContext } from "react"
 import { LanguageContext } from "../../context/LanguageContext"
+import { useSettings } from "../../context/SettingsContext"
 import { FaChevronLeft, FaGlobe, FaBell, FaLock, FaSlidersH, FaEnvelope, FaCommentDots, FaWhatsapp } from "react-icons/fa"
 
 // صف إعداد عام (أيقونة + تسمية + قيمة اختيارية + سهم) — مستخدم هنا بس
@@ -97,9 +98,12 @@ function NotificationsView({ onBack }) {
 // ── القايمة الرئيسية للإعدادات ────────────────────────────────────
 export default function SettingsTab() {
   const { language, setLanguage } = useContext(LanguageContext)
-  const [view, setView] = useState("list") // 'list' | 'notifications'
+  const { settings } = useSettings()
+
+  const [view, setView] = useState("list")
   const isAr = language === "ar"
 
+  
   if (view === "notifications") {
     return <NotificationsView onBack={() => setView("list")} />
   }
@@ -114,12 +118,14 @@ export default function SettingsTab() {
       />
       {/* ✅ جديد: اللغة متربطة مباشرة بنفس LanguageContext المستخدم في باقي
           الموقع (نفس اللي في الـ Navbar) - الضغطة بتبدّل اللغة على طول */}
-      <SettingsRow
-        icon={<FaGlobe />}
-        label="اللغة"
-        value={isAr ? "العربية" : "English"}
-        onClick={() => setLanguage(isAr ? "en" : "ar")}
-      />
+      {settings?.enable_multilanguage && (
+  <SettingsRow
+    icon={<FaGlobe />}
+    label="اللغة"
+    value={isAr ? "العربية" : "English"}
+    onClick={() => setLanguage(isAr ? "en" : "ar")}
+  />
+)}
       {/* ✅ جديد: بتفتح صفحة فرعية فيها تفضيلات الإشعارات */}
       <SettingsRow
         icon={<FaBell />}
