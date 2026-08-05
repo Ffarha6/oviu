@@ -390,10 +390,10 @@ const displayName = safeProductName(rawName, isAr)
 
 {/* السعر */}
 <div className={`flex flex-nowrap items-baseline gap-1.5 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
-  <span className="text-[#D9A066] font-extrabold text-[15px] sm:text-[18px] md:text-[22px] whitespace-nowrap flex items-center gap-1">
-    <span>{currentPrice.toLocaleString()}</span>
-    <span className="text-[13px] sm:text-[15px]">{currency}</span>
-  </span>
+  <span className="text-[#D9A066] font-extrabold text-[20px] sm:text-[24px] md:text-[28px] whitespace-nowrap flex items-center gap-1">
+  <span>{currentPrice.toLocaleString()}</span>
+  <span className="text-[16px] sm:text-[19px]">{currency}</span>
+</span>
   {hasDiscount && originalPrice > currentPrice && (
     <span className="text-gray-400 text-[11px] sm:text-[13px] line-through whitespace-nowrap">
       {originalPrice.toLocaleString()}
