@@ -101,11 +101,8 @@ function ProductCard({ product, isAr = false, t = {} }) {
   name: product.name,
   product,
 })
-  const displayName =
-  product.name ||
-  product.name_ar ||
-  product.name_en ||
-  JSON.stringify(product).slice(0, 80)
+  const rawName = product.name || product.name_ar || product.name_en || ""
+const displayName = safeProductName(rawName, isAr)
 
   // ─────────────────────────────────────────────
   // FIX: الصور المعروضة دلوقتي بتتبع اللون المختار فقط
@@ -365,34 +362,15 @@ function ProductCard({ product, isAr = false, t = {} }) {
         )}
 
         {/* اسم المنتج — محمي من مشكلة البيانات المكسورة (راجع safeProductName فوق) */}
-        <h3
-          onClick={goToProduct}
-          className="text-[13px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.2em]"
-        >
-          <>
+       <h3
+  onClick={goToProduct}
+  className="text-[13px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.2em]"
+>
   {displayName}
-  <br />
-  <small style={{color:"red",fontSize:"10px"}}>
-    {product.id}
-  </small>
-</>
-        </h3>
+</h3>
 
         
-        {/* السعر */}
-        <div className={`flex flex-nowrap items-baseline gap-1.5 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
-          <span className="text-[#D9A066] font-extrabold text-[15px] sm:text-[18px] md:text-[22px] whitespace-nowrap flex items-center gap-1">
-  <span>{currentPrice.toLocaleString()}</span>
-  <span className="text-[13px] sm:text-[15px]">{currency}</span>
-</span>
-          {hasDiscount && originalPrice > currentPrice && (
-            <span className="text-gray-400 text-[11px] sm:text-[13px] line-through whitespace-nowrap">
-              {originalPrice.toLocaleString()}
-            </span>
-          )}
-        </div>
-
-        {/* الألوان */}
+       {/* الألوان */}
 {colors.length > 0 && (
   <div
     className={`
@@ -409,6 +387,19 @@ function ProductCard({ product, isAr = false, t = {} }) {
     />
   </div>
 )}
+
+{/* السعر */}
+<div className={`flex flex-nowrap items-baseline gap-1.5 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
+  <span className="text-[#D9A066] font-extrabold text-[15px] sm:text-[18px] md:text-[22px] whitespace-nowrap flex items-center gap-1">
+    <span>{currentPrice.toLocaleString()}</span>
+    <span className="text-[13px] sm:text-[15px]">{currency}</span>
+  </span>
+  {hasDiscount && originalPrice > currentPrice && (
+    <span className="text-gray-400 text-[11px] sm:text-[13px] line-through whitespace-nowrap">
+      {originalPrice.toLocaleString()}
+    </span>
+  )}
+</div>
         {cartError && (
           <p className="text-red-500 text-[11px] leading-snug -mt-1">{cartError}</p>
         )}
