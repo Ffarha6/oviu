@@ -499,16 +499,15 @@ function GlassesPage() {
               <>
                 <span onClick={() => navigate("/")} className="cursor-pointer hover:text-[#D9A066] transition" style={{ fontSize: "inherit" }}>{t.home}</span>
                 <span style={{ fontSize: "20px" }}>›</span>
-                <span onClick={() => navigate("/glasses")} className="cursor-pointer hover:text-[#D9A066] transition" style={{ fontSize: "inherit" }}>{t.glasses}</span>
-                <span style={{ fontSize: "20px" }}>›</span>
+
+                
                 <span className="text-[#D9A066] font-semibold" style={{ fontSize: "inherit" }}>{pageTitle}</span>
               </>
             ) : (
               <>
                 <span onClick={() => navigate("/")} className="cursor-pointer hover:text-[#D9A066] transition" style={{ fontSize: "inherit" }}>{t.home}</span>
                 <span style={{ fontSize: "20px" }}>›</span>
-                <span onClick={() => navigate("/glasses")} className="cursor-pointer hover:text-[#D9A066] transition" style={{ fontSize: "inherit" }}>{t.glasses}</span>
-                <span style={{ fontSize: "20px" }}>›</span>
+                
                 <span className="text-[#D9A066] font-semibold" style={{ fontSize: "inherit" }}>{pageTitle}</span>
               </>
             )}
