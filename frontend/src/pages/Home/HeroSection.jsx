@@ -24,13 +24,11 @@ function HeroSection() {
 
   const content = {
     ar: {
-      subtitle: "أسلوبك . رؤيتك",
-      title: "كلها تعبر عنك",
-      description:
-        "اكتشف مجموعة مختارة بعناية من النظارات التي تجمع بين الفخامة والجودة والأناقة العصرية",
-      shop: "تسوق الآن",
-      tryon: "تجربة افتراضية",
-    },
+  subtitle: "OVIU COLLECTION",
+  title: "أسلوبك يبدأ من نظارتك",
+  description:
+    "اكتشف تشكيلة مختارة من النظارات الشمسية والطبية بأفضل الأسعار.",
+},
     en: {
       subtitle: "Your Style . Your Vision",
       title: "It All Reflects You",
@@ -72,30 +70,14 @@ function HeroSection() {
             <p className="text-[#E8B074] text-[13px] font-semibold mb-1">
               {c.subtitle}
             </p>
-            <h1 className="text-white text-[26px] font-bold mb-1.5 leading-[1.25]">
+            <h1 className="text-white text-[32px] font-extrabold mb-2 leading-tight">
               {c.title}
             </h1>
-            <p className="text-white/80 text-[12px] leading-relaxed mb-4 max-w-[280px]">
+            <p className="text-white/90 text-[15px] leading-7 max-w-[300px]">
               {c.description}
             </p>
 
-            <div className={`flex items-center gap-2.5 ${isAr ? "flex-row-reverse justify-end" : "flex-row justify-start"}`}>
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={() => navigate("/glasses/all")}
-                className="bg-[#D9A066] text-white font-semibold text-[13px] px-5 py-2.5 rounded-full shadow-md shadow-black/20"
-              >
-                {c.shop}
-              </motion.button>
-
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={() => navigate("/virtual-tryon")}
-                className="border-2 border-white/80 text-white font-semibold text-[13px] px-5 py-2.5 rounded-full"
-              >
-                {c.tryon}
-              </motion.button>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -156,7 +138,7 @@ function HeroSection() {
               {c.subtitle}
             </p>
 
-            <h1 className="text-6xl lg:text-7xl xl:text-[80px] font-bold mb-5 text-black dark:text-white leading-[1.1] drop-shadow-[0_0_20px_rgba(217,160,102,0.15)]">
+            <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-5 text-black dark:text-white leading-[1.1] drop-shadow-[0_0_20px_rgba(217,160,102,0.15)]">
               {c.title}
             </h1>
 
@@ -164,25 +146,7 @@ function HeroSection() {
               {c.description}
             </p>
 
-            <div className={`flex items-center flex-wrap gap-4 mb-10 ${isAr ? "flex-row-reverse justify-end" : "flex-row justify-start"}`}>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => navigate("/glasses/all")}
-                className="bg-[#D9A066] text-white hover:bg-[#c4894f] transition-all duration-300 text-lg lg:text-xl px-8 lg:px-10 py-3 lg:py-4 rounded-full font-semibold shadow-md shadow-[#D9A066]/30"
-              >
-                {c.shop}
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => navigate("/virtual-tryon")}
-                className="border-2 border-[#D9A066] text-[#D9A066] hover:bg-[#D9A066] hover:text-white transition-all duration-300 text-lg lg:text-xl px-8 lg:px-10 py-3 lg:py-4 rounded-full font-semibold"
-              >
-                {c.tryon}
-              </motion.button>
-            </div>
+            
           </motion.div>
         </div>
       </div>
