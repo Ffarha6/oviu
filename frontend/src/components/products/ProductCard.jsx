@@ -369,7 +369,13 @@ function ProductCard({ product, isAr = false, t = {} }) {
           onClick={goToProduct}
           className="text-[13px] sm:text-[15px] md:text-[16px] font-semibold text-black dark:text-white leading-snug hover:text-[#D9A066] transition-colors duration-200 cursor-pointer line-clamp-2 min-h-[2.2em]"
         >
-          {displayName}
+          <>
+  {displayName}
+  <br />
+  <small style={{color:"red",fontSize:"10px"}}>
+    {product.id}
+  </small>
+</>
         </h3>
 
         
