@@ -96,7 +96,11 @@ function ProductCard({ product, isAr = false, t = {} }) {
 
   const colors = product.colors || []
   const [selectedColor, setSelectedColor] = useState(colors[0] || null)
-  console.log(product)
+  console.log({
+  width: window.innerWidth,
+  name: product.name,
+  product,
+})
   const displayName = safeProductName(product.name, isAr)
 
   // ─────────────────────────────────────────────
