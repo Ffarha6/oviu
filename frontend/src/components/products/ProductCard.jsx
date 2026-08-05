@@ -101,7 +101,11 @@ function ProductCard({ product, isAr = false, t = {} }) {
   name: product.name,
   product,
 })
-  const displayName = safeProductName(product.name, isAr)
+  const displayName =
+  product.name ||
+  product.name_ar ||
+  product.name_en ||
+  JSON.stringify(product).slice(0, 80)
 
   // ─────────────────────────────────────────────
   // FIX: الصور المعروضة دلوقتي بتتبع اللون المختار فقط
