@@ -230,16 +230,13 @@ export default function ProfilePage() {
           {/* ✅ على الموبايل بس: زرار رجوع بسيط لما نبقى في تاب تاني غير
               الملف الشخصي، بما إن شريط التنقل القديم مبقاش ظاهر هناك */}
           {activeTab !== "profile" && (
-            <button
-              onClick={() => setActiveTab("profile")}
-              className="sm:hidden flex items-center gap-2 text-[#666] dark:text-gray-400 text-sm font-semibold self-start"
-              style={{ fontFamily: "'Cairo',sans-serif" }}
-            >
-              <FaChevronLeft style={{ transform: "rotate(180deg)" }} />
-              رجوع للملف الشخصي
-            </button>
-          )}
-
+  <button
+    onClick={() => setActiveTab("profile")}
+    className="sm:hidden w-9 h-9 rounded-xl bg-white dark:bg-black border border-[#f0f0f0] dark:border-gray-700 flex items-center justify-center mb-2"
+  >
+    <FaChevronLeft style={{ transform: "rotate(180deg)" }} />
+  </button>
+)}
           {activeTab === "profile" && (
             <>
               {/* ══════════════════════════════════════════════════════════
