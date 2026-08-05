@@ -11,6 +11,7 @@ function BottomNav() {
   const location = useLocation()
   const { language } = useContext(LanguageContext)
   const { cartCount } = useCart()
+  const { user } = useAuth()
   const { settings } = useSettings()
   const isAr = language === "ar"
 
