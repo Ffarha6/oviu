@@ -574,7 +574,7 @@ function GlassesPage() {
               مش اليمين (العكس تمامًا) — الصح هو justify-start. وكمان رتّبنا
               العناصر في الـ DOM بنفس ترتيب القراءة المطلوب من اليمين للشمال:
               الأحدث، بعدين تصفية النتائج، بعدين نص "عرض X من Y منتج" في الآخر */}
-          <div className="flex items-center justify-start mb-3 flex-wrap gap-3">
+          <div className="flex items-center justify-start mt-4 mb-3 flex-wrap gap-3">
 
             {/* ✅ FIX: زرارين الترتيب والفلاتر بقوا جوه حاوية relative واحدة
                 مشتركة، والقائمتين بقوا جوه صف flex واحد بعدها بدل ما كل واحدة
