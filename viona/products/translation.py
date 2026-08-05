@@ -21,4 +21,3 @@ class ProductTranslationOptions(TranslationOptions):
     blank_translation = True  # ✅ تم التعديل
     
     # ✅ تم التعديل: استخدام fallback_values بدلاً من fallback_language
-    fallback_values = 'ar'  # القيمة الافتراضية عند عدم وجود ترجمة
