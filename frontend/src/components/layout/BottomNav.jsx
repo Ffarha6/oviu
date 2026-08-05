@@ -4,12 +4,14 @@ import { FaHome, FaThLarge, FaPercent, FaUser, FaShoppingCart } from "react-icon
 import { LanguageContext } from "../../context/LanguageContext"
 import { useCart } from "../../context/CartContext"
 import { useAuth } from "../../context/AuthContext"
+import { FaHeart } from "react-icons/fa"
+import { useSettings } from "../../context/SettingsContext"
 
 function BottomNav() {
   const location = useLocation()
   const { language } = useContext(LanguageContext)
   const { cartCount } = useCart()
-  const { user } = useAuth()
+  const { settings } = useSettings()
   const isAr = language === "ar"
 
   const t = {
@@ -25,12 +27,57 @@ function BottomNav() {
 
   // ✅ حسابي في النص (مكان العروض القديم)، والعروض مكان حسابي القديم
   const items = [
-    { key: "home", icon: FaHome, path: "/", label: t.home, active: location.pathname === "/" },
-    { key: "categories", icon: FaThLarge, label: t.categories, active: false, onClick: openCategoriesDrawer },
-    { key: "account", icon: FaUser, path: user ? "/profile" : "/login", label: t.account, active: location.pathname.startsWith("/profile") || location.pathname.startsWith("/login") },
-    { key: "offers", icon: FaPercent, path: "/offers", label: t.offers, active: location.pathname.startsWith("/offers") },
-    { key: "cart", icon: FaShoppingCart, path: "/cart", label: t.cart, active: location.pathname.startsWith("/cart"), badge: cartCount },
-  ]
+  {
+    key: "home",
+    icon: FaHome,
+    path: "/",
+    label: t.home,
+    active: location.pathname === "/",
+  },
+
+  {
+    key: "categories",
+    icon: FaThLarge,
+    label: t.categories,
+    active: false,
+    onClick: openCategoriesDrawer,
+  },
+
+  {
+    key: "account",
+    icon: FaUser,
+    path: user ? "/profile" : "/login",
+    label: t.account,
+    active:
+      location.pathname.startsWith("/profile") ||
+      location.pathname.startsWith("/login"),
+  },
+
+  settings?.enable_offers
+    ? {
+        key: "offers",
+        icon: FaPercent,
+        path: "/offers",
+        label: t.offers,
+        active: location.pathname.startsWith("/offers"),
+      }
+    : {
+        key: "wishlist",
+        icon: FaHeart,
+        path: "/wishlist",
+        label: language === "ar" ? "المفضلة" : "Wishlist",
+        active: location.pathname.startsWith("/wishlist"),
+      },
+
+  {
+    key: "cart",
+    icon: FaShoppingCart,
+    path: "/cart",
+    label: t.cart,
+    active: location.pathname.startsWith("/cart"),
+    badge: cartCount,
+  },
+]
 
   return (
     <nav
