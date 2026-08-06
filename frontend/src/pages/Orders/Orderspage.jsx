@@ -279,10 +279,17 @@ export default function OrdersPage() {
         .order-card-main { padding: 18px 20px; display: flex; align-items: flex-start; gap: 16px; }
 
         .order-thumb {
-          width: 60px; height: 60px; border-radius: 10px; background: #f8f8f8;
-          border: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: center;
-          flex-shrink: 0; overflow: hidden;
-        }
+  width: 90px;
+  height: 90px;
+  border-radius: 14px;
+  background: #f8f8f8;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
         .order-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .order-thumb-placeholder { color: #ddd; font-size: 22px; }
 
@@ -328,10 +335,17 @@ export default function OrdersPage() {
           display: flex; align-items: center; gap: 12px; background: #fff;
           border-radius: 10px; padding: 10px 14px; border: 1px solid #f0f0f0;
         }
-        .item-thumb {
-          width: 38px; height: 38px; border-radius: 8px; background: #f5f5f5;
-          display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #ddd; font-size: 14px;
-        }
+        .item-thumb{
+    width:48px;
+    height:48px;
+    border-radius:8px;
+    background:#f5f5f5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    overflow:hidden;
+}
         .item-info { flex: 1; min-width: 0; }
         .item-name { margin: 0; font-size: 13px; font-weight: 600; }
         .item-sub { margin: 0; font-size: 11px; color: #aaa; }
