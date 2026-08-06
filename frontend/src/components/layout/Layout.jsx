@@ -31,13 +31,8 @@ function Layout({ children }) {
         السلة/الشيك أوت لأنهم ليهم بار سفلي خاص بيهم مختلف
       */}
       <main
-  className={`
-    overflow-x-hidden
-    w-full
-    pt-0
-    lg:pt-[100px]
-    ${hideMobileBottomBar ? "" : "pb-20 lg:pb-0"}
-  `}
+  className={`overflow-x-hidden w-full ${hideMobileBottomBar ? "" : "pb-20 lg:pb-0"}`}
+  style={{ paddingTop: "var(--navbar-height, 132px)" }}
 >
   {children}
 </main>
