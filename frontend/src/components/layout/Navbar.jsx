@@ -86,6 +86,7 @@ useEffect(() => {
   const dropdownRef = useRef(null)  // القائمة نفسها بعد ما تترسم في الـ portal
   // ✅ شريط التصنيفات يتطوى تلقائي لما ننزل تحت في الصفحة، ويرجع يظهر تاني لما نطلع فوق
   const [categoriesVisible, setCategoriesVisible] = useState(true)
+  const navbarRef = useRef(null)
 
   // ✅ FIX: الحل الجذري لمشكلة "المسافة الفاضية فوق الصفحة". بدل ما Layout.jsx
   // يحجز مساحة برقم ثابت مخمّن (كان فيه شريط علوي 36px اتشال من هنا زمان بس
@@ -97,22 +98,23 @@ useEffect(() => {
   // بنحطها في متغير CSS مشترك اسمه --navbar-height، والـ Layout.jsx بيقرأ
   // نفس المتغير ده بدل رقم ثابت
   useEffect(() => {
-    const updateNavHeight = () => {
-      // نفس نقاط التوقف بتاعة Tailwind: md = 768px
-      const isMdUp = window.innerWidth >= 768
-      const mainNavHeight = isMdUp ? 80 : 64      // h-20 (80px) على الديسكتوب، h-16 (64px) على الموبايل
-      // ✅ شريط الفئات (Categories bar) بقى مخفي في الموبايل خالص (موجود جوه
-      // الدرج الجانبي بدل كده)، فارتفاعه بيتحسب بس على الديسكتوب
-      const categoriesHeight = isMdUp && categoriesVisible ? 52 : 0
-      document.documentElement.style.setProperty(
-        "--navbar-height",
-        `${mainNavHeight + categoriesHeight}px`
-      )
-    }
-    updateNavHeight()
-    window.addEventListener("resize", updateNavHeight)
-    return () => window.removeEventListener("resize", updateNavHeight)
-  }, [categoriesVisible])
+  const updateNavHeight = () => {
+    if (!navbarRef.current) return;
+
+    document.documentElement.style.setProperty(
+      "--navbar-height",
+      `${navbarRef.current.offsetHeight}px`
+    );
+  };
+
+  updateNavHeight();
+
+  window.addEventListener("resize", updateNavHeight);
+
+  return () => {
+    window.removeEventListener("resize", updateNavHeight);
+  };
+}, [categoriesVisible]);
 
   useEffect(() => {
     let lastY = window.scrollY
@@ -309,7 +311,9 @@ useEffect(() => {
 });
 
   return (
-    <div className="fixed top-0 left-0 w-full z-50 overflow-x-hidden overflow-y-visible" dir={isAr ? "rtl" : "ltr"}>
+    <div 
+    ref={navbarRef}
+    className="fixed top-0 left-0 w-full z-50 overflow-x-hidden overflow-y-visible" dir={isAr ? "rtl" : "ltr"}>
 
       {/* ── Main navbar — شريط مميز بلون الهوية زي نون ── */}
       <div className="
