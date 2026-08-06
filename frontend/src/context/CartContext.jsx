@@ -26,13 +26,18 @@ function getCartHeaders(includeContentType = false) {
     "X-Cart-Id": getGuestCartId(),
   }
 
+  const token = localStorage.getItem("access_token")
+
+  if (token) {
+    headers["Authorization"] = `Token ${token}`
+  }
+
   if (includeContentType) {
     headers["Content-Type"] = "application/json"
   }
 
   return headers
 }
-
 
 // قراءة رد الـ Backend واستخراج رسالة خطأ واضحة
 async function parseCartResponse(res) {
