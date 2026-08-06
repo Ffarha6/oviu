@@ -411,7 +411,7 @@ function CartPage() {
                       </div>
 
                       {/* ── نسخة الموبايل: صورة كبيرة وواضحة زي نون، وكنترول الكمية تحتها في نفس العمود، والاسم/السعر/القلب في عمود جنبها ── */}
-                      <div className={`md:hidden flex gap-3 ${isAr ? "flex-row-reverse" : ""}`} dir={isAr ? "rtl" : "ltr"}>
+                      <div className="md:hidden flex gap-3" dir={isAr ? "rtl" : "ltr"}>
                         {/* عمود الصورة + كنترول الكمية تحتها */}
                         <div className="flex flex-col items-center gap-2 shrink-0">
                           <div className="w-[130px] h-[130px] rounded-[14px] overflow-hidden bg-white border border-black/5 flex items-center justify-center">

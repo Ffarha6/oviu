@@ -604,7 +604,7 @@ export default function CheckoutPage() {
           const unitPrice = parseFloat(item.product_price ?? 0)
 
           return (
-            <div key={item.id || idx} className={`flex gap-3 py-3 ${isAr ? "flex-row-reverse" : ""} ${idx !== items.length - 1 ? "border-b border-black/5 dark:border-white/5" : ""}`}>
+            <div key={item.id || idx} dir={isAr ? "rtl" : "ltr"} className={`flex gap-3 py-3 ${idx !== items.length - 1 ? "border-b border-black/5 dark:border-white/5" : ""}`}>
               {/* صورة أكبر وأوضح زي نون */}
               <div className="relative w-[140px] h-[140px] bg-white dark:bg-[#1a1a1a] rounded-[14px] shrink-0 flex items-center justify-center overflow-hidden border border-black/5 dark:border-white/5">
                 <img
