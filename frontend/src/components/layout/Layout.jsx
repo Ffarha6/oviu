@@ -9,6 +9,7 @@ function Layout({ children }) {
   // زي نون، فمينفعش الفوتر العادي أو الـ BottomNav العام يبانوا تحته/جنبه هناك —
   // بيتشالوا بس على الموبايل، ويفضلوا ظاهرين عادي على الديسكتوب
   const hideMobileBottomBar = ["/cart", "/checkout"].includes(location.pathname)
+  const isHome = location.pathname === "/"
 
   return (
     <>
@@ -33,9 +34,10 @@ function Layout({ children }) {
       <main
   className={`overflow-x-hidden w-full ${hideMobileBottomBar ? "" : "pb-20 lg:pb-0"}`}
   style={{
-  paddingTop: window.innerWidth >= 1024
-    ? "100px"
-    : "var(--navbar-height, 132px)"
+  paddingTop:
+    isHome && window.innerWidth >= 1024
+      ? "100px"
+      : "var(--navbar-height, 132px)"
 }}
 >
   {children}
