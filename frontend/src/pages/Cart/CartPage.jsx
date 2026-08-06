@@ -166,6 +166,7 @@ function CartPage() {
   const qualifiesForFreeShipping  = subtotal >= FREE_SHIPPING_THRESHOLD
   const shippingCost              = qualifiesForFreeShipping ? 0 : SHIPPING_COST
   const remainingForFreeShipping  = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal)
+  // ✅ الضريبة اتشالت خالص من الحسبة، الإجمالي بقى بس: المجموع الفرعي - الخصم + الشحن
   const total                     = subtotal - discount + shippingCost
 
   const handleCheckout = () => {
@@ -647,9 +648,10 @@ function CartPage() {
 
           {/* ═══════════════════════════════════════════
               ORDER SUMMARY SIDEBAR
-              ✅ عرض كامل تحت المنتجات على الموبايل/التابلت، وعمود ثابت بجانبهم من lg فأكبر
+              ✅ دلوقتي ظاهر بالكامل على الموبايل والتابلت كمان (تحت المنتجات)،
+              مش مخفي زي الأول. من lg فأكبر بيبقى عمود ثابت جنب المنتجات.
           ═══════════════════════════════════════════ */}
-          <div className="hidden lg:flex lg:w-[360px] lg:shrink-0 flex-col gap-4 lg:sticky lg:top-[110px]">
+          <div className="w-full lg:w-[360px] lg:shrink-0 flex flex-col gap-4 lg:sticky lg:top-[110px]">
             <div className="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[24px] p-5 sm:p-7">
               <div className="flex items-center gap-2 mb-4">
                 <MdOutlinePayment className="text-[#D9A066] text-xl" />
@@ -734,10 +736,10 @@ function CartPage() {
                 </button>
               </div>
 
-              {/* ── Checkout button ── */}
+              {/* ── Checkout button ── (مخفي على الموبايل/التابلت لأن البار السفلي الثابت بيغطي مكانه) */}
               <button
                 onClick={handleCheckout}
-                className={`w-full flex items-center justify-center gap-2 bg-[#D9A066] hover:bg-[#c98d54] text-white font-bold text-base py-3.5 rounded-full transition-all duration-300 hover:scale-[1.02] shadow-[0_8px_25px_rgba(217,160,102,0.4)] ${isAr ? "flex-row-reverse" : ""}`}
+                className={`hidden lg:flex w-full items-center justify-center gap-2 bg-[#D9A066] hover:bg-[#c98d54] text-white font-bold text-base py-3.5 rounded-full transition-all duration-300 hover:scale-[1.02] shadow-[0_8px_25px_rgba(217,160,102,0.4)] ${isAr ? "flex-row-reverse" : ""}`}
               >
                 <FiShoppingBag />
                 {t.checkout}
@@ -748,7 +750,8 @@ function CartPage() {
       </div>
 
       {/* ✅ بار سفلي ثابت للموبايل/التابلت بس (زي نون): إجمالي + زرار إتمام الطلب،
-          بدل ما نعرض ملخص الدفع كامل. من lg فأكبر مختفي لأن الكارت الجانبي ظاهر أصلاً */}
+          بيفضل موجود كطريقة سريعة للدفع حتى لو ملخص الطلب الكامل ظاهر فوقه دلوقتي.
+          من lg فأكبر مختفي لأن الكارت الجانبي ظاهر أصلاً وفيه زرار إتمام الطلب جواه */}
       <div className={`lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white dark:bg-[#111] border-t border-black/10 dark:border-white/10 px-4 py-3 flex items-center gap-3 ${isAr ? "flex-row-reverse" : ""}`}>
         <div className={isAr ? "text-right" : "text-left"}>
           <p className="text-[11px] text-gray-400">{t.totalLabel}</p>

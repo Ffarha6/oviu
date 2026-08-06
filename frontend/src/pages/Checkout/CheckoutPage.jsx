@@ -78,11 +78,11 @@ export default function CheckoutPage() {
   const totalQuantity = items.reduce((sum, item) => sum + (item.quantity || 0), 0)
   const subtotal = parseFloat(cart?.total_price ?? 0)
   const discount = 0
-  const tax = Math.round(subtotal * 0.15)
+  // ✅ الضريبة اتشالت خالص — مفيش ضريبة على الموقع
   // مفيش قيمة افتراضية لطريقة الشحن ولا الدفع، المستخدم لازم يختار بنفسه
   const [shippingMethod, setShippingMethod] = useState("")
   const shippingCost = shippingMethod === "fast" ? 20 : 0
-  const total = subtotal - discount + tax + shippingCost
+  const total = subtotal - discount + shippingCost
 
   const [form, setForm] = useState({
     fullName: user ? `${user.first_name || ""} ${user.last_name || ""}`.trim() : "",
@@ -293,7 +293,6 @@ export default function CheckoutPage() {
       discountLabel: "خصم",
       shippingLabel: "الشحن",
       free: "مجاناً",
-      taxLabel: "الضريبة (15%)",
       totalLabel: "الإجمالي",
       couponPlaceholder: "إدخال كود الخصم",
       apply: "تطبيق",
@@ -358,7 +357,6 @@ export default function CheckoutPage() {
       discountLabel: "Discount",
       shippingLabel: "Shipping",
       free: "Free",
-      taxLabel: "Tax (15%)",
       totalLabel: "Total",
       couponPlaceholder: "Enter coupon code",
       apply: "Apply",
@@ -951,7 +949,8 @@ export default function CheckoutPage() {
           </div>
 
           {/* RIGHT — كارتين منفصلين: المنتجات لوحده، والإجمالي لوحده
-              ✅ عرض كامل تحت الفورم على الموبايل/التابلت، وعمود ثابت بجانبه من lg فأكبر */}
+              ✅ دلوقتي الاتنين ظاهرين بالكامل على الموبايل/التابلت تحت الفورم، مش بس في الديسكتوب.
+              البار السفلي الثابت لسه موجود على الموبايل كطريقة سريعة لتأكيد الطلب */}
           <div className="w-full lg:w-[420px] lg:shrink-0 flex flex-col gap-4 lg:sticky lg:top-[110px]">
 
             {/* عنوان "ملخص الطلب" برا الكارت — محاذي لأقصى اليمين في العربي */}
@@ -966,9 +965,8 @@ export default function CheckoutPage() {
               {renderOrderReview()}
             </div>
 
-            {/* كارت الإجمالي والدفع — ✅ يظهر بس من lg فأكبر، وعلى الموبايل/التابلت البار
-                السفلي الثابت بيغطي مكانه (إجمالي + زرار تأكيد) */}
-            <div className="hidden lg:block bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[24px] p-5 sm:p-7">
+            {/* كارت الإجمالي والدفع — ✅ دلوقتي ظاهر على كل المقاسات، مش بس lg فأكبر */}
+            <div className="w-full bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[24px] p-5 sm:p-7">
 
               {/* رأس الكارت: عنوان "ملخص الدفع" + عدد المنتجات (جنب بعض مباشرة) */}
               <div className="flex items-center gap-2 mb-4">
@@ -978,7 +976,7 @@ export default function CheckoutPage() {
                 </span>
               </div>
 
-              {/* Totals breakdown */}
+              {/* Totals breakdown — بدون ضريبة */}
               <div className="flex flex-col gap-2 mb-5">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500 dark:text-gray-400 text-sm">{t.subtotalLabel}</span>
@@ -997,12 +995,8 @@ export default function CheckoutPage() {
                     {shippingCost === 0 ? t.free : `${shippingCost} ${t.currency}`}
                   </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-500 dark:text-gray-400 text-sm">{t.taxLabel}</span>
-                  <span className="text-black dark:text-white font-semibold text-sm">{tax.toFixed(2)} {t.currency}</span>
-                </div>
 
-                {/* الإجمالي: بقى في الآخر بعد الضريبة */}
+                {/* الإجمالي: بدون ضريبة = المجموع الفرعي - الخصم + الشحن */}
                 <div className="flex items-center justify-between pt-2 mt-1 border-t border-black/5 dark:border-white/5">
                   <span className="font-bold text-black dark:text-white text-sm sm:text-base">{t.totalLabel}</span>
                   <span className="font-bold text-[#D9A066] text-lg sm:text-xl">{total.toFixed(2)} {t.currency}</span>
@@ -1028,11 +1022,11 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
-              {/* Confirm Order Button */}
+              {/* Confirm Order Button — مخفي على الموبايل/التابلت لأن البار السفلي الثابت بيغطي مكانه */}
               <button
                 onClick={handleSubmitOrder}
                 disabled={isProcessing || items.length === 0}
-                className={`w-full flex items-center justify-center gap-2 bg-[#D9A066] hover:bg-[#c98d54] text-white font-bold text-sm sm:text-base py-3 sm:py-3.5 rounded-full transition-all duration-300 hover:scale-[1.02] shadow-[0_8px_25px_rgba(217,160,102,0.4)] ${(isProcessing || items.length === 0) ? "opacity-70 cursor-not-allowed hover:scale-100" : ""} ${isAr ? "flex-row-reverse" : ""}`}
+                className={`hidden lg:flex w-full items-center justify-center gap-2 bg-[#D9A066] hover:bg-[#c98d54] text-white font-bold text-sm sm:text-base py-3 sm:py-3.5 rounded-full transition-all duration-300 hover:scale-[1.02] shadow-[0_8px_25px_rgba(217,160,102,0.4)] ${(isProcessing || items.length === 0) ? "opacity-70 cursor-not-allowed hover:scale-100" : ""} ${isAr ? "flex-row-reverse" : ""}`}
               >
                 {isProcessing && (
                   <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
