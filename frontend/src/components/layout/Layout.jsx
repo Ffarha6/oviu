@@ -31,11 +31,16 @@ function Layout({ children }) {
         السلة/الشيك أوت لأنهم ليهم بار سفلي خاص بيهم مختلف
       */}
       <main
-        className={`overflow-x-hidden w-full ${hideMobileBottomBar ? "" : "pb-20 lg:pb-0"}`}
-        style={{ paddingTop: "100px" }}
-      >
-        {children}
-      </main>
+  className={`
+    overflow-x-hidden
+    w-full
+    pt-0
+    lg:pt-[100px]
+    ${hideMobileBottomBar ? "" : "pb-20 lg:pb-0"}
+  `}
+>
+  {children}
+</main>
       <div className={hideMobileBottomBar ? "hidden lg:block" : ""}>
         <Footer />
       </div>
