@@ -395,42 +395,48 @@ onDragEnd={(e, info) => {
             {/* ✅ التقييم + السعر + اللون كلهم دلوقتي جوه نفس البلوك، مباشرة تحت
                 اسم المنتج وفوق أزرار الشراء، بمسافات ضيقة عشان الشكل يبقى نضيف
                 ومتجمع في مكان واحد */}
-            <div className="flex flex-col gap-5 mt-1">
+            <div className="flex flex-col gap-3 mt-0.5">
 
-              <div className="flex items-center gap-2">
-                <div className="flex gap-0.5">
-                  {renderStars(product.rating || 0, true)}
-                </div>
-                <span style={{ color: textSub }} className="text-sm">
-                  ({product.reviews_count || 0} {t.reviews})
-                </span>
-                {submittingRating && (
-                  <span style={{ color: textSub }} className="text-xs">…</span>
-                )}
-              </div>
+  <div className="flex items-center gap-2">
+    <div className="flex gap-0.5">
+      {renderStars(product.rating || 0, true)}
+    </div>
+    <span style={{ color: textSub }} className="text-sm">
+      ({product.reviews_count || 0} {t.reviews})
+    </span>
+    {submittingRating && (
+      <span style={{ color: textSub }} className="text-xs">…</span>
+    )}
+  </div>
 
-              {colors.length > 0 && (
-                <div>
-                  <p style={{ color: textSub }} className="text-sm mb-3">
-                    {t.color}: <span style={{ color: textMain }} className="font-semibold">
-                      {selectedColor?.name || colors[0]?.name}
-                    </span>
-                  </p>
-                  <div className="flex gap-2.5">
-                    {colors.map((c, i) => (
-                      <button key={i} onClick={() => handleColorSelect(c)} title={c.name}
-                        style={{
-                          backgroundColor: c.hex_code || c.hex || c.color_code || "#333",
-                          borderColor: (selectedColor?.id === c.id || (!selectedColor && i === 0)) ? gold : "transparent",
-                          boxShadow: (selectedColor?.id === c.id || (!selectedColor && i === 0)) ? `0 0 0 3px ${gold}44` : "none"
-                        }}
-                        className="w-9 h-9 rounded-full border-2 transition-all hover:scale-110" />
-                    ))}
-                  </div>
-                </div>
-              )}
+  {colors.length > 0 && (
+    <div className="flex gap-3">
+      {colors.map((c, i) => (
+        <button
+          key={i}
+          onClick={() => handleColorSelect(c)}
+          className="flex flex-col items-center gap-1"
+        >
+          <span
+            style={{
+              backgroundColor: c.hex_code || c.hex || c.color_code || "#333",
+              borderColor: (selectedColor?.id === c.id || (!selectedColor && i === 0)) ? gold : "transparent",
+              boxShadow: (selectedColor?.id === c.id || (!selectedColor && i === 0)) ? `0 0 0 3px ${gold}44` : "none"
+            }}
+            className="w-6 h-6 rounded-full border-2 transition-all hover:scale-110 block"
+          />
+          <span style={{ color: textSub }} className="text-[11px]">
+            {c.name}
+          </span>
+        </button>
+      ))}
+    </div>
+  )}
 
-              <div>
+  <div>
+  
+
+              
                 <div className="flex items-baseline gap-1">
                   <span style={{ color: textMain }} className="text-5xl font-bold">
                     {product.current_price || product.price}
@@ -515,27 +521,7 @@ onDragEnd={(e, info) => {
 
           <div className="flex flex-col gap-4">
 
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}
-              style={{
-                backgroundColor: darkMode ? "#1a1208" : "#FDF5EC",
-                border: `1px solid ${gold}33`
-              }}
-              className="flex items-center gap-4 p-4 rounded-[18px]">
-              <div style={{ backgroundColor: `${gold}22` }}
-                className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center text-2xl">
-                👓
-              </div>
-              <div className="flex-1 text-right">
-                <p style={{ color: textMain }} className="font-bold text-base mb-0.5">{t.tryOn}</p>
-                <p style={{ color: textSub }} className="text-sm">{t.tryOnSub}</p>
-              </div>
-              <button style={{ backgroundColor: gold }}
-                className="text-white text-sm font-bold px-4 py-2.5 rounded-full hover:opacity-90 transition-all shrink-0 flex items-center gap-1.5">
-                <span>⬡</span> {t.tryBtn}
-              </button>
-            </motion.div>
-
+            
             {/* ✅ بدل الأكورديون (اللي كان محتاج دوسة على السهم عشان تظهر)،
                 دلوقتي كل قسم ظاهر بالكامل من أول ما الصفحة تفتح، بتصميم
                 كارت واضح مع أيقونة وعنوان ومحتوى مباشر */}
@@ -543,11 +529,8 @@ onDragEnd={(e, info) => {
               viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.15 }}
               className="flex flex-col gap-3">
               {[
-                { id: "desc", label: t.desc, icon: null, content: product.description || "تصميم كلاسيكي يجمع بين الأناقة والعملية. إطار أسيتات عالي الجودة يوفر الراحة والمتانة." },
-                { id: "shipping", label: t.shipping, icon: <FiTruck />, content: "شحن مجاني للطلبات فوق 499 ج.م. التوصيل خلال 3-5 أيام عمل." },
-                { id: "warranty2", label: t.warranty2, icon: <FiShield />, content: "ضمان سنتين على جميع المنتجات. إرجاع مجاني خلال 14 يوم." },
-                { id: "sizeGuide", label: t.sizeGuide, icon: null, content: "عرض العدسة: 52مم — عرض الجسر: 20مم — طول الذراع: 145مم." },
-              ].map((sec) => (
+  { id: "desc", label: t.desc, icon: null, content: product.description || "تصميم كلاسيكي يجمع بين الأناقة والعملية. إطار أسيتات عالي الجودة يوفر الراحة والمتانة." },
+].map((sec) => (
                 <div key={sec.id}
                   style={{ backgroundColor: cardBg, border: `1px solid ${border}` }}
                   className="rounded-[14px] px-5 py-4">
