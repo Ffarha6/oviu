@@ -100,7 +100,8 @@ export default function CheckoutPage() {
   // ── العنوان المحفوظ ──
   // savedAddress = null لحد ما نتأكد إن مفيش عنوان (بنفرق بينه وبين "لسه بيحمل" بـ addressLoading)
  const [addresses, setAddresses] = useState([])
-const [selectedAddress, setSelectedAddress] = useState(null)
+ const [selectedAddress, setSelectedAddress] = useState(null)
+ const [savedAddress, setSavedAddress] = useState(null)
   const [addressLoading, setAddressLoading] = useState(true)
   // بدل ما الفورم يتوسّع جوه الصفحة، دلوقتي addressModalOpen بيفتح مودال منبثق فوق الصفحة كلها
   // (نفس فكرة جوميا: كارت مختصر + زرار "تغيير"/"إضافة عنوان" يفتح بوب أب)
@@ -133,6 +134,7 @@ const [selectedAddress, setSelectedAddress] = useState(null)
       if (data.length > 0) {
         const selected = data.find(a => a.is_default) || data[0]
         setSelectedAddress(selected)
+        setSavedAddress(selected)
       }
     } catch (err) {
       console.log(err)
