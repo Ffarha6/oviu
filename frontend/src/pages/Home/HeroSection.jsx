@@ -98,12 +98,13 @@ function HeroSection() {
       >
         <div
           className="
-            max-w-full w-full mx-auto
-            rounded-none md:rounded-[45px]
+  w-full
+
+            rounded-none
             relative overflow-hidden
             min-h-[70vh] md:min-h-[calc(100vh-80px)]
             flex items-center
-            md:-mt-12 lg:-mt-14
+            mt-0
           "
           style={{
             backgroundImage: `url(${bannerImg})`,
