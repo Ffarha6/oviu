@@ -9,8 +9,22 @@ import re
 
 
 def product_image_upload_path(instance, filename):
-    """تحديد مسار رفع الصور ديناميكياً"""
-    return f'products/{instance.color.product.slug}/{instance.color.name}/{filename}'
+    """
+    تحديد مسار رفع الصور ديناميكياً.
+
+    ✅ بنستخدم الـ ID بتاع المنتج واللون بدل الاسم/الـ slug الكامل بالعربي.
+    السبب: بعض أسماء المنتجات طويلة جدًا (زي "نظارة شمس رجالية Ray-Ban بتصميم
+    مربع عصري إطار أسود..."), ولما بنبني المسار من الـ slug الكامل + اسم اللون
+    عربي، طول المسار الناتج كان بيتخطى الحد الأقصى المسموح به لحقل اسم الملف
+    في Django (max_length الافتراضي = 100 حرف)، فكان بيطلع:
+    SuspiciousFileOperation: Storage can not find an available filename...
+
+    استخدام الأرقام (IDs) هنا:
+    - بيضمن إن المسار قصير وثابت الطول دايمًا، مهما كان اسم المنتج أو اللون طويل.
+    - بيتجنب مشاكل ترميز الأحرف العربية/الخاصة في مسارات الملفات على بعض أنظمة التخزين.
+    - أسرع في المقارنة/الفهرسة من نصوص طويلة.
+    """
+    return f'products/{instance.color.product_id}/{instance.color_id}/{filename}'
 
 
 class Product(models.Model):
@@ -295,6 +309,9 @@ class ProductImage(models.Model):
     color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(
         upload_to=product_image_upload_path,
+        # ✅ زودنا الحد الأقصى لطول اسم الملف المخزن في قاعدة البيانات من الافتراضي
+        # (100 حرف) لـ 255 كإجراء احترازي إضافي، حتى مع مسار الـ IDs القصير الجديد.
+        max_length=255,
         validators=[FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp'])]
     )
     alt_text = models.CharField(max_length=200, blank=True)
@@ -317,6 +334,3 @@ class ProductImage(models.Model):
                     is_primary=True
                 ).select_for_update().exclude(id=self.id).update(is_primary=False)
         super().save(*args, **kwargs)
-        
-        
-        
