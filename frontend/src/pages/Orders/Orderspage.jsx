@@ -389,22 +389,57 @@ export default function OrdersPage() {
           font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Cairo',sans-serif; white-space: nowrap;
         }
 
-        /* ── Mobile ── */
+        /* ── Mobile ──
+           order-card-main is a flex row with 3 children: order-thumb, order-info, order-actions.
+           order-info itself just wraps order-title-row / order-date / order-meta-row / progress-wrap
+           stacked normally. On mobile we "dissolve" order-info with display:contents so all of its
+           children become direct flex items of order-card-main, then use \`order\` + flex-basis:100%
+           to lay everything out as clean full-width rows: [thumb + title] / date / meta / progress / button.
+        */
         @media (max-width: 680px) {
           .orders-page { padding-top: 76px; }
           .orders-container { padding: 0 14px 36px; }
 
           .page-header h1 { font-size: 20px; }
 
-          .order-card-main { flex-wrap: wrap; padding: 14px; gap: 10px; }
-          .order-thumb { width: 48px; height: 48px; }
-          .order-info { flex-basis: calc(100% - 58px); }
-          .order-actions { flex-basis: 100%; order: 3; }
-          .detail-btn { width: 100%; justify-content: center; margin-top: 4px; }
-          .progress-wrap { max-width: none; }
+          .order-card-main {
+            flex-wrap: wrap;
+            align-items: flex-start;
+            padding: 14px;
+            gap: 8px 10px;
+          }
 
-          .order-title-row { gap: 8px; }
-          .order-meta-row { gap: 10px; font-size: 11.5px; }
+          .order-thumb { width: 56px; height: 56px; order: 1; }
+
+          .order-info { display: contents; }
+
+          .order-title-row {
+            order: 2;
+            flex: 1;
+            min-width: 0;
+            margin-bottom: 0;
+            gap: 8px;
+          }
+          .order-id { font-size: 14px; }
+
+          .order-date {
+            order: 3;
+            flex-basis: 100%;
+            margin-bottom: 2px;
+          }
+
+          .order-meta-row {
+            order: 4;
+            flex-basis: 100%;
+            gap: 10px;
+            font-size: 11.5px;
+            margin-bottom: 0;
+          }
+
+          .progress-wrap { order: 5; flex-basis: 100%; max-width: none; margin-top: 2px; }
+
+          .order-actions { order: 6; flex-basis: 100%; }
+          .detail-btn { width: 100%; justify-content: center; margin-top: 4px; }
 
           .meta-grid { grid-template-columns: repeat(2, 1fr); }
 
