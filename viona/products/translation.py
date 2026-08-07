@@ -1,4 +1,3 @@
-# translation.py
 from modeltranslation.translator import register, TranslationOptions
 from .models import Product
 
@@ -7,17 +6,14 @@ from .models import Product
 class ProductTranslationOptions(TranslationOptions):
     """
     Translation options for Product model.
-    Only translatable text fields are included.
+
+    ✅ بعد إضافة MODELTRANSLATION_LANGUAGES = ('ar',) في settings.py،
+    اللغة الوحيدة اللي بتتخزن فعليًا هي العربي (name_ar, description_ar...)،
+    فمفيش داعي لأي إعدادات fallback بين لغتين لأنه مفيش غير لغة واحدة أصلاً.
     """
-    # الحقول اللي هتترجم (فقط الحقول النصية الحرة)
     fields = (
         'name',
         'description',
         'meta_title',
         'meta_description',
     )
-    
-    # منع الترجمة الفارغة (يسمح بترك الحقول فارغة)
-    blank_translation = True  # ✅ تم التعديل
-    
-    # ✅ تم التعديل: استخدام fallback_values بدلاً من fallback_language

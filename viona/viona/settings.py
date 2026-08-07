@@ -115,6 +115,18 @@ LANGUAGES = (
     ('ar', _('Arabic')),
     ('en', _('English')),
 )
+
+# ✅ FIX (مشكلة "منتج بدون اسم"):
+# المشكلة كانت إن LocaleMiddleware بيحدد "اللغة النشطة" لكل request حسب
+# Accept-Language header اللي جاي من جهاز الزائر/الأدمن (موبايل بلغة إنجليزي
+# مثلاً)، ومكتبة modeltranslation كانت بتخزن اسم المنتج في العمود بتاع
+# اللغة النشطة دي (name_en) بدل name_ar. بعدين لما زبون يفتح الموقع بلغة
+# عربي، name_ar بيكون فاضي فيطلع اسم مكسور.
+# السطرين دول بيجبروا modeltranslation إنه يستخدم العربي بس دايمًا،
+# بغض النظر عن لغة الجهاز اللي بيبعت الـ request.
+MODELTRANSLATION_LANGUAGES = ('ar',)
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'ar'
+
 USE_I18N = True
 LANGUAGE_CODE = 'ar-eg'
 TIME_ZONE = 'Africa/Cairo'
