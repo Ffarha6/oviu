@@ -71,6 +71,10 @@ export default function ProductForm() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  // الكمية الإجمالية بتتحسب من مجموع كميات الألوان لو المنتج عنده ألوان
+  const hasColors = colors.length > 0;
+  const totalColorsStock = colors.reduce((sum, c) => sum + (Number(c.stock) || 0), 0);
+
   const handleSave = async () => {
     setSaving(true);
     setErrors({});
@@ -81,6 +85,11 @@ export default function ProductForm() {
       if (payload[f] === "") payload[f] = null;
     });
     if (!payload.sku) delete payload.sku; // خليه يتولد أوتوماتيك لو فاضي
+
+    // لو المنتج عنده ألوان، الكمية بتتبعت متحسوبة من الألوان مش من الحقل اليدوي
+    if (hasColors) {
+      payload.stock = totalColorsStock;
+    }
 
     try {
       if (isEditMode) {
@@ -153,7 +162,7 @@ export default function ProductForm() {
 
       {activeTab === "basic" && (
         <SectionCard>
-          <ProductBasicInfoForm form={form} onChange={handleChange} />
+          <ProductBasicInfoForm form={form} onChange={handleChange} hasColors={hasColors} />
         </SectionCard>
       )}
 

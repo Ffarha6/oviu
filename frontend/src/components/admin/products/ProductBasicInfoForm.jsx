@@ -32,7 +32,9 @@ const frameShapes = [
   { value: "cat_eye", label: "عين القطة" },
 ];
 
-export default function ProductBasicInfoForm({ form, onChange }) {
+// hasColors: لو المنتج عنده ألوان، الكمية بتتحسب تلقائيًا من مجموع كميات الألوان
+// وبتتعرض للقراءة فقط هنا، والتعديل الفعلي بيبقى من تبويب "الألوان والصور"
+export default function ProductBasicInfoForm({ form, onChange, hasColors }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -76,8 +78,15 @@ export default function ProductBasicInfoForm({ form, onChange }) {
           <input type="number" step="0.01" value={form.discount_price ?? ""} onChange={(e) => onChange("discount_price", e.target.value)} className={inputClass} />
         </Field>
 
-        <Field label="الكمية بالمخزون" required>
-          <input type="number" value={form.stock} onChange={(e) => onChange("stock", e.target.value)} className={inputClass} />
+        <Field label={hasColors ? "الكمية الإجمالية بالمخزون" : "الكمية بالمخزون"} required={!hasColors}>
+          {hasColors ? (
+            <div className={`${inputClass} bg-primary/5 text-primary/60 cursor-not-allowed flex items-center justify-between`}>
+              <span>{form.stock ?? 0}</span>
+              <span className="text-[11px] text-primary/40">بتتحسب تلقائيًا من كميات الألوان</span>
+            </div>
+          ) : (
+            <input type="number" value={form.stock} onChange={(e) => onChange("stock", e.target.value)} className={inputClass} />
+          )}
         </Field>
 
         <Field label="الحالة">
