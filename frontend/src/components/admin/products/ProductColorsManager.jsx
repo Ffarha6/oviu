@@ -342,7 +342,7 @@ export default function ProductColorsManager({ productId, colors, onColorsChange
 
               <label className="w-24 h-24 rounded-xl border-2 border-dashed border-primary/15 flex flex-col items-center justify-center gap-1.5 text-primary/40 cursor-pointer hover:border-secondary hover:text-secondary transition">
                 <Upload size={18} />
-                <span className="text-[11px]">رفع صورة</span>
+                <span className="text-[11px]">رفع صور</span>
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp"

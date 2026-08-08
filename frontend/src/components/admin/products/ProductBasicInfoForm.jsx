@@ -119,7 +119,7 @@ export default function ProductBasicInfoForm({ form, onChange, hasColors }) {
       <div>
         <p className="text-sm font-bold text-primary mb-3">SEO (اختياري)</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <Field label="عنوان الميتا">
+          <Field label="عنون الميتا">
             <input type="text" maxLength={60} value={form.meta_title} onChange={(e) => onChange("meta_title", e.target.value)} className={inputClass} />
           </Field>
           <Field label="وصف الميتا">
