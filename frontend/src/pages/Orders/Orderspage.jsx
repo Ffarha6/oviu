@@ -42,40 +42,31 @@ const FILTERS = [
   { key: "cancelled", label: "ملغاة" },
 ]
 
-// ── Status Badge ─────────────────────────────────────────────────
-function StatusBadge({ status }) {
+// ── Unified status box (icon + label + % + progress bar, all ONE box) ──
+function OrderStatus({ status }) {
   const cfg = STATUS_CONFIG[status] || { label: status, color: "#888", bg: "#f5f5f5", icon: <FaBox /> }
-  return (
-    <span className="status-badge" style={{ background: cfg.bg, color: cfg.color }}>
-      <span className="status-badge-icon">{cfg.icon}</span>
-      {cfg.label}
-    </span>
-  )
-}
-
-// ── Slim segmented progress bar (replaces the old circle-strip) ──
-function OrderProgress({ status }) {
-  if (status === "cancelled") return null
-  const cfg = STATUS_CONFIG[status]
+  const isCancelled = status === "cancelled"
   const currentIdx = STEPS.indexOf(status)
-  const pct = Math.round(((currentIdx + 1) / STEPS.length) * 100)
+  const pct = isCancelled ? 0 : Math.round(((currentIdx + 1) / STEPS.length) * 100)
 
   return (
-    <div className="progress-wrap">
-      <div className="progress-track">
-        {STEPS.map((step, i) => (
-          <span
-            key={step}
-            className="progress-segment"
-            style={{ background: i <= currentIdx ? cfg.color : "#eee" }}
-          />
-        ))}
+    <div className="order-status-box" style={{ background: cfg.bg }}>
+      <div className="order-status-top">
+        <span className="order-status-icon" style={{ color: cfg.color }}>{cfg.icon}</span>
+        <span className="order-status-label" style={{ color: cfg.color }}>{cfg.label}</span>
+        {!isCancelled && <span className="order-status-pct" style={{ color: cfg.color }}>{pct}%</span>}
       </div>
-      <div className="progress-caption">
-        <span className="progress-caption-icon" style={{ color: cfg.color }}>{cfg.icon}</span>
-        <span>{cfg.label}</span>
-        <span className="progress-caption-pct">{pct}%</span>
-      </div>
+      {!isCancelled && (
+        <div className="order-status-track">
+          {STEPS.map((step, i) => (
+            <span
+              key={step}
+              className="order-status-segment"
+              style={{ background: i <= currentIdx ? cfg.color : "rgba(0,0,0,0.08)" }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -87,32 +78,30 @@ function OrderCard({ order, onExpand, expanded }) {
 
   return (
     <div className={`order-card ${expanded ? "order-card--expanded" : ""}`}>
-      <div className="order-card-main">
+      <div className="order-card-inner">
 
-        <div className="order-thumb">
+        <div className="order-image">
           {firstItem?.product_image
             ? <img src={firstItem.product_image} alt="" />
-            : <FaBoxOpen className="order-thumb-placeholder" />
+            : <FaBoxOpen className="order-image-placeholder" />
           }
         </div>
 
-        <div className="order-info">
-          <div className="order-title-row">
+        <div className="order-content">
+          <div className="order-top-line">
             <span className="order-id">طلب رقم #{order.id}</span>
-            <StatusBadge status={order.status} />
+            <span className="order-date">
+              {new Date(order.created_at).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })}
+            </span>
           </div>
-          <div className="order-date">
-            {new Date(order.created_at).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })}
-          </div>
+
           <div className="order-meta-row">
             <span>عدد المنتجات: <strong>{itemCount} {itemCount === 1 ? "منتج" : "منتجات"}</strong></span>
             <span className="order-total">الإجمالي: <strong>{order.total_price} ج.م</strong></span>
           </div>
 
-          <OrderProgress status={order.status} />
-        </div>
+          <OrderStatus status={order.status} />
 
-        <div className="order-actions">
           <button className="detail-btn" onClick={() => onExpand(order.id)}>
             عرض التفاصيل
             <FaChevronLeft className={`detail-btn-chevron ${expanded ? "is-open" : ""}`} />
@@ -253,9 +242,9 @@ export default function OrdersPage() {
           font-family: 'Cairo',sans-serif; flex: 1; direction: rtl; min-width: 0;
         }
 
-        .filter-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-        .filter-row-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #888; margin-left: 4px; flex-shrink: 0; }
-        .filter-chips { display: flex; gap: 8px; }
+        .filter-row { display: flex; align-items: center; gap: 8px; }
+        .filter-row-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #888; flex-shrink: 0; }
+        .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
         .filter-chip {
           padding: 6px 14px; border-radius: 20px; border: 1.5px solid #e0e0e0;
           background: #fff; color: #666; font-size: 12px; font-weight: 400;
@@ -270,55 +259,50 @@ export default function OrdersPage() {
           padding: 16px; margin-bottom: 20px; color: #ef4444; font-size: 14px; text-align: center;
         }
 
-        /* ── Order card ── */
+        /* ── Order card ──
+           order-card-inner is a row on desktop: [image] [content column].
+           On mobile it becomes a column: image on top, full-bleed, then content below.
+           No order/flex-basis tricks, no display:contents — one predictable structure
+           that just switches flex-direction at the breakpoint. */
         .order-card {
           background: #fff; border-radius: 16px; border: 1px solid #f0f0f0;
-          overflow: hidden; transition: box-shadow .2s; margin-bottom: 12px;
+          overflow: hidden; transition: box-shadow .2s; margin-bottom: 14px;
         }
         .order-card--expanded { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
 
-        .order-card-main { padding: 18px 20px; display: flex; align-items: flex-start; gap: 16px; }
+        .order-card-inner { display: flex; gap: 16px; padding: 18px 20px; }
 
-        .order-thumb {
-  width: 90px;
-  height: 90px;
-  border-radius: 14px;
-  background: #f8f8f8;
-  border: 1px solid #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-        .order-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .order-thumb-placeholder { color: #ddd; font-size: 22px; }
+        .order-image {
+          width: 100px; height: 100px; border-radius: 14px;
+          background: #f8f8f8; border: 1px solid #f0f0f0;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; overflow: hidden;
+        }
+        .order-image img { width: 100%; height: 100%; object-fit: cover; }
+        .order-image-placeholder { color: #ddd; font-size: 26px; }
 
-        .order-info { flex: 1; min-width: 0; }
-        .order-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+        .order-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+
+        .order-top-line { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
         .order-id { font-size: 15px; font-weight: 700; color: #222; }
-        .order-date { font-size: 12px; color: #aaa; margin-bottom: 8px; }
-        .order-meta-row { display: flex; gap: 16px; font-size: 12px; color: #666; flex-wrap: wrap; margin-bottom: 4px; }
+        .order-date { font-size: 12px; color: #aaa; }
+
+        .order-meta-row { display: flex; gap: 16px; font-size: 12px; color: #666; flex-wrap: wrap; }
         .order-meta-row strong { color: #222; }
         .order-total strong { color: #E8821A; }
 
-        .status-badge {
-          display: inline-flex; align-items: center; gap: 5px;
-          padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600;
-        }
-        .status-badge-icon { font-size: 10px; display: inline-flex; }
+        /* ── the status box — ONE self-contained unit, nothing floats outside it ── */
+        .order-status-box { border-radius: 12px; padding: 10px 14px; }
+        .order-status-top { display: flex; align-items: center; gap: 8px; }
+        .order-status-icon { font-size: 13px; display: inline-flex; flex-shrink: 0; }
+        .order-status-label { font-size: 13px; font-weight: 700; flex: 1; min-width: 0; }
+        .order-status-pct { font-size: 12px; font-weight: 700; opacity: .75; flex-shrink: 0; }
+        .order-status-track { display: flex; gap: 4px; height: 5px; margin-top: 8px; }
+        .order-status-segment { flex: 1; border-radius: 3px; transition: background .3s; }
 
-        /* ── new segmented progress bar ── */
-        .progress-wrap { margin-top: 12px; max-width: 320px; }
-        .progress-track { display: flex; gap: 4px; height: 5px; margin-bottom: 6px; }
-        .progress-segment { flex: 1; border-radius: 3px; transition: background .3s; }
-        .progress-caption { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #888; }
-        .progress-caption-icon { font-size: 11px; display: inline-flex; }
-        .progress-caption-pct { margin-right: auto; color: #bbb; }
-
-        .order-actions { flex-shrink: 0; }
         .detail-btn {
-          display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px;
+          display: flex; align-items: center; justify-content: center; gap: 6px;
+          padding: 9px 16px; border-radius: 10px; align-self: flex-end;
           border: 1.5px solid #E8821A; background: #fff; color: #E8821A;
           font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Cairo',sans-serif;
           transition: all .2s; white-space: nowrap;
@@ -336,17 +320,11 @@ export default function OrdersPage() {
           display: flex; align-items: center; gap: 12px; background: #fff;
           border-radius: 10px; padding: 10px 14px; border: 1px solid #f0f0f0;
         }
-        .item-thumb{
-    width:48px;
-    height:48px;
-    border-radius:8px;
-    background:#f5f5f5;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-    overflow:hidden;
-}
+        .item-thumb {
+          width: 48px; height: 48px; border-radius: 8px; background: #f5f5f5;
+          display: flex; align-items: center; justify-content: center;
+          flex-shrink: 0; overflow: hidden;
+        }
         .item-info { flex: 1; min-width: 0; }
         .item-name { margin: 0; font-size: 13px; font-weight: 600; }
         .item-sub { margin: 0; font-size: 11px; color: #aaa; }
@@ -390,18 +368,7 @@ export default function OrdersPage() {
           font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Cairo',sans-serif; white-space: nowrap;
         }
 
-        /* ── Mobile ──
-           order-card-main is a flex row with 3 children: order-thumb, order-info, order-actions.
-           order-info itself just wraps order-title-row / order-date / order-meta-row / progress-wrap.
-           On mobile we switch order-card-main to a CSS Grid with named areas, and "dissolve"
-           order-info with display:contents so its children slot straight into those areas.
-           This gives an explicit, easy-to-read layout instead of guessing at order+flex-basis:
-             [ thumb | title    ]
-             [ thumb | date     ]
-             [   meta (full)    ]
-             [ progress (full)  ]
-             [ actions (full)   ]
-        */
+        /* ── Mobile: image on top, everything else stacked underneath ── */
         @media (max-width: 680px) {
           .orders-page { padding-top: 76px; }
           .orders-container { padding: 0 14px 36px; }
@@ -410,52 +377,25 @@ export default function OrdersPage() {
 
           .toolbar { padding: 14px; }
 
-          /* let the filter chips scroll horizontally instead of wrapping onto messy extra lines */
-          .filter-row {
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-          .filter-row::-webkit-scrollbar { display: none; }
-          .filter-chips { flex-shrink: 0; }
+          .filter-row { flex-wrap: wrap; }
+          .filter-chips { overflow-x: auto; flex-wrap: nowrap; width: 100%; padding-bottom: 2px; }
+          .filter-chips::-webkit-scrollbar { display: none; }
           .filter-chip { flex-shrink: 0; }
 
-          .order-card-main {
-            display: grid;
-            grid-template-columns: 64px 1fr;
-            grid-template-areas:
-              "thumb title"
-              "thumb date"
-              "meta   meta"
-              "progress progress"
-              "actions actions";
-            column-gap: 12px;
-            row-gap: 6px;
-            padding: 14px;
-          }
+          .order-card-inner { flex-direction: column; padding: 0; gap: 0; }
 
-          .order-thumb { grid-area: thumb; width: 64px; height: 64px; border-radius: 12px; }
+          .order-image { width: 100%; height: 180px; border-radius: 0; }
+          .order-image-placeholder { font-size: 34px; }
 
-          .order-info { display: contents; }
+          .order-content { padding: 14px; gap: 10px; }
 
-          .order-title-row { grid-area: title; align-self: start; margin-bottom: 0; gap: 8px; }
+          .order-top-line { gap: 6px; }
           .order-id { font-size: 14px; }
+          .order-date { font-size: 11.5px; }
 
-          .order-date { grid-area: date; margin-bottom: 0; }
+          .order-meta-row { font-size: 11.5px; gap: 14px; }
 
-          .order-meta-row {
-            grid-area: meta;
-            gap: 14px;
-            font-size: 11.5px;
-            margin-top: 2px;
-            margin-bottom: 0;
-          }
-
-          .progress-wrap { grid-area: progress; max-width: none; margin-top: 2px; }
-
-          .order-actions { grid-area: actions; margin-top: 4px; }
-          .detail-btn { width: 100%; justify-content: center; padding: 10px 14px; }
+          .detail-btn { align-self: stretch; width: 100%; padding: 10px 14px; }
 
           .meta-grid { grid-template-columns: 1fr; }
 
