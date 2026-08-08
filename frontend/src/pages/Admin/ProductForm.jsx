@@ -117,7 +117,7 @@ export default function ProductForm() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-primary">
-            {isEditMode ? "عديل المنتج" : "إضافة منتج جديد"}
+            {isEditMode ? "تعديل المنتج" : "إضافة منتج جديد"}
           </h1>
           <div className="flex items-center gap-1.5 text-xs text-primary/40 mt-1.5">
             <Link to="/dashboard" className="hover:text-secondary">لوحة التحكم</Link>
@@ -152,7 +152,7 @@ export default function ProductForm() {
       <div className="flex items-center gap-2 border-b border-primary/10">
         <TabBtn label="البيانات الأساسية" active={activeTab === "basic"} onClick={() => setActiveTab("basic")} />
         <TabBtn
-          label="الألون والصور"
+          label="الألوان والصور"
           active={activeTab === "colors"}
           onClick={() => setActiveTab("colors")}
           disabled={!isEditMode}
