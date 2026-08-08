@@ -254,7 +254,8 @@ export default function OrdersPage() {
         }
 
         .filter-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-        .filter-row-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #888; margin-left: 4px; }
+        .filter-row-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #888; margin-left: 4px; flex-shrink: 0; }
+        .filter-chips { display: flex; gap: 8px; }
         .filter-chip {
           padding: 6px 14px; border-radius: 20px; border: 1.5px solid #e0e0e0;
           background: #fff; color: #666; font-size: 12px; font-weight: 400;
@@ -391,10 +392,15 @@ export default function OrdersPage() {
 
         /* ── Mobile ──
            order-card-main is a flex row with 3 children: order-thumb, order-info, order-actions.
-           order-info itself just wraps order-title-row / order-date / order-meta-row / progress-wrap
-           stacked normally. On mobile we "dissolve" order-info with display:contents so all of its
-           children become direct flex items of order-card-main, then use \`order\` + flex-basis:100%
-           to lay everything out as clean full-width rows: [thumb + title] / date / meta / progress / button.
+           order-info itself just wraps order-title-row / order-date / order-meta-row / progress-wrap.
+           On mobile we switch order-card-main to a CSS Grid with named areas, and "dissolve"
+           order-info with display:contents so its children slot straight into those areas.
+           This gives an explicit, easy-to-read layout instead of guessing at order+flex-basis:
+             [ thumb | title    ]
+             [ thumb | date     ]
+             [   meta (full)    ]
+             [ progress (full)  ]
+             [ actions (full)   ]
         */
         @media (max-width: 680px) {
           .orders-page { padding-top: 76px; }
@@ -402,54 +408,60 @@ export default function OrdersPage() {
 
           .page-header h1 { font-size: 20px; }
 
+          .toolbar { padding: 14px; }
+
+          /* let the filter chips scroll horizontally instead of wrapping onto messy extra lines */
+          .filter-row {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .filter-row::-webkit-scrollbar { display: none; }
+          .filter-chips { flex-shrink: 0; }
+          .filter-chip { flex-shrink: 0; }
+
           .order-card-main {
-            flex-wrap: wrap;
-            align-items: flex-start;
+            display: grid;
+            grid-template-columns: 64px 1fr;
+            grid-template-areas:
+              "thumb title"
+              "thumb date"
+              "meta   meta"
+              "progress progress"
+              "actions actions";
+            column-gap: 12px;
+            row-gap: 6px;
             padding: 14px;
-            gap: 8px 10px;
           }
 
-          .order-thumb { width: 56px; height: 56px; order: 1; }
+          .order-thumb { grid-area: thumb; width: 64px; height: 64px; border-radius: 12px; }
 
           .order-info { display: contents; }
 
-          .order-title-row {
-            order: 2;
-            flex: 1;
-            min-width: 0;
-            margin-bottom: 0;
-            gap: 8px;
-          }
+          .order-title-row { grid-area: title; align-self: start; margin-bottom: 0; gap: 8px; }
           .order-id { font-size: 14px; }
 
-          .order-date {
-            order: 3;
-            flex-basis: 100%;
-            margin-bottom: 2px;
-          }
+          .order-date { grid-area: date; margin-bottom: 0; }
 
           .order-meta-row {
-            order: 4;
-            flex-basis: 100%;
-            gap: 10px;
+            grid-area: meta;
+            gap: 14px;
             font-size: 11.5px;
+            margin-top: 2px;
             margin-bottom: 0;
           }
 
-          .progress-wrap { order: 5; flex-basis: 100%; max-width: none; margin-top: 2px; }
+          .progress-wrap { grid-area: progress; max-width: none; margin-top: 2px; }
 
-          .order-actions { order: 6; flex-basis: 100%; }
-          .detail-btn { width: 100%; justify-content: center; margin-top: 4px; }
+          .order-actions { grid-area: actions; margin-top: 4px; }
+          .detail-btn { width: 100%; justify-content: center; padding: 10px 14px; }
 
-          .meta-grid { grid-template-columns: repeat(2, 1fr); }
+          .meta-grid { grid-template-columns: 1fr; }
 
           .help-banner { flex-direction: column; align-items: stretch; text-align: center; }
           .help-banner-left { flex-direction: column; }
           .help-btn { width: 100%; }
-        }
-
-        @media (max-width: 380px) {
-          .meta-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
@@ -483,18 +495,20 @@ export default function OrdersPage() {
 
           <div className="filter-row">
             <span className="filter-row-label"><FaFilter style={{ fontSize: 11 }} /> تصفية:</span>
-            {FILTERS.map(f => (
-              <button
-                key={f.key}
-                onClick={() => setActiveFilter(f.key)}
-                className={`filter-chip ${activeFilter === f.key ? "active" : ""}`}
-              >
-                {f.label}
-                <span className="filter-chip-count">
-                  ({f.key === "all" ? orders.length : orders.filter(o => o.status === f.key).length})
-                </span>
-              </button>
-            ))}
+            <div className="filter-chips">
+              {FILTERS.map(f => (
+                <button
+                  key={f.key}
+                  onClick={() => setActiveFilter(f.key)}
+                  className={`filter-chip ${activeFilter === f.key ? "active" : ""}`}
+                >
+                  {f.label}
+                  <span className="filter-chip-count">
+                    ({f.key === "all" ? orders.length : orders.filter(o => o.status === f.key).length})
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
