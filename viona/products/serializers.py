@@ -44,6 +44,7 @@ class ColorSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'hex_code',
+            'stock',
             'images',
             'primary_image',
         ]
@@ -317,6 +318,7 @@ class ColorWriteSerializer(serializers.ModelSerializer):
             'product',
             'name',
             'code',
+            'stock',
         ]
 
 

@@ -8,6 +8,11 @@ urlpatterns = [
     path('stats/', admin_views.admin_product_stats, name='admin-stats'),
 
     # ألوان وصور (لازم تيجي قبل <int:product_id>/ عشان الـ /colors/ ماتتلخبطش)
+    path(
+    'colors/<int:color_id>/update/',
+    admin_views.admin_update_color,
+    name='admin-update-color'
+),
     path('colors/<int:color_id>/', admin_views.admin_delete_color, name='admin-delete-color'),
     path('colors/<int:color_id>/images/', admin_views.admin_upload_image, name='admin-upload-image'),
     path('images/<int:image_id>/', admin_views.admin_image_detail, name='admin-image-detail'),

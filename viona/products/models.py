@@ -282,6 +282,7 @@ class Color(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='colors')
     name = models.CharField(max_length=50)
     code = models.CharField(max_length=10)
+    stock = models.PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ['product', 'name']

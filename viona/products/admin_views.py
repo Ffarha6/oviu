@@ -183,3 +183,23 @@ def admin_image_detail(request, image_id):
         image.is_primary = request.data.get('is_primary', image.is_primary)
         image.save()
         return Response(ProductImageUploadSerializer(image, context={'request': request}).data)
+    
+    
+    
+    
+    
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])
+def admin_update_color(request, color_id):
+    color = get_object_or_404(Color, id=color_id)
+
+    serializer = ColorWriteSerializer(
+        color,
+        data=request.data,
+        partial=True,
+    )
+
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+
+    return Response(serializer.data)
