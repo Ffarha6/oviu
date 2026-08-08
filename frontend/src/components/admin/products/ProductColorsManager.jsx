@@ -125,7 +125,7 @@ export default function ProductColorsManager({ productId, colors, onColorsChange
     const value = Math.max(0, Number(newStock) || 0);
     setSavingStockId(colorId);
     try {
-      await api.patch(`/dashboard/products/colors/${colorId}/`, { stock: value });
+      await api.patch(`/dashboard/products/colors/${colorId}/update/`, { stock: value });
       onColorsChange(
         colors.map((c) => (c.id === colorId ? { ...c, stock: value } : c))
       );
