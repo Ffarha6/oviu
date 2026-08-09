@@ -56,7 +56,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'id', 'user', 'user_name',
+            'id', 'order_number', 'user', 'user_name',
             'total_price', 'total_price_display',
             'phone', 'address', 'payment_method', 'payment_method_display',
             'notes', 'status', 'status_display',
@@ -226,7 +226,7 @@ class OrderAdminListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'id', 'customer_name', 'customer_email', 'phone',
+            'id', 'order_number', 'customer_name', 'customer_email', 'phone',
             'items_count', 'total_price', 'payment_method', 'payment_method_display',
             'status', 'status_display', 'is_paid', 'tracking_number',
             'created_at',
@@ -251,7 +251,7 @@ class OrderAdminDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'id', 'customer_name', 'customer_email', 'phone', 'address', 'notes',
+            'id', 'order_number', 'customer_name', 'customer_email', 'phone', 'address', 'notes',
             'items', 'total_price', 'payment_method', 'payment_method_display',
             'status', 'status_display', 'is_paid', 'paid_at',
             'shipped_date', 'delivered_date', 'tracking_number',

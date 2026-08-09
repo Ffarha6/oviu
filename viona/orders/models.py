@@ -25,6 +25,10 @@ class Order(models.Model):
     # ========== العلاقات ==========
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
 
+    # ========== رقم الطلب المعروض للعميل (زي OV-000123) ==========
+    # ⚠️ بيتولد أوتوماتيك في save() بعد أول حفظ للطلب، مفيش داعي تحطيه يدوي
+    order_number = models.CharField(max_length=20, unique=True, blank=True, null=True)
+
     # ========== معلومات العميل ==========
     phone = models.CharField(max_length=15)
     address = models.TextField()
@@ -59,7 +63,17 @@ class Order(models.Model):
         ]
 
     def __str__(self):
-        return f"Order #{self.id} - {self.user.email} - {self.get_status_display()}"
+        return f"Order #{self.order_number or self.id} - {self.user.email} - {self.get_status_display()}"
+
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding
+        super().save(*args, **kwargs)
+        # ✅ order_number محتاج الـ id يبقى موجود الأول (auto-increment)، فبنولده
+        # بعد أول save، وبعدين نعمل update بسيط بس (مش save تاني كامل) عشان
+        # نحفظه من غير ما نستدعي save() تاني ونعمل لوب لا نهائي
+        if is_new and not self.order_number:
+            self.order_number = f"OV-{self.id:06d}"
+            Order.objects.filter(pk=self.pk).update(order_number=self.order_number)
 
     def calculate_total(self):
         """حساب الإجمالي من الـ OrderItems وحفظه"""
