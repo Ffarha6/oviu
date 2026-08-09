@@ -1,18 +1,32 @@
 import { ThemeContext } from "../../context/ThemeContext"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { LanguageContext } from "../../context/LanguageContext"
 import { useNavigate } from "react-router-dom"
 import heroBannerLight from "../../assets/images/hero-banner-light.png"
 import heroBannerDark from "../../assets/images/hero-banner-dark.png"
+import heroShippingBanner from "../../assets/images/hero-shipping-banner.png"
 import { motion } from "framer-motion"
 
 function HeroSection() {
   const navigate = useNavigate()
   const { language } = useContext(LanguageContext)
   const { darkMode } = useContext(ThemeContext)
+  const [activeSlide, setActiveSlide] = useState(0)
 
   const isAr = language === "ar"
   const bannerImg = darkMode ? heroBannerDark : heroBannerLight
+  const heroSlides = [
+  bannerImg,
+  heroShippingBanner,
+]
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setActiveSlide((prev) => (prev + 1) % heroSlides.length)
+  }, 5000)
+
+  return () => clearInterval(interval)
+}, [heroSlides.length])
 
   // ✅ الصورتين (الفاتحة والغامقة) مصورتين بزاوية وبعد مختلفين عن بعض، فنفس
   // الـ object-position بيدّي كروب مختلف بصريًا في كل واحدة. القيم دي بتحكم في
@@ -49,38 +63,80 @@ function HeroSection() {
           السفلي فقط (مش الصورة كلها) عشان وش الشخص يفضل واضح فوق،
           والنص يقرا كويس تحت من غير ما يتعارض مع الدائرة الدهبية.
       ══════════════════════════════════════════════════════════ */}
-      <div className="sm:hidden px-0 pt-0 pb-6">
-        <div className="relative overflow-hidden h-[430px]">
-          <img
-            src={bannerImg}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-            style={heroMobileImageStyle}
-          />
+      {/* ══════════════════════════════════════════════════════════
+    MOBILE SLIDER
+══════════════════════════════════════════════════════════ */}
 
-          {/* تعتيم بس في النص السفلي من الصورة (مش من فوق خالص) */}
-          <div
-            className={`absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t ${
-              darkMode ? "from-black/85 via-black/40 to-transparent" : "from-black/70 via-black/25 to-transparent"
-            }`}
-          />
+<div className="sm:hidden px-0 pt-0 pb-6">
+  <div className="relative overflow-hidden h-[430px]">
 
-          {/* المحتوى: ملتصق بأسفل الكارت */}
-          <div className={`absolute inset-x-0 bottom-0 px-5 pb-5 ${isAr ? "text-right" : "text-left"}`}>
-            <p className="text-[#E8B074] text-[13px] font-semibold mb-1">
-              {c.subtitle}
-            </p>
-            <h1 className="text-white text-[32px] font-extrabold mb-2 leading-tight">
-              {c.title}
-            </h1>
-            <p className="text-white/90 text-[15px] leading-7 max-w-[300px]">
-              {c.description}
-            </p>
+    {/* صورة السلايدر */}
+    <motion.img
+      key={activeSlide}
+      src={heroSlides[activeSlide]}
+      alt=""
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="absolute inset-0 w-full h-full object-cover"
+      style={{
+        objectPosition:
+          activeSlide === 0
+            ? heroMobileImageStyle.objectPosition
+            : "center center",
+      }}
+    />
 
-            
-          </div>
-        </div>
+    {/* التعتيم على الهيرو الأصلي فقط */}
+    {activeSlide === 0 && (
+      <div
+        className={`absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t ${
+          darkMode
+            ? "from-black/85 via-black/40 to-transparent"
+            : "from-black/70 via-black/25 to-transparent"
+        }`}
+      />
+    )}
+
+    {/* محتوى الهيرو الأصلي فقط */}
+    {activeSlide === 0 && (
+      <div
+        className={`absolute inset-x-0 bottom-0 px-5 pb-5 ${
+          isAr ? "text-right" : "text-left"
+        }`}
+      >
+        <p className="text-[#E8B074] text-[13px] font-semibold mb-1">
+          {c.subtitle}
+        </p>
+
+        <h1 className="text-white text-[32px] font-extrabold mb-2 leading-tight">
+          {c.title}
+        </h1>
+
+        <p className="text-white/90 text-[15px] leading-7 max-w-[300px]">
+          {c.description}
+        </p>
       </div>
+    )}
+
+    {/* نقاط السلايدر */}
+    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+      {heroSlides.map((_, index) => (
+        <button
+          key={index}
+          onClick={() => setActiveSlide(index)}
+          className={`h-2.5 rounded-full transition-all duration-300 ${
+            activeSlide === index
+              ? "w-8 bg-[#D9A066]"
+              : "w-2.5 bg-white/60"
+          }`}
+          aria-label={`Slide ${index + 1}`}
+        />
+      ))}
+    </div>
+
+  </div>
+</div>
 
       {/* ══════════════════════════════════════════════════════════
           DESKTOP / TABLET LAYOUT (sm وفوق) — نفس التصميم الأصلي:
