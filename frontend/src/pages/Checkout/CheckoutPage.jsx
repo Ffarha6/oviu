@@ -240,7 +240,7 @@ export default function CheckoutPage() {
       stdShipSubPrefix: "يصلك خلال",
       daysUnit: "أيام",
       chooseAddressForShipping: "اختاري عنوان الشحن الأول عشان نظهرلك سعر ومدة التوصيل",
-      freeShippingHint: "🎉 التوصيل هيبقى مجاني لأول طلب لو العنوان في القاهرة، الجيزة، الإسكندرية، القليوبية أو الشرقية، وباقي المحافظات بيتخصم منها 60 ج.م من سعر الشحن.",
+      freeShippingHint: "توصيل مجاني للقاهرة والجيزة لأول طلب",
       firstOrderBadge: "خصم أول طلب",
 
       s3: "طريقة الدفع",
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
       stdShipSubPrefix: "Arrives in",
       daysUnit: "days",
       chooseAddressForShipping: "Choose a shipping address first to see the price and delivery time",
-      freeShippingHint: "🎉 Shipping is free on your first order in Cairo, Giza, Alexandria, Qalyubia or Sharqia, and 60 EGP off shipping for all other governorates.",
+      freeShippingHint: "Free shipping to Cairo & Giza on first order",
       firstOrderBadge: "First order discount",
 
       s3: "Payment Method",
@@ -663,44 +663,46 @@ export default function CheckoutPage() {
               <SectionHeader title={t.s2} />
               <div className="pb-6 flex flex-col gap-3">
 
-                {/* التوصيل لحد باب البيت — الخيار الأساسي والمتاح، ودايمًا مختار تلقائي.
-                    السعر والمدة بيتحددوا حسب محافظة العنوان المختار */}
-                {selectedAddress && shippingQuote ? (
-                  <div className="w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-[#D9A066] bg-[#D9A066]/5">
-                    <div className="flex items-center gap-2.5 sm:gap-3">
-                      <div className="w-5 h-5 rounded-full border-2 border-[#D9A066] flex items-center justify-center shrink-0">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#D9A066]" />
-                      </div>
-                      <div className="text-[#D9A066] text-lg sm:text-xl shrink-0"><MdOutlineLocalShipping /></div>
-                      <div className={isAr ? "text-right" : "text-left"}>
-                        <p className="font-bold text-black dark:text-white text-sm sm:text-base">{t.stdShipTitle}</p>
-                        <p className="text-[11px] sm:text-xs text-gray-400">
-                          {t.stdShipSubPrefix} {shippingQuote.daysMin}-{shippingQuote.daysMax} {t.daysUnit}
-                        </p>
-                      </div>
+                {/* التوصيل لحد باب البيت — المربع ده ظاهر دايمًا (سواء فيه عنوان مختار ولا لأ).
+                    لو مفيش عنوان لسه: بيعرض جوّاه نص "توصيل مجاني للقاهرة والجيزة لأول طلب"
+                    وسعر/مدة التوصيل بيستبدلوه أول ما نحدد المحافظة */}
+                <div className="w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-[#D9A066] bg-[#D9A066]/5">
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <div className="w-5 h-5 rounded-full border-2 border-[#D9A066] flex items-center justify-center shrink-0">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#D9A066]" />
                     </div>
-                    <div className={`flex flex-col ${isAr ? "items-end" : "items-start"} shrink-0`}>
-                      {shippingQuote.isDiscounted && (
-                        <span className="text-[9px] sm:text-[10px] font-bold text-[#D9A066] bg-[#D9A066]/10 px-2 py-0.5 rounded-full mb-0.5">
-                          {t.firstOrderBadge}
-                        </span>
-                      )}
-                      <span className={`font-bold text-xs sm:text-sm ${shippingQuote.isFree ? "text-green-500" : "text-black dark:text-white"}`}>
-                        {shippingQuote.isFree ? t.free : `${shippingQuote.price} ${t.currency}`}
-                      </span>
-                      {shippingQuote.isDiscounted && !shippingQuote.isFree && (
-                        <span className="text-[10px] text-gray-400 line-through">
-                          {shippingQuote.originalPrice} {t.currency}
-                        </span>
-                      )}
+                    <div className="text-[#D9A066] text-lg sm:text-xl shrink-0"><MdOutlineLocalShipping /></div>
+                    <div className={isAr ? "text-right" : "text-left"}>
+                      <p className="font-bold text-black dark:text-white text-sm sm:text-base">{t.stdShipTitle}</p>
+                      <p className="text-[11px] sm:text-xs text-gray-400">
+                        {selectedAddress && shippingQuote
+                          ? `${t.stdShipSubPrefix} ${shippingQuote.daysMin}-${shippingQuote.daysMax} ${t.daysUnit}`
+                          : t.freeShippingHint}
+                      </p>
                     </div>
                   </div>
-                ) : (
-                  <div className="px-2 py-2 flex flex-col gap-1.5">
-                    <p className="text-xs text-gray-400">{t.chooseAddressForShipping}</p>
-                    <p className="text-xs text-[#D9A066] font-medium leading-relaxed">{t.freeShippingHint}</p>
+                  <div className={`flex flex-col ${isAr ? "items-end" : "items-start"} shrink-0`}>
+                    {selectedAddress && shippingQuote ? (
+                      <>
+                        {shippingQuote.isDiscounted && (
+                          <span className="text-[9px] sm:text-[10px] font-bold text-[#D9A066] bg-[#D9A066]/10 px-2 py-0.5 rounded-full mb-0.5">
+                            {t.firstOrderBadge}
+                          </span>
+                        )}
+                        <span className={`font-bold text-xs sm:text-sm ${shippingQuote.isFree ? "text-green-500" : "text-black dark:text-white"}`}>
+                          {shippingQuote.isFree ? t.free : `${shippingQuote.price} ${t.currency}`}
+                        </span>
+                        {shippingQuote.isDiscounted && !shippingQuote.isFree && (
+                          <span className="text-[10px] text-gray-400 line-through">
+                            {shippingQuote.originalPrice} {t.currency}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="font-bold text-xs sm:text-sm text-gray-400">—</span>
+                    )}
                   </div>
-                )}
+                </div>
 
                 {/* شحن سريع — معطل مؤقتًا، مكتوب عليه "قريبًا" ومينفعش يتختار */}
                 <div
