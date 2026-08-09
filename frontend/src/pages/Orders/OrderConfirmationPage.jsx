@@ -278,19 +278,15 @@ export default function OrderConfirmationPage() {
 
                         </div>
 
-                        {/* اسم المنتج - جنب الصورة */}
-                        <div className={`flex-1 min-w-0 ${isAr ? "text-right" : "text-left"}`}>
+                        {/* الاسم فوق، اللون تحته، السعر تحته - عمود واحد جنب الصورة بمسافات واضحة */}
+                        <div className={`flex-1 min-w-0 flex flex-col gap-1.5 ${isAr ? "text-right" : "text-left"}`}>
                           <p className="font-semibold text-black dark:text-white text-sm truncate">{item.product_name}</p>
-                        </div>
-
-                        {/* اللون فوق، السعر تحته - آخر عنصر في الصف */}
-                        <div className={`flex flex-col items-end shrink-0 gap-0.5 ${isAr ? "text-right" : "text-left"}`}>
                           {item.color_name && (
-                            <span className="text-gray-400 text-xs">{item.color_name}</span>
+                            <p className="text-gray-400 text-xs">{item.color_name}</p>
                           )}
-                          <span className="font-bold text-[#D9A066] text-sm">
+                          <p className="font-bold text-[#D9A066] text-sm">
                             {item.price_at_time} {isAr ? "ج.م" : "EGP"}
-                          </span>
+                          </p>
                         </div>
                       </div>
                     )
