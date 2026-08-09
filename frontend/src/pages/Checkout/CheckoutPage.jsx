@@ -643,7 +643,7 @@ export default function CheckoutPage() {
 
                 {/* شحن سريع — معطل مؤقتًا، مكتوب عليه "قريبًا" ومينفعش يتختار */}
                 <div
-                  className={`w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a] opacity-50 cursor-not-allowed ${isAr ? "flex-row-reverse" : ""}`}
+                  className="w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a] opacity-50 cursor-not-allowed"
                 >
                   <div className="flex items-center gap-2.5 sm:gap-3">
                     <div className="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 shrink-0" />
@@ -659,7 +659,7 @@ export default function CheckoutPage() {
 
                 {/* التوصيل القياسي — دايمًا مختار تلقائي، السعر والمدة بيتحددوا حسب محافظة العنوان المختار */}
                 {selectedAddress && shippingQuote ? (
-                  <div className={`w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-[#D9A066] bg-[#D9A066]/5 ${isAr ? "flex-row-reverse" : ""}`}>
+                  <div className="w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-[#D9A066] bg-[#D9A066]/5">
                     <div className="flex items-center gap-2.5 sm:gap-3">
                       <div className="w-5 h-5 rounded-full border-2 border-[#D9A066] flex items-center justify-center shrink-0">
                         <div className="w-2.5 h-2.5 rounded-full bg-[#D9A066]" />
@@ -672,7 +672,7 @@ export default function CheckoutPage() {
                         </p>
                       </div>
                     </div>
-                    <div className={`flex flex-col ${isAr ? "items-start" : "items-end"} shrink-0`}>
+                    <div className={`flex flex-col ${isAr ? "items-end" : "items-start"} shrink-0`}>
                       {shippingQuote.isDiscounted && (
                         <span className="text-[9px] sm:text-[10px] font-bold text-[#D9A066] bg-[#D9A066]/10 px-2 py-0.5 rounded-full mb-0.5">
                           {t.firstOrderBadge}
