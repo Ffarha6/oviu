@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import { LanguageContext } from "../../context/LanguageContext"
+import { Link } from "react-router-dom"
 import logo from "../../assets/images/logo.png"
 import { FaInstagram, FaTiktok, FaFacebookF } from "react-icons/fa"
 

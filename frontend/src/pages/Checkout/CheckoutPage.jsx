@@ -1,28 +1,24 @@
 import { useState, useContext, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { LanguageContext } from "../../context/LanguageContext"
 import { useCart } from "../../context/CartContext"
 import { useAuth } from "../../context/AuthContext"
 import { motion, AnimatePresence } from "framer-motion"
 import {
-  FiShield,
-  FiTag, FiMessageCircle, FiX, FiMapPin
+  FiTag, FiMessageCircle, FiX, FiMapPin, FiEdit2, FiPlus
 } from "react-icons/fi"
 import {
   FaTruck, FaHeadset,
   FaCreditCard, FaHandHoldingUsd
 } from "react-icons/fa"
 import { MdOutlineLocalShipping } from "react-icons/md"
+// ⚠️ عدّلي المسار ده لو AddressModal.jsx و ProfileConstants.js عندك في مكان مختلف عن src/pages/profile/
+import AddressModal from "../pages/profile/AddressModal"
+import { authFetch, getGovernorates } from "../pages/profile/ProfileConstants"
 
 // ✅ نفس فكرة صفحة البروفايل: رابط ثابت احتياطي لو VITE_API_URL مش متعرّف في .env
-// (لو ده هو اللي حصل، كان الطلب رايح لمسار غلط عند سيرفر الفرونت نفسه وبيرجع HTML
-// مش JSON، فده كان سبب رسالة "فشل إتمام الطلب" الفاضية اللي بتظهر بدون أي تفاصيل)
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://oviu-production.up.railway.app"
-
-const PHONE_CODES = ["+966", "+20", "+971", "+965", "+974", "+973", "+968"]
-
-const CITIES_AR = ["الرياض", "جدة", "مكة المكرمة", "المدينة المنورة", "الدمام", "الخبر", "أبها", "تبوك", "القصيم", "حائل"]
-const CITIES_EN = ["Riyadh", "Jeddah", "Makkah", "Madinah", "Dammam", "Khobar", "Abha", "Tabuk", "Qassim", "Hail"]
 
 // خريطة تحويل اسم طريقة الدفع في الفرونت إلى الاسم اللي الباك إند فاهمه
 // (الباك إند عنده: cash, card, wallet, bank -- الفرونت عنده: card, cod)
@@ -67,74 +63,62 @@ function getItemImage(item) {
 export default function CheckoutPage() {
   const { language } = useContext(LanguageContext)
   const { cart, fetchCart, clearCart } = useCart()
-  const { user, refreshUser } = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
   const isAr = language === "ar"
 
+  // نفس نظام الترجمة اللي بيستخدمه AddressModal وباقي صفحة البروفايل،
+  // بنستخدمه هنا بس عشان نترجم اسم المحافظة (المخزنة كـ key زي "cairo") لعربي
+  const { t: i18nT } = useTranslation()
+  const governorates = getGovernorates(i18nT)
+  const govLabel = (key) => governorates.find(g => g.value === key)?.label || key
+
   const items = cart?.items ?? []
   // ✅ عدد "المنتجات" اللي بيتكتب في العناوين لازم يبقى إجمالي عدد القطع (مجموع الكميات)
-  // مش عدد الأنواع المختلفة (items.length)، عشان لو عندك نوعين وكل واحد كميته أكتر من 1
-  // يبقى العدد الحقيقي أكبر من 2
   const totalQuantity = items.reduce((sum, item) => sum + (item.quantity || 0), 0)
   const subtotal = parseFloat(cart?.total_price ?? 0)
   const discount = 0
-  // ✅ الضريبة اتشالت خالص — مفيش ضريبة على الموقع
-  // مفيش قيمة افتراضية لطريقة الشحن ولا الدفع، المستخدم لازم يختار بنفسه
   const [shippingMethod, setShippingMethod] = useState("")
   const shippingCost = shippingMethod === "fast" ? 20 : 0
   const total = subtotal - discount + shippingCost
 
-  const [form, setForm] = useState({
-    fullName: user ? `${user.first_name || ""} ${user.last_name || ""}`.trim() : "",
-    phone: user?.phone || "",
-    phoneCode: "+20",
-    email: user?.email || "",
-    city: user?.governorate || "",
-    address: user?.address || "",
-    saveAddress: true,
-  })
   const [paymentMethod, setPaymentMethod] = useState("")
   const [coupon, setCoupon] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
 
-  // ── العنوان المحفوظ ──
-  // savedAddress = null لحد ما نتأكد إن مفيش عنوان (بنفرق بينه وبين "لسه بيحمل" بـ addressLoading)
- const [addresses, setAddresses] = useState([])
- const [selectedAddress, setSelectedAddress] = useState(null)
- const [savedAddress, setSavedAddress] = useState(null)
+  // ── دليل العناوين: نفس البيانات بالظبط اللي في صفحة البروفايل (/api/auth/addresses/) ──
+  const [addresses, setAddresses] = useState([])
+  const [selectedAddress, setSelectedAddress] = useState(null)
   const [addressLoading, setAddressLoading] = useState(true)
-  // بدل ما الفورم يتوسّع جوه الصفحة، دلوقتي addressModalOpen بيفتح مودال منبثق فوق الصفحة كلها
-  // (نفس فكرة جوميا: كارت مختصر + زرار "تغيير"/"إضافة عنوان" يفتح بوب أب)
-  const [addressModalOpen, setAddressModalOpen] = useState(false)
-  // نسخة مؤقتة من الفورم بنشتغل عليها جوه المودال، عشان لو المستخدم قفل المودال من غير حفظ
-  // ميتغيرش العنوان المحفوظ اللي ظاهر في الكارت المختصر
-  const [draftForm, setDraftForm] = useState(form)
-  // بيبقى true وإحنا بنبعت طلب الحفظ للباك إند
-  const [isSavingAddress, setIsSavingAddress] = useState(false)
-  // شكل المودال: 'list' = دليل العناوين (فيه العنوان المحفوظ + زرار اضف عنوان)، 'form' = فورم إدخال/تعديل العنوان
-  const [addressModalView, setAddressModalView] = useState("form")
+
+  // مودال دليل العناوين (اختيار عنوان من اللي محفوظين)
+  const [addressListOpen, setAddressListOpen] = useState(false)
+  // مودال الإضافة/التعديل — هو نفسه AddressModal بتاع صفحة البروفايل بالظبط
+  const [addressForm, setAddressForm] = useState({ open: false, isNew: true, initialData: null, addressId: null })
 
   useEffect(() => {
     fetchCart()
   }, [])
 
-  useEffect(() => {
   const loadAddresses = async () => {
     try {
       setAddressLoading(true)
-
       const res = await authFetch("/api/auth/addresses/")
-
       if (!res.ok) throw new Error()
-
       const data = await res.json()
-
       setAddresses(data)
 
       if (data.length > 0) {
-        const selected = data.find(a => a.is_default) || data[0]
-        setSelectedAddress(selected)
-        setSavedAddress(selected)
+        setSelectedAddress(prev => {
+          // لو فيه عنوان متختار قبل كده، حدّثيه بأحدث نسخة منه لو لسه موجود
+          if (prev) {
+            const stillThere = data.find(a => a.id === prev.id)
+            if (stillThere) return stillThere
+          }
+          return data.find(a => a.is_default) || data[0]
+        })
+      } else {
+        setSelectedAddress(null)
       }
     } catch (err) {
       console.log(err)
@@ -143,144 +127,56 @@ export default function CheckoutPage() {
     }
   }
 
-  loadAddresses()
-}, [])
-  // لو لقينا عنوان محفوظ، نملى بيه الفورم تلقائيًا (يظهر في الكارت المختصر، ويبقى أساس المودال لو "تغيير")
   useEffect(() => {
-    if (savedAddress) {
-      setForm(f => ({
-        ...f,
-        fullName: savedAddress.full_name || f.fullName,
-        phone: savedAddress.phone?.replace(/^\+\d{1,4}/, "") || f.phone,
-        city: savedAddress.city || f.city,
-        address: savedAddress.address || f.address,
-      }))
+    loadAddresses()
+  }, [])
+
+  // فتح دليل العناوين: لو فيه عناوين محفوظة نعرضها للاختيار، لو مفيش نفتح فورم إضافة على طول
+  const openAddressPicker = () => {
+    if (addresses.length > 0) {
+      setAddressListOpen(true)
+    } else {
+      setAddressForm({ open: true, isNew: true, initialData: null, addressId: null })
     }
-  }, [savedAddress])
-
-  // فتح المودال: لو فيه عنوان محفوظ نبدأ بشاشة "دليل العناوين"، ولو مفيش نروح للفورم على طول
-  const openAddressModal = () => {
-    setDraftForm(form)
-    setAddressModalView(savedAddress ? "list" : "form")
-    setAddressModalOpen(true)
   }
 
-  // من جوه دليل العناوين: زرار تعديل العنوان الموجود
-  const openEditAddressForm = () => {
-    setDraftForm(form)
-    setAddressModalView("form")
+  const openAddNewAddress = () => {
+    setAddressListOpen(false)
+    setAddressForm({ open: true, isNew: true, initialData: null, addressId: null })
   }
 
-  // من جوه دليل العناوين: زرار "+ اضف عنوان" — فورم فاضي تمامًا
-  const openAddNewAddressForm = () => {
-    setDraftForm({
-      fullName: "",
-      phone: "",
-      phoneCode: "+20",
-      email: form.email,
-      city: "",
-      address: "",
-      saveAddress: true,
+  const openEditAddress = (addr) => {
+    setAddressListOpen(false)
+    setAddressForm({
+      open: true,
+      isNew: false,
+      addressId: addr.id,
+      initialData: {
+        fullName: addr.full_name,
+        phone: addr.phone?.replace(/^\+\d{1,4}/, "") || "",
+        phoneCode: addr.phone?.match(/^\+\d{1,4}/)?.[0] || "+20",
+        governorate: addr.governorate,
+        area: addr.area || "",
+        address: addr.address,
+      },
     })
-    setAddressModalView("form")
   }
 
-  const closeAddressModal = () => setAddressModalOpen(false)
+  const closeAddressForm = () => setAddressForm(f => ({ ...f, open: false }))
 
-  const handleDraftChange = (e) => setDraftForm({ ...draftForm, [e.target.name]: e.target.value })
-
-  const handleSaveAddress = async () => {
-    // تحقق بسيط قبل الحفظ
-    if (!draftForm.fullName || !draftForm.phone || !draftForm.city || !draftForm.address) {
-      alert(isAr ? "الرجاء تعبئة كل الحقول المطلوبة" : "Please fill in all required fields")
-      return
-    }
-
-    setForm(draftForm)
-
-    // لو المستخدم مش عايز يحفظ العنوان لاستخدامه لاحقًا، نستخدمه بس في الطلب الحالي من غير ما نبعته للباك إند
-    if (!draftForm.saveAddress) {
-      setSavedAddress({
-        full_name: draftForm.fullName,
-        phone: draftForm.phone,
-        city: draftForm.city,
-        address: draftForm.address,
-      })
-      setAddressModalView("list")
-      return
-    }
-
-    const token = localStorage.getItem("access_token")
-    if (!token) {
-      alert(isAr ? "الرجاء تسجيل الدخول لحفظ العنوان" : "Please login to save your address")
-      setAddressModalOpen(false)
-      return
-    }
-
-    // اليوزر عنده first_name / last_name بس مفيش full_name واحد، فبنقسم الاسم المدخل
-    const [firstName, ...rest] = draftForm.fullName.trim().split(/\s+/)
-    const lastName = rest.join(" ")
-
-    // city في الفورم بتتخزن في حقل governorate عند اليوزر (أقرب حقل موجود فعليًا في الباك إند)
-    const payload = {
-      phone: draftForm.phone,
-      address: draftForm.address,
-      governorate: draftForm.city,
-      first_name: firstName || "",
-      last_name: lastName || "",
-    }
-
-    setIsSavingAddress(true)
-    try {
-      console.log("Saving address to:", `${API_BASE_URL}/api/auth/profile/`)
-      const res = await fetch(`${API_BASE_URL}/api/auth/profile/`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
-        },
-        body: JSON.stringify(payload),
-      })
-
-      // بعض الردود بترجع من غير body خالص (مثلاً 204)، فبنقرأ كـ نص الأول
-      // وبعدين نحاول نحوّله JSON، بدل ما نستنى JSON مباشرة ويكسر الكود لو فاضي
-      const rawText = await res.text()
-      let data = {}
-      if (rawText) {
-        try {
-          data = JSON.parse(rawText)
-        } catch {
-          data = {}
-        }
-      }
-
-      if (!res.ok) {
-        // رسائل الأخطاء بتيجي من DRF كـ object فيه مصفوفة لكل حقل، بناخد أول رسالة نلاقيها
-        const firstError = Object.values(data || {})[0]
-        const message = Array.isArray(firstError) ? firstError[0] : (data.detail || data.message)
-        throw new Error(message || (isAr ? "فشل حفظ العنوان" : "Failed to save address"))
-      }
-
-      setSavedAddress({
-        full_name: `${data.first_name || firstName || ""} ${data.last_name || lastName || ""}`.trim(),
-        phone: data.phone || draftForm.phone,
-        city: data.governorate || draftForm.city,
-        address: data.address || draftForm.address,
-      })
-      // بعد الحفظ نرجع لشاشة دليل العناوين بدل ما نقفل المودال كله
-      setAddressModalView("list")
-
-      // نحدّث بيانات اليوزر في الـ AuthContext عشان أي مكان تاني في التطبيق (زي الـ Navbar) يعكس التعديل فورًا
-      if (refreshUser) refreshUser()
-    } catch (error) {
-      console.error("Save address failed:", error)
-      alert(isAr ? `فشل حفظ العنوان: ${error.message}` : `Failed to save address: ${error.message}`)
-    } finally {
-      setIsSavingAddress(false)
+  // بعد ما AddressModal يحفظ العنوان (سواء إضافة أو تعديل)، بنعيد تحميل الدليل
+  // كامل من نفس الـ endpoint، عشان صفحة البروفايل والتشيك أوت يفضلوا متزامنين دايمًا
+  const handleAddressSaved = async (savedAddress) => {
+    await loadAddresses()
+    if (savedAddress?.id) {
+      setSelectedAddress(prev => ({ ...savedAddress }))
     }
   }
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+  const handleChooseFromList = (addr) => {
+    setSelectedAddress(addr)
+    setAddressListOpen(false)
+  }
 
   const t = {
     ar: {
@@ -301,27 +197,13 @@ export default function CheckoutPage() {
       contactUs: "تواصل معنا",
 
       s1: "معلومات الشحن",
-      fullName: "الاسم الكامل",
-      fullNamePh: "أدخل اسمك الكامل",
-      mobile: "رقم الجوال",
-      mobilePh: "5xxxxxxxx",
-      emailOpt: "البريد الإلكتروني (اختياري)",
-      emailPh: "example@email.com",
-      cityLabel: "المدينة",
-      cityPh: "اختر المدينة",
-      addressLabel: "تفاصيل العنوان",
-      addressPh: "اسم الشارع، رقم المبنى، الشقة، المعلم القريب (اختياري)",
-      saveAddr: "حفظ العنوان لاستخدامه لاحقاً",
-      changeAddress: "تغيير",
       addAddressBtn: "إضافة عنوان",
-      useThisAddress: "حفظ العنوان",
       addressLoadingTxt: "جاري تحميل العنوان...",
-      modalTitleAdd: "إضافة عنوان الشحن",
-      modalTitleEdit: "تعديل عنوان الشحن",
       modalTitleList: "تسليم إلى",
       addressBookLabel: "دليل العناوين",
       addNewAddress: "اضف عنوان",
       selectAddress: "اختيار العنوان",
+      editAddress: "تعديل",
       cancel: "إلغاء",
 
       s2: "طريقة الشحن",
@@ -339,12 +221,10 @@ export default function CheckoutPage() {
       codSub: "ادفع عند استلام طلبك",
 
       reviewTitle: "ملخص الطلب",
-      reviewSub: "راجع تفاصيل طلبك قبل التأكيد",
       paymentSummary: "ملخص الدفع",
 
       payNow: "تأكيد الطلب",
       currency: "ج.م",
-      orderSuccess: "تم إرسال الطلب بنجاح!",
       emptyCoupon: "الرجاء إدخال كود الخصم",
     },
     en: {
@@ -365,27 +245,13 @@ export default function CheckoutPage() {
       contactUs: "Contact Us",
 
       s1: "Shipping Information",
-      fullName: "Full Name",
-      fullNamePh: "Enter your full name",
-      mobile: "Mobile Number",
-      mobilePh: "5xxxxxxxx",
-      emailOpt: "Email (Optional)",
-      emailPh: "example@email.com",
-      cityLabel: "City",
-      cityPh: "Select City",
-      addressLabel: "Address Details",
-      addressPh: "Street name, building number, apartment, nearby landmark (optional)",
-      saveAddr: "Save address for later use",
-      changeAddress: "Change",
       addAddressBtn: "Add Address",
-      useThisAddress: "Save Address",
       addressLoadingTxt: "Loading address...",
-      modalTitleAdd: "Add Shipping Address",
-      modalTitleEdit: "Edit Shipping Address",
       modalTitleList: "Deliver to",
       addressBookLabel: "Address Book",
       addNewAddress: "Add Address",
       selectAddress: "Select Address",
+      editAddress: "Edit",
       cancel: "Cancel",
 
       s2: "Shipping Method",
@@ -403,17 +269,13 @@ export default function CheckoutPage() {
       codSub: "Pay when you receive your order",
 
       reviewTitle: "Order Summary",
-      reviewSub: "Review your order details before confirming",
       paymentSummary: "Payment Summary",
 
       payNow: "Confirm Order",
       currency: "EGP",
-      orderSuccess: "Order placed successfully!",
       emptyCoupon: "Please enter a coupon code",
     },
   }[language]
-
-  const cities = isAr ? CITIES_AR : CITIES_EN
 
   // فاضلة كخطاف بسيط لحد ما يتم ربط endpoint فعلي للكوبونات في الباك إند
   const handleApplyCoupon = () => {
@@ -434,19 +296,18 @@ export default function CheckoutPage() {
     }
 
     // ✅ الباك إند (CreateOrderSerializer) مستني الحقول دي flat على مستوى الطلب
-    // مباشرة (phone, address, payment_method, notes, items)، مش جوه object متداخل
-    // اسمه shipping_address. كمان مفيش حقل city منفصل عند الباك إند، فبندمجه جوه
-    // العنوان النصي الواحد اللي عنده (address).
-    const fullAddress = form.city ? `${form.city} - ${form.address}` : form.address
+    // مباشرة (phone, address, payment_method, notes, items). مفيش عنده حقول منفصلة
+    // للمحافظة أو المنطقة، فبندمجهم هنا جوه نص العنوان الواحد وقت إرسال الطلب بس
+    // (العنوان المحفوظ في دليل العناوين بيفضل نضيف من غير دمج).
+    const fullAddress = [govLabel(selectedAddress.governorate), selectedAddress.area, selectedAddress.address]
+      .filter(Boolean)
+      .join(" - ")
 
     const orderData = {
-      phone: `${form.phoneCode}${form.phone}`,
+      phone: selectedAddress.phone,
       address: fullAddress,
-      // تحويل اسم طريقة الدفع لما الباك إند متوقعه فعلاً (cash / card / wallet)
       payment_method: PAYMENT_METHOD_MAP[paymentMethod] || paymentMethod,
       notes: coupon ? `Coupon: ${coupon}` : "",
-      // item.product و item.color في الـ CartItemSerializer عبارة عن IDs مباشرة (مش objects).
-      // مفيش داعي نبعت السعر، الباك إند بيحسبه بنفسه من المنتج مباشرة عشان الأمان.
       items: items.map((item) => ({
         product_id: item.product,
         quantity: item.quantity,
@@ -454,12 +315,8 @@ export default function CheckoutPage() {
       })),
     }
 
-    console.log("Sending order:", orderData)
-
     try {
-      // ✅ الراوت الصحيح المسجل في orders/urls.py هو /api/orders/create/ مش الجذر
       const orderUrl = `${API_BASE_URL}/api/orders/create/`
-      console.log("Sending order to:", orderUrl)
       const response = await fetch(orderUrl, {
         method: "POST",
         headers: {
@@ -470,7 +327,6 @@ export default function CheckoutPage() {
       })
 
       const rawText = await response.text()
-      console.log("Order response status:", response.status, "body:", rawText)
       let data = {}
       if (rawText) {
         try {
@@ -481,23 +337,17 @@ export default function CheckoutPage() {
       }
 
       if (!response.ok) {
-        // ✅ 401 لوحده معناه إن التوكن غلط/منتهي فعلاً، فده اللي المفروض
-        // يوجه لتسجيل الدخول - مش أي خطأ تاني
         if (response.status === 401) {
           alert(isAr ? "انتهت صلاحية الجلسة، الرجاء تسجيل الدخول مرة أخرى" : "Session expired, please login again")
           navigate("/login")
           return false
         }
 
-        // ✅ استخراج الرسالة الحقيقية سواء جاية كـ {"error": "..."} من الـ view
-        // أو كأخطاء validation لكل حقل من الـ serializer (زي {"phone": ["..."]})
         let message = data.error || data.message || data.detail
         if (!message) {
           const firstFieldError = Object.values(data || {})[0]
           message = Array.isArray(firstFieldError) ? firstFieldError[0] : firstFieldError
         }
-        // ✅ لو مفيش رسالة خالص (مثلاً الرد رجع HTML بدل JSON، زي صفحة 404 من فايت
-        // نفسه لو الرابط غلط) بنوضح ده صراحة بدل رسالة عامة تتكرر من غير فايدة
         if (!message) {
           message = isAr
             ? `تعذر الوصول للسيرفر (كود ${response.status})، تأكدي إن رابط الـ API صحيح`
@@ -506,7 +356,6 @@ export default function CheckoutPage() {
         throw new Error(message)
       }
 
-      // تفريغ السلة بعد نجاح الطلب
       await clearCart()
 
       if (data.payment_url) {
@@ -527,21 +376,8 @@ export default function CheckoutPage() {
   }
 
   const handleSubmitOrder = async () => {
-    // التحقق من صحة البيانات
-    if (!form.fullName) {
-      alert(isAr ? "الرجاء إدخال الاسم الكامل" : "Please enter your full name")
-      return
-    }
-    if (!form.phone) {
-      alert(isAr ? "الرجاء إدخال رقم الجوال" : "Please enter your mobile number")
-      return
-    }
-    if (!form.city) {
-      alert(isAr ? "الرجاء اختيار المدينة" : "Please select a city")
-      return
-    }
-    if (!form.address) {
-      alert(isAr ? "الرجاء إدخال العنوان التفصيلي" : "Please enter your address details")
+    if (!selectedAddress) {
+      alert(isAr ? "الرجاء اختيار أو إضافة عنوان الشحن" : "Please select or add a shipping address")
       return
     }
     if (!shippingMethod) {
@@ -574,11 +410,6 @@ export default function CheckoutPage() {
     </div>
   )
 
-  // عرض المنتجات في مراجعة الطلب
-  // ملاحظة: item.product و item.color راجعين من الباك إند كـ IDs بس (مش objects)
-  // الاسم/السعر/الصورة موجودين في حقول منفصلة: product_name, product_price, product_detail
-  // ✅ السعر المكتوب دلوقتي هو سعر القطعة الواحدة بس (من غير ضرب في الكمية)،
-  // والكمية نفسها بقت شارة "xN" فوق صورة المنتج بدل سطر "الكمية × السعر"
   const renderOrderReview = () => {
     if (items.length === 0) {
       return (
@@ -605,7 +436,6 @@ export default function CheckoutPage() {
 
           return (
             <div key={item.id || idx} dir={isAr ? "rtl" : "ltr"} className={`flex gap-3 py-3 ${idx !== items.length - 1 ? "border-b border-black/5 dark:border-white/5" : ""}`}>
-              {/* صورة أكبر وأوضح زي نون */}
               <div className="relative w-[140px] h-[140px] bg-white dark:bg-[#1a1a1a] rounded-[14px] shrink-0 flex items-center justify-center overflow-hidden border border-black/5 dark:border-white/5">
                 <img
                   src={image || "https://placehold.co/140x140/e8ddd4/8a6a4a?text=No+Image"}
@@ -613,14 +443,12 @@ export default function CheckoutPage() {
                   className="w-full h-full object-contain p-2"
                   onError={(e) => { e.target.src = "https://placehold.co/140x140/e8ddd4/8a6a4a?text=No+Image" }}
                 />
-                {/* شارة الكمية xN فوق الصورة */}
                 {item.quantity > 1 && (
                   <span className={`absolute top-1 ${isAr ? "left-1" : "right-1"} bg-black/70 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md`}>
                     x{item.quantity}
                   </span>
                 )}
               </div>
-              {/* الاسم فوق، واللون تحته، والسعر في آخر نقطة تحت (بنفس ارتفاع الصورة) */}
               <div className={`flex-1 flex flex-col min-w-0 ${isAr ? "text-right" : "text-left"}`}>
                 <p className="font-semibold text-black dark:text-white text-sm leading-snug line-clamp-2">{name}</p>
                 {color && <p className="text-xs text-gray-400 mt-1">{color}</p>}
@@ -635,16 +463,13 @@ export default function CheckoutPage() {
     )
   }
 
-  // ── محتوى مودال العنوان (يفتح فوق الصفحة كلها بدل التوسيع جوه السكشن) ──
-  // ملحوظة مهمة: ده لازم يفضل متغير JSX عادي، مش function component (زي () => (...))
-  // لو اتحول لـ function component بيتعرّف جوه الـ render، React هيعتبره نوع component جديد
-  // كل مرة، وهيهدم كل الـ inputs جوّاه ويبنيها من الصفر كل ضغطة زرار (عشان كده كان السهم بيطير)
-  const addressModalContent = (
+  // ── مودال دليل العناوين: عرض كل العناوين المحفوظة (نفس الـ endpoint بتاع صفحة البروفايل) ──
+  const addressListContent = (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={closeAddressModal}
+      onClick={() => setAddressListOpen(false)}
       className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
     >
       <motion.div
@@ -654,174 +479,75 @@ export default function CheckoutPage() {
         transition={{ duration: 0.18 }}
         onClick={(e) => e.stopPropagation()}
         className="bg-white dark:bg-[#111] rounded-[24px] w-full max-w-[600px] max-h-[90vh] overflow-y-auto p-6"
+        dir="rtl"
       >
-        {/* رأس المودال */}
-        <div className={`flex items-center justify-between mb-5 ${isAr ? "flex-row-reverse" : ""}`}>
-          <h3 className="font-bold text-black dark:text-white text-lg">
-            {addressModalView === "list"
-              ? t.modalTitleList
-              : (savedAddress ? t.modalTitleEdit : t.modalTitleAdd)}
-          </h3>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-bold text-black dark:text-white text-lg">{t.modalTitleList}</h3>
           <button
-            onClick={closeAddressModal}
+            onClick={() => setAddressListOpen(false)}
             className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition"
           >
             <FiX className="text-black dark:text-white text-lg" />
           </button>
         </div>
 
-        {/* ── شاشة دليل العناوين: بتظهر لو فيه عنوان محفوظ أصلاً وضغط "تغيير" ── */}
-        {addressModalView === "list" && (
-          <>
-            <p className={`text-xs text-gray-400 mb-3 ${isAr ? "text-right" : "text-left"}`}>
-              {t.addressBookLabel} (1)
-            </p>
+        <p className="text-xs text-gray-400 mb-3 text-right">
+          {t.addressBookLabel} ({addresses.length})
+        </p>
 
-            <div className={`flex items-start justify-between gap-3 border-2 border-[#D9A066] bg-[#D9A066]/5 rounded-[16px] p-4 mb-4 ${isAr ? "flex-row-reverse text-right" : "text-left"}`}>
+        <div className="flex flex-col gap-3 mb-4">
+          {addresses.map((addr) => (
+            <div
+              key={addr.id}
+              onClick={() => handleChooseFromList(addr)}
+              className={`flex items-start justify-between gap-3 border-2 rounded-[16px] p-4 cursor-pointer transition text-right ${
+                selectedAddress?.id === addr.id
+                  ? "border-[#D9A066] bg-[#D9A066]/5"
+                  : "border-black/10 dark:border-white/10"
+              }`}
+            >
               <div className="flex-1">
-                <p className="font-bold text-black dark:text-white text-sm mb-1">{form.fullName}</p>
+                <p className="font-bold text-black dark:text-white text-sm mb-1">{addr.full_name}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                  {form.phoneCode}{form.phone} {form.city ? `— ${form.city}` : ""}{form.address ? ` — ${form.address}` : ""}
+                  {addr.phone} — {govLabel(addr.governorate)}{addr.area ? ` — ${addr.area}` : ""} — {addr.address}
                 </p>
                 <button
-                  onClick={openEditAddressForm}
-                  className="text-[#D9A066] text-xs font-semibold mt-2 hover:underline"
+                  onClick={(e) => { e.stopPropagation(); openEditAddress(addr) }}
+                  className="flex items-center gap-1 text-[#D9A066] text-xs font-semibold mt-2 hover:underline"
                 >
-                  {t.changeAddress}
+                  <FiEdit2 size={12} />
+                  {t.editAddress}
                 </button>
               </div>
-            </div>
-
-            <button
-              onClick={openAddNewAddressForm}
-              className={`flex items-center gap-2 text-[#D9A066] font-semibold text-sm mb-6 ${isAr ? "flex-row-reverse" : ""}`}
-            >
-              <span className="w-6 h-6 rounded-full border-2 border-[#D9A066] flex items-center justify-center text-base leading-none">+</span>
-              {t.addNewAddress}
-            </button>
-
-            <div className={`flex gap-3 ${isAr ? "flex-row-reverse" : ""}`}>
-              <button
-                onClick={closeAddressModal}
-                className="flex-1 bg-[#D9A066] hover:bg-[#c98d54] text-white font-bold text-sm py-3 rounded-full transition"
-              >
-                {t.selectAddress}
-              </button>
-              <button
-                onClick={closeAddressModal}
-                className="flex-1 border border-black/10 dark:border-white/10 text-black dark:text-white font-semibold text-sm py-3 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition"
-              >
-                {t.cancel}
-              </button>
-            </div>
-          </>
-        )}
-
-        {/* ── شاشة الفورم: إضافة عنوان جديد أو تعديل عنوان موجود ── */}
-        {addressModalView === "form" && (
-          <>
-            <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 ${isAr ? "text-right" : "text-left"}`}>
-              <div>
-                <label className="text-sm font-semibold text-black dark:text-white mb-1.5 block">{t.fullName}</label>
-                <input
-                  name="fullName"
-                  value={draftForm.fullName}
-                  onChange={handleDraftChange}
-                  placeholder={t.fullNamePh}
-                  className={`w-full bg-[#F7F2EE] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-[12px] px-4 py-3 text-sm text-black dark:text-white placeholder:text-gray-400 outline-none focus:border-[#D9A066] transition ${isAr ? "text-right" : "text-left"}`}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-black dark:text-white mb-1.5 block">{t.mobile}</label>
-                <div className={`flex gap-2 ${isAr ? "flex-row-reverse" : ""}`}>
-                  <select
-                    value={draftForm.phoneCode}
-                    onChange={e => setDraftForm({ ...draftForm, phoneCode: e.target.value })}
-                    className="bg-[#F7F2EE] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-[12px] px-3 py-3 text-sm text-black dark:text-white outline-none focus:border-[#D9A066] transition shrink-0"
-                  >
-                    {PHONE_CODES.map(c => <option key={c}>{c}</option>)}
-                  </select>
-                  <input
-                    name="phone"
-                    value={draftForm.phone}
-                    onChange={handleDraftChange}
-                    placeholder={t.mobilePh}
-                    className={`flex-1 bg-[#F7F2EE] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-[12px] px-4 py-3 text-sm text-black dark:text-white placeholder:text-gray-400 outline-none focus:border-[#D9A066] transition ${isAr ? "text-right" : "text-left"}`}
-                  />
-                </div>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${selectedAddress?.id === addr.id ? "border-[#D9A066]" : "border-gray-300"}`}>
+                {selectedAddress?.id === addr.id && <div className="w-2.5 h-2.5 rounded-full bg-[#D9A066]" />}
               </div>
             </div>
+          ))}
+        </div>
 
-            <div className={`mb-4 ${isAr ? "text-right" : "text-left"}`}>
-              <label className="text-sm font-semibold text-black dark:text-white mb-1.5 block">{t.emailOpt}</label>
-              <input
-                name="email"
-                value={draftForm.email}
-                onChange={handleDraftChange}
-                placeholder={t.emailPh}
-                className={`w-full bg-[#F7F2EE] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-[12px] px-4 py-3 text-sm text-black dark:text-white placeholder:text-gray-400 outline-none focus:border-[#D9A066] transition ${isAr ? "text-right" : "text-left"}`}
-              />
-            </div>
+        <button
+          onClick={openAddNewAddress}
+          className="flex items-center gap-2 text-[#D9A066] font-semibold text-sm mb-6"
+        >
+          <FiPlus className="w-6 h-6 rounded-full border-2 border-[#D9A066] p-1" />
+          {t.addNewAddress}
+        </button>
 
-            <div className={`mb-4 ${isAr ? "text-right" : "text-left"}`}>
-              <label className="text-sm font-semibold text-black dark:text-white mb-1.5 block">{t.cityLabel}</label>
-              <select
-                name="city"
-                value={draftForm.city}
-                onChange={handleDraftChange}
-                className={`w-full bg-[#F7F2EE] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-[12px] px-4 py-3 text-sm text-black dark:text-white outline-none focus:border-[#D9A066] transition ${isAr ? "text-right" : "text-left"}`}
-              >
-                <option value="">{t.cityPh}</option>
-                {cities.map(c => <option key={c}>{c}</option>)}
-              </select>
-            </div>
-
-            <div className={`mb-4 ${isAr ? "text-right" : "text-left"}`}>
-              <label className="text-sm font-semibold text-black dark:text-white mb-1.5 block">{t.addressLabel}</label>
-              <textarea
-                name="address"
-                value={draftForm.address}
-                onChange={handleDraftChange}
-                placeholder={t.addressPh}
-                rows={3}
-                className={`w-full bg-[#F7F2EE] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-[12px] px-4 py-3 text-sm text-black dark:text-white placeholder:text-gray-400 outline-none focus:border-[#D9A066] transition resize-none ${isAr ? "text-right" : "text-left"}`}
-              />
-            </div>
-
-            <label className={`flex items-center gap-2 cursor-pointer mb-6 ${isAr ? "flex-row-reverse justify-end" : ""}`}>
-              <input
-                type="checkbox"
-                checked={draftForm.saveAddress}
-                onChange={() => setDraftForm({ ...draftForm, saveAddress: !draftForm.saveAddress })}
-                className="accent-[#D9A066] w-4 h-4"
-              />
-              <span className="text-sm text-gray-600 dark:text-gray-400">{t.saveAddr}</span>
-            </label>
-
-            <div className={`flex gap-3 ${isAr ? "flex-row-reverse" : ""}`}>
-              <button
-                onClick={handleSaveAddress}
-                disabled={isSavingAddress}
-                className={`flex-1 bg-[#D9A066] hover:bg-[#c98d54] text-white font-bold text-sm py-3 rounded-full transition flex items-center justify-center gap-2 ${isSavingAddress ? "opacity-70 cursor-not-allowed" : ""}`}
-              >
-                {isSavingAddress && (
-                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                )}
-                {t.useThisAddress}
-              </button>
-              <button
-                onClick={() => savedAddress ? setAddressModalView("list") : closeAddressModal()}
-                disabled={isSavingAddress}
-                className="flex-1 border border-black/10 dark:border-white/10 text-black dark:text-white font-semibold text-sm py-3 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition"
-              >
-                {t.cancel}
-              </button>
-            </div>
-          </>
-        )}
+        <div className="flex gap-3">
+          <button
+            onClick={() => setAddressListOpen(false)}
+            className="flex-1 bg-[#D9A066] hover:bg-[#c98d54] text-white font-bold text-sm py-3 rounded-full transition"
+          >
+            {t.selectAddress}
+          </button>
+          <button
+            onClick={() => setAddressListOpen(false)}
+            className="flex-1 border border-black/10 dark:border-white/10 text-black dark:text-white font-semibold text-sm py-3 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition"
+          >
+            {t.cancel}
+          </button>
+        </div>
       </motion.div>
     </motion.div>
   )
@@ -830,43 +556,40 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-[#F7F2EE] dark:bg-[#050505] transition-all duration-500">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-28 lg:pb-12">
 
-        {/* ✅ بترص فوق بعض على الموبايل والتابلت (ملخص الطلب تحت الفورم)، وجنب بعض من lg فأكبر */}
         <div className={`flex flex-col ${isAr ? "lg:flex-row-reverse" : "lg:flex-row"} gap-6 items-start`}>
 
-          {/* LEFT — FORM (Shipping Info + Shipping Method + Payment) */}
+          {/* LEFT — FORM */}
           <div className="flex-1 min-w-0 w-full flex flex-col gap-4">
 
-            {/* SECTION 1 — Shipping Info — بشكل صف "التوصيل إلى" زي نون: أيقونة موقع + العنوان + سهم */}
+            {/* SECTION 1 — Shipping Info */}
             <div className="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[20px] px-4 sm:px-6">
               <SectionHeader title={t.s1} />
               <div className="pb-4">
-                {/* ── حالة التحميل ── */}
                 {addressLoading && (
                   <p className="text-sm text-gray-400 py-2">{t.addressLoadingTxt}</p>
                 )}
 
-                {/* ── فيه عنوان محفوظ: صف بأيقونة موقع، بيفتح مودال العنوان ── */}
-                {!addressLoading && savedAddress && (
+                {!addressLoading && selectedAddress && (
                   <button
-                    onClick={openAddressModal}
+                    onClick={openAddressPicker}
                     className={`w-full flex items-center gap-3 bg-[#F7F2EE] dark:bg-[#1a1a1a] rounded-[14px] px-3.5 sm:px-4 py-3 ${isAr ? "flex-row-reverse" : ""}`}
                   >
                     <div className="w-9 h-9 rounded-full bg-[#D9A066]/10 flex items-center justify-center shrink-0">
                       <FiMapPin className="text-[#D9A066]" />
                     </div>
                     <div className={`flex-1 min-w-0 ${isAr ? "text-right" : "text-left"}`}>
-                      <p className="font-bold text-black dark:text-white text-sm mb-0.5">{form.fullName}</p>
+                      <p className="font-bold text-black dark:text-white text-sm mb-0.5">{selectedAddress.full_name}</p>
                       <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed truncate">
-                        {form.phoneCode}{form.phone} {form.city ? `— ${form.city}` : ""}{form.address ? ` — ${form.address}` : ""}
+                        {selectedAddress.phone} — {govLabel(selectedAddress.governorate)}
+                        {selectedAddress.area ? ` — ${selectedAddress.area}` : ""} — {selectedAddress.address}
                       </p>
                     </div>
                   </button>
                 )}
 
-                {/* ── مفيش عنوان محفوظ خالص: زرار إضافة بيفتح نفس المودال ── */}
-                {!addressLoading && !savedAddress && (
+                {!addressLoading && !selectedAddress && (
                   <button
-                    onClick={openAddressModal}
+                    onClick={openAddressPicker}
                     className={`flex items-center gap-2 text-[#D9A066] font-semibold text-sm ${isAr ? "flex-row-reverse" : ""}`}
                   >
                     <span className="w-6 h-6 rounded-full border-2 border-[#D9A066] flex items-center justify-center text-base leading-none">+</span>
@@ -948,27 +671,21 @@ export default function CheckoutPage() {
 
           </div>
 
-          {/* RIGHT — كارتين منفصلين: المنتجات لوحده، والإجمالي لوحده
-              ✅ دلوقتي الاتنين ظاهرين بالكامل على الموبايل/التابلت تحت الفورم، مش بس في الديسكتوب.
-              البار السفلي الثابت لسه موجود على الموبايل كطريقة سريعة لتأكيد الطلب */}
+          {/* RIGHT */}
           <div className="w-full lg:w-[420px] lg:shrink-0 flex flex-col gap-4 lg:sticky lg:top-[110px]">
 
-            {/* عنوان "ملخص الطلب" برا الكارت — محاذي لأقصى اليمين في العربي */}
             <div className={`flex items-center gap-2 px-1 w-full ${isAr ? "justify-end" : "justify-start"}`}>
               <h2 className="font-bold text-black dark:text-white text-base sm:text-lg">
                 {t.reviewTitle} <span className="text-[#D9A066]">({totalQuantity} {t.products})</span>
               </h2>
             </div>
 
-            {/* كارت المنتجات */}
             <div className="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[24px] p-5 sm:p-7">
               {renderOrderReview()}
             </div>
 
-            {/* كارت الإجمالي والدفع — ✅ دلوقتي ظاهر على كل المقاسات، مش بس lg فأكبر */}
             <div className="w-full bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[24px] p-5 sm:p-7">
 
-              {/* رأس الكارت: عنوان "ملخص الدفع" + عدد المنتجات (جنب بعض مباشرة) */}
               <div className="flex items-center gap-2 mb-4">
                 <h2 className="font-bold text-black dark:text-white text-base sm:text-lg">{t.paymentSummary}</h2>
                 <span className="bg-[#F7F2EE] dark:bg-[#1a1a1a] text-gray-400 text-xs font-medium px-3 py-1.5 rounded-full">
@@ -976,7 +693,6 @@ export default function CheckoutPage() {
                 </span>
               </div>
 
-              {/* Totals breakdown — بدون ضريبة */}
               <div className="flex flex-col gap-2 mb-5">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500 dark:text-gray-400 text-sm">{t.subtotalLabel}</span>
@@ -996,14 +712,12 @@ export default function CheckoutPage() {
                   </span>
                 </div>
 
-                {/* الإجمالي: بدون ضريبة = المجموع الفرعي - الخصم + الشحن */}
                 <div className="flex items-center justify-between pt-2 mt-1 border-t border-black/5 dark:border-white/5">
                   <span className="font-bold text-black dark:text-white text-sm sm:text-base">{t.totalLabel}</span>
                   <span className="font-bold text-[#D9A066] text-lg sm:text-xl">{total.toFixed(2)} {t.currency}</span>
                 </div>
               </div>
 
-              {/* Coupon */}
               <div className="flex items-center gap-2 mb-5">
                 <div className="flex-1 flex items-center gap-2 bg-[#F7F2EE] dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-full px-4 py-2.5">
                   <FiTag className="text-gray-400 text-sm shrink-0" />
@@ -1022,7 +736,6 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
-              {/* Confirm Order Button — مخفي على الموبايل/التابلت لأن البار السفلي الثابت بيغطي مكانه */}
               <button
                 onClick={handleSubmitOrder}
                 disabled={isProcessing || items.length === 0}
@@ -1038,7 +751,6 @@ export default function CheckoutPage() {
               </button>
             </div>
 
-            {/* Contact — مخفي على الموبايل/التابلت عشان الصفحة تفضل مركّزة على الطلب زي نون */}
             <div className="hidden lg:block bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[20px] p-4 sm:p-5">
               <div className={`flex items-center gap-3 mb-3 ${isAr ? "flex-row-reverse" : ""}`}>
                 <FaHeadset className="text-[#D9A066] text-lg shrink-0" />
@@ -1060,8 +772,7 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* ✅ بار سفلي ثابت للموبايل/التابلت بس (زي نون): عدد المنتجات + الإجمالي، وزرار تأكيد الطلب.
-          من lg فأكبر مختفي لأن كارت الإجمالي والدفع الجانبي ظاهر أصلاً */}
+      {/* بار سفلي ثابت للموبايل/التابلت */}
       <div className={`lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white dark:bg-[#111] border-t border-black/10 dark:border-white/10 px-4 py-3 flex items-center gap-3 ${isAr ? "flex-row-reverse" : ""}`}>
         <div className={isAr ? "text-right" : "text-left"}>
           <p className="text-[11px] text-gray-400">{totalQuantity} {t.products}</p>
@@ -1079,9 +790,22 @@ export default function CheckoutPage() {
         </button>
       </div>
 
-      {/* المودال المنبثق لإضافة/تعديل عنوان الشحن — بيفتح فوق الصفحة كلها بدل التوسيع جوه السكشن */}
+      {/* دليل العناوين (اختيار من المحفوظ) */}
       <AnimatePresence>
-        {addressModalOpen && addressModalContent}
+        {addressListOpen && addressListContent}
+      </AnimatePresence>
+
+      {/* فورم إضافة/تعديل عنوان — نفس الكومبوننت اللي بيتستخدم في صفحة البروفايل بالظبط */}
+      <AnimatePresence>
+        {addressForm.open && (
+          <AddressModal
+            initialData={addressForm.initialData}
+            isNew={addressForm.isNew}
+            addressId={addressForm.addressId}
+            onClose={closeAddressForm}
+            onSaved={handleAddressSaved}
+          />
+        )}
       </AnimatePresence>
     </div>
   )

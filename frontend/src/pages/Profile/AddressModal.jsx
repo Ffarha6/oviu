@@ -2,7 +2,7 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { useTranslation } from "react-i18next"
 import { FaTimes } from "react-icons/fa"
-import { PHONE_CODES, getGovernorates, authFetch } from "./ProfileConstants"
+import { PHONE_CODES, getGovernorates, getAreasByGovernorate, authFetch } from "./ProfileConstants"
 
 // ✅ isNew: true = بيضيف عنوان جديد (POST) - initialData بتبقى null
 // ✅ isNew: false = بيعدّل عنوان موجود (PATCH) - initialData لازم يجيب معاها addressId
@@ -15,15 +15,30 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
     phoneCode: initialData?.phoneCode || "+20",
     phone: initialData?.phone || "",
     governorate: initialData?.governorate || "",
+    // ملحوظة: الباك إند حاليًا مبيرجعش المنطقة كحقل منفصل (بيتم دمجها جوه نص العنوان
+    // وقت إرسال الطلب بس، مش وقت الحفظ)، فلو بنعدّل عنوان قديم، حقل المنطقة هيبدأ فاضي
+    // والمستخدم يقدر يختاره تاني. أي عنوان جديد هيتحفظ بيه المنطقة عادي.
+    area: initialData?.area || "",
     address: initialData?.address || "",
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
 
-  const handleChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+  // المناطق بتتغيّر حسب المحافظة المختارة
+  const areas = getAreasByGovernorate(form.governorate)
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    if (name === "governorate") {
+      // لو المستخدم غيّر المحافظة، لازم نصفّر المنطقة عشان متفضلش منطقة من محافظة تانية
+      setForm(f => ({ ...f, governorate: value, area: "" }))
+      return
+    }
+    setForm(f => ({ ...f, [name]: value }))
+  }
 
   const handleSave = async () => {
-    if (!form.fullName || !form.phone || !form.governorate || !form.address) {
+    if (!form.fullName || !form.phone || !form.governorate || !form.area || !form.address) {
       setError(t("addressModal.fillRequired"))
       return
     }
@@ -33,19 +48,12 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
       full_name: form.fullName,
       phone: `${form.phoneCode}${form.phone}`,
       governorate: form.governorate,
+      // بنبعتها كحقل منفصل احتياطًا لو الباك إند بيدعمها؛ لو مش مدعومة هيتجاهلها من غير مشاكل
+      area: form.area,
       address: form.address,
     }
 
     setSaving(true)
-
-
-
-
-
-
-
-
-    
     try {
       // ✅ الفرق الأساسي: إضافة عنوان جديد بتبعت POST لـ /api/auth/addresses/
       // (endpoint بيضيف صف جديد في القائمة)، وتعديل عنوان موجود بيبعت PATCH
@@ -67,7 +75,9 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
         return
       }
 
-      onSaved(data)
+      // لو الباك إند رجّع المنطقة اعتمدنا عليها، ولو لأ بنستخدم اللي المستخدم اختاره دلوقتي
+      // عشان الشاشة تفضل متزامنة فورًا من غير ما نستنى تحديث تاني
+      onSaved({ ...data, area: data.area || form.area })
       onClose()
     } catch {
       setError(t("addressModal.connectionError"))
@@ -145,17 +155,39 @@ export default function AddressModal({ initialData, isNew, addressId, onClose, o
           </div>
         </div>
 
-        <div className="mb-4 text-right">
-          <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">{t("addressModal.governorate")}</label>
-          <select
-            name="governorate"
-            value={form.governorate}
-            onChange={handleChange}
-            className="w-full bg-[#F7F2EE] dark:bg-gray-700 border border-black/10 dark:border-gray-600 rounded-[12px] px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm text-black dark:text-gray-100 outline-none focus:border-[#E8821A] transition text-right"
-          >
-            <option value="">{t("addressModal.chooseGovernorate")}</option>
-            {governorates.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
-          </select>
+        {/* المحافظة والمنطقة جنب بعض — المنطقة بتتفعّل بعد اختيار المحافظة */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 mb-4 text-right">
+          <div>
+            <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">{t("addressModal.governorate")}</label>
+            <select
+              name="governorate"
+              value={form.governorate}
+              onChange={handleChange}
+              className="w-full bg-[#F7F2EE] dark:bg-gray-700 border border-black/10 dark:border-gray-600 rounded-[12px] px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm text-black dark:text-gray-100 outline-none focus:border-[#E8821A] transition text-right"
+            >
+              <option value="">{t("addressModal.chooseGovernorate")}</option>
+              {governorates.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-black dark:text-gray-200 mb-1.5 block">
+              {t("addressModal.area", { defaultValue: "المنطقة / المركز" })}
+            </label>
+            <select
+              name="area"
+              value={form.area}
+              onChange={handleChange}
+              disabled={!form.governorate}
+              className="w-full bg-[#F7F2EE] dark:bg-gray-700 border border-black/10 dark:border-gray-600 rounded-[12px] px-3.5 sm:px-4 py-2.5 sm:py-3 text-sm text-black dark:text-gray-100 outline-none focus:border-[#E8821A] transition text-right disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <option value="">
+                {form.governorate
+                  ? t("addressModal.chooseArea", { defaultValue: "اختر المنطقة" })
+                  : t("addressModal.chooseGovernorateFirst", { defaultValue: "اختاري المحافظة أولاً" })}
+              </option>
+              {areas.map(a => <option key={a} value={a}>{a}</option>)}
+            </select>
+          </div>
         </div>
 
         <div className="mb-5 sm:mb-6 text-right">
