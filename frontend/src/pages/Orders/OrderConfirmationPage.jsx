@@ -49,9 +49,9 @@ export default function OrderConfirmationPage() {
 
   const t = isAr
     ? {
-        topBar: "توصيل وطلبات مؤمّنة بالكامل — محتاج مساعدة؟ تواصل معنا في أي وقت",
+        topBar: "طلبك بأمان | نحن هنا لمساعدتك في أي وقت",
         thankYou: "تم إستلام طلبك",
-        subtitle: "هنبعتلك تحديث بمجرد ما طلبك يتشحن",
+        subtitle: "شكرًا لثقتك بنا - طلبك الآن قيد التجهيز",
         orderNumber: "رقم الطلب",
         copy: "نسخ",
         copied: "تم النسخ",
@@ -66,9 +66,9 @@ export default function OrderConfirmationPage() {
         notFound: "تعذر تحميل تفاصيل هذا الطلب",
       }
     : {
-        topBar: "Secure delivery & orders — need help? Contact us anytime",
+        topBar: "Your order is safe | We're here to help anytime",
         thankYou: "Order Received",
-        subtitle: "We'll let you know the moment it ships",
+        subtitle: "Thanks for trusting us - your order is now being prepared",
         orderNumber: "Order Number",
         copy: "Copy",
         copied: "Copied",
@@ -175,7 +175,7 @@ export default function OrderConfirmationPage() {
           >
             <div className={isAr ? "text-right" : "text-left"}>
               <p className="text-xs text-gray-400 mb-1">{t.orderNumber}</p>
-              <p className="font-bold text-black dark:text-white text-lg">#{orderId}</p>
+              <p className="font-bold text-black dark:text-white text-lg">#{order?.order_number || orderId}</p>
             </div>
             <button
               onClick={handleCopy}
