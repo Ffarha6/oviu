@@ -240,6 +240,7 @@ export default function CheckoutPage() {
       stdShipSubPrefix: "يصلك خلال",
       daysUnit: "أيام",
       chooseAddressForShipping: "اختاري عنوان الشحن الأول عشان نظهرلك سعر ومدة التوصيل",
+      freeShippingHint: "🎉 التوصيل هيبقى مجاني لأول طلب لو العنوان في القاهرة، الجيزة، الإسكندرية، القليوبية أو الشرقية، وباقي المحافظات بيتخصم منها 60 ج.م من سعر الشحن.",
       firstOrderBadge: "خصم أول طلب",
 
       s3: "طريقة الدفع",
@@ -290,6 +291,7 @@ export default function CheckoutPage() {
       stdShipSubPrefix: "Arrives in",
       daysUnit: "days",
       chooseAddressForShipping: "Choose a shipping address first to see the price and delivery time",
+      freeShippingHint: "🎉 Shipping is free on your first order in Cairo, Giza, Alexandria, Qalyubia or Sharqia, and 60 EGP off shipping for all other governorates.",
       firstOrderBadge: "First order discount",
 
       s3: "Payment Method",
@@ -694,7 +696,10 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-400 px-2 py-2">{t.chooseAddressForShipping}</p>
+                  <div className="px-2 py-2 flex flex-col gap-1.5">
+                    <p className="text-xs text-gray-400">{t.chooseAddressForShipping}</p>
+                    <p className="text-xs text-[#D9A066] font-medium leading-relaxed">{t.freeShippingHint}</p>
+                  </div>
                 )}
 
                 {/* شحن سريع — معطل مؤقتًا، مكتوب عليه "قريبًا" ومينفعش يتختار */}
@@ -790,8 +795,8 @@ export default function CheckoutPage() {
                 )}
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500 dark:text-gray-400 text-sm">{t.shippingLabel}</span>
-                  <span className={`font-semibold text-sm ${shippingCost === 0 ? "text-green-500" : "text-black dark:text-white"}`}>
-                    {shippingCost === 0 ? t.free : `${shippingCost} ${t.currency}`}
+                  <span className={`font-semibold text-sm ${!shippingQuote ? "text-gray-400" : shippingQuote.isFree ? "text-green-500" : "text-black dark:text-white"}`}>
+                    {!shippingQuote ? "—" : shippingQuote.isFree ? t.free : `${shippingCost} ${t.currency}`}
                   </span>
                 </div>
 
