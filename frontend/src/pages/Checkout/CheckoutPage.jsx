@@ -236,7 +236,7 @@ export default function CheckoutPage() {
       s2: "طريقة الشحن",
       fastShipTitle: "شحن سريع",
       fastShipComingSoon: "قريبًا",
-      stdShipTitle: "التوصيل لباب البيت",
+      stdShipTitle: "توصيل لحد باب البيت",
       stdShipSubPrefix: "يصلك خلال",
       daysUnit: "أيام",
       chooseAddressForShipping: "اختاري عنوان الشحن الأول عشان نظهرلك سعر ومدة التوصيل",
@@ -247,6 +247,7 @@ export default function CheckoutPage() {
       cardSub: "Visa, Mastercard, Mada",
       codTitle: "الدفع عند الاستلام",
       codSub: "ادفع عند استلام طلبك",
+      comingSoon: "قريبًا",
 
       reviewTitle: "ملخص الطلب",
       paymentSummary: "ملخص الدفع",
@@ -296,6 +297,7 @@ export default function CheckoutPage() {
       cardSub: "Visa, Mastercard, Mada",
       codTitle: "Cash on Delivery",
       codSub: "Pay when you receive your order",
+      comingSoon: "Coming soon",
 
       reviewTitle: "Order Summary",
       paymentSummary: "Payment Summary",
@@ -589,6 +591,24 @@ export default function CheckoutPage() {
     </motion.div>
   )
 
+  // ── طرق الدفع: الدفع عند الاستلام هي الأولى ومتاحة، البطاقة الائتمانية لسه هتتفعّل قريبًا فهي معطلة ──
+  const paymentOptions = [
+    {
+      key: "cod",
+      icon: <FaHandHoldingUsd className="text-[#D9A066] text-lg sm:text-xl shrink-0" />,
+      title: t.codTitle,
+      sub: t.codSub,
+      disabled: false,
+    },
+    {
+      key: "card",
+      icon: <FaCreditCard className="text-[#D9A066] text-lg sm:text-xl shrink-0" />,
+      title: t.cardTitle,
+      sub: t.cardSub,
+      disabled: true,
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-[#F7F2EE] dark:bg-[#050505] transition-all duration-500">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-6 sm:pt-8 pb-28 lg:pb-12">
@@ -641,23 +661,8 @@ export default function CheckoutPage() {
               <SectionHeader title={t.s2} />
               <div className="pb-6 flex flex-col gap-3">
 
-                {/* شحن سريع — معطل مؤقتًا، مكتوب عليه "قريبًا" ومينفعش يتختار */}
-                <div
-                  className="w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a] opacity-50 cursor-not-allowed"
-                >
-                  <div className="flex items-center gap-2.5 sm:gap-3">
-                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 shrink-0" />
-                    <div className="text-[#D9A066] text-lg sm:text-xl shrink-0"><FaTruck /></div>
-                    <div className={isAr ? "text-right" : "text-left"}>
-                      <p className="font-semibold text-black dark:text-white text-xs sm:text-sm">{t.fastShipTitle}</p>
-                    </div>
-                  </div>
-                  <span className="font-bold text-[11px] sm:text-xs shrink-0 text-gray-400 bg-black/5 dark:bg-white/10 px-2.5 py-1 rounded-full">
-                    {t.fastShipComingSoon}
-                  </span>
-                </div>
-
-                {/* التوصيل القياسي — دايمًا مختار تلقائي، السعر والمدة بيتحددوا حسب محافظة العنوان المختار */}
+                {/* التوصيل لحد باب البيت — الخيار الأساسي والمتاح، ودايمًا مختار تلقائي.
+                    السعر والمدة بيتحددوا حسب محافظة العنوان المختار */}
                 {selectedAddress && shippingQuote ? (
                   <div className="w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-[#D9A066] bg-[#D9A066]/5">
                     <div className="flex items-center gap-2.5 sm:gap-3">
@@ -666,7 +671,7 @@ export default function CheckoutPage() {
                       </div>
                       <div className="text-[#D9A066] text-lg sm:text-xl shrink-0"><MdOutlineLocalShipping /></div>
                       <div className={isAr ? "text-right" : "text-left"}>
-                        <p className="font-semibold text-black dark:text-white text-xs sm:text-sm">{t.stdShipTitle}</p>
+                        <p className="font-bold text-black dark:text-white text-sm sm:text-base">{t.stdShipTitle}</p>
                         <p className="text-[11px] sm:text-xs text-gray-400">
                           {t.stdShipSubPrefix} {shippingQuote.daysMin}-{shippingQuote.daysMax} {t.daysUnit}
                         </p>
@@ -691,6 +696,23 @@ export default function CheckoutPage() {
                 ) : (
                   <p className="text-xs text-gray-400 px-2 py-2">{t.chooseAddressForShipping}</p>
                 )}
+
+                {/* شحن سريع — معطل مؤقتًا، مكتوب عليه "قريبًا" ومينفعش يتختار */}
+                <div
+                  className="w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a] opacity-50 cursor-not-allowed"
+                >
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 shrink-0" />
+                    <div className="text-[#D9A066] text-lg sm:text-xl shrink-0"><FaTruck /></div>
+                    <div className={isAr ? "text-right" : "text-left"}>
+                      <p className="font-semibold text-black dark:text-white text-xs sm:text-sm">{t.fastShipTitle}</p>
+                    </div>
+                  </div>
+                  <span className="font-bold text-[11px] sm:text-xs shrink-0 text-gray-400 bg-black/5 dark:bg-white/10 px-2.5 py-1 rounded-full">
+                    {t.fastShipComingSoon}
+                  </span>
+                </div>
+
               </div>
             </div>
 
@@ -698,33 +720,33 @@ export default function CheckoutPage() {
             <div className="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[20px] px-4 sm:px-6">
               <SectionHeader title={t.s3} />
               <div className="pb-6 flex flex-col gap-3">
-                {[
-                  {
-                    key: "card",
-                    icon: <FaCreditCard className="text-[#D9A066] text-lg sm:text-xl shrink-0" />,
-                    title: t.cardTitle,
-                    sub: t.cardSub,
-                  },
-                  {
-                    key: "cod",
-                    icon: <FaHandHoldingUsd className="text-[#D9A066] text-lg sm:text-xl shrink-0" />,
-                    title: t.codTitle,
-                    sub: t.codSub,
-                  },
-                ].map(opt => (
+                {paymentOptions.map(opt => (
                   <button
                     key={opt.key}
-                    onClick={() => setPaymentMethod(opt.key)}
-                    className={`w-full flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 transition-all duration-200 ${paymentMethod === opt.key
-                      ? "border-[#D9A066] bg-[#D9A066]/5"
-                      : "border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a]"
+                    type="button"
+                    onClick={() => !opt.disabled && setPaymentMethod(opt.key)}
+                    disabled={opt.disabled}
+                    aria-disabled={opt.disabled}
+                    className={`w-full flex items-center justify-between gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 transition-all duration-200 ${
+                      opt.disabled
+                        ? "border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a] opacity-50 cursor-not-allowed"
+                        : paymentMethod === opt.key
+                          ? "border-[#D9A066] bg-[#D9A066]/5"
+                          : "border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a]"
                     }`}
                   >
-                    {opt.icon}
-                    <div className={isAr ? "text-right" : "text-left"}>
-                      <p className="font-semibold text-black dark:text-white text-xs sm:text-sm">{opt.title}</p>
-                      {opt.sub && <p className="text-[11px] sm:text-xs text-gray-400">{opt.sub}</p>}
+                    <div className="flex items-center gap-2.5 sm:gap-3">
+                      {opt.icon}
+                      <div className={isAr ? "text-right" : "text-left"}>
+                        <p className="font-semibold text-black dark:text-white text-xs sm:text-sm">{opt.title}</p>
+                        {opt.sub && <p className="text-[11px] sm:text-xs text-gray-400">{opt.sub}</p>}
+                      </div>
                     </div>
+                    {opt.disabled && (
+                      <span className="font-bold text-[11px] sm:text-xs shrink-0 text-gray-400 bg-black/5 dark:bg-white/10 px-2.5 py-1 rounded-full">
+                        {t.comingSoon}
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -735,7 +757,7 @@ export default function CheckoutPage() {
           {/* RIGHT */}
           <div className="w-full lg:w-[420px] lg:shrink-0 flex flex-col gap-4 lg:sticky lg:top-[110px]">
 
-            <div className={`flex items-center gap-2 px-1 w-full ${isAr ? "justify-end" : "justify-start"}`}>
+            <div className="flex items-center gap-2 px-1 w-full">
               <h2 className="font-bold text-black dark:text-white text-base sm:text-lg">
                 {t.reviewTitle} <span className="text-[#D9A066]">({totalQuantity} {t.products})</span>
               </h2>
@@ -813,7 +835,7 @@ export default function CheckoutPage() {
             </div>
 
             <div className="hidden lg:block bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[20px] p-4 sm:p-5">
-              <div className={`flex items-center gap-3 mb-3 ${isAr ? "flex-row-reverse" : ""}`}>
+              <div className="flex items-center gap-3 mb-3">
                 <FaHeadset className="text-[#D9A066] text-lg shrink-0" />
                 <div className={isAr ? "text-right" : "text-left"}>
                   <p className="text-black dark:text-white text-xs font-semibold">{t.needHelp}</p>
