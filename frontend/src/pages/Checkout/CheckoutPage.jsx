@@ -114,7 +114,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     const checkFirstOrder = async () => {
       try {
-        const res = await authFetch("/api/orders/")
+        const res = await authFetch("/api/orders/my-orders/")
         if (!res.ok) return
         const data = await res.json()
         const list = Array.isArray(data) ? data : (data?.results || [])
