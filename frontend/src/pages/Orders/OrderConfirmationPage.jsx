@@ -294,7 +294,7 @@ export default function OrderConfirmationPage() {
                 </div>
 
                 {/* Payment method */}
-                <div className={`flex items-center gap-2 pt-1 ${isAr ? "text-right" : "text-left"}`}>
+                <div className={`flex items-center gap-2 pt-1 ${isAr ? "flex-row-reverse text-right" : "text-left"}`}>
                   <FiCreditCard className="text-[#D9A066] text-sm shrink-0" />
                   <div className={isAr ? "text-right" : "text-left"}>
                     <p className="text-xs text-gray-400">{t.payment}</p>
