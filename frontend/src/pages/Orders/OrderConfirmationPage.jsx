@@ -236,55 +236,62 @@ export default function OrderConfirmationPage() {
                     return (
                       <div
                         key={i}
-                        className={`flex items-center gap-3 ${isAr ? "flex-row-reverse" : ""} ${i !== order.items.length - 1 ? "pb-4 border-b border-black/5 dark:border-white/5" : ""}`}
+                        className={`flex items-center gap-3 ${i !== order.items.length - 1 ? "pb-4 border-b border-black/5 dark:border-white/5" : ""}`}
                       >
-                        {/* صورة المنتج + شارة الكمية xN */}
-                       <div className="relative w-[88px] h-[88px] shrink-0 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+                        {/* صورة المنتج - دايمًا يمين بفضل dir="rtl" على الصفحة + شارة الكمية xN */}
+                        <div className="relative w-[88px] h-[88px] shrink-0 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
 
-  {imageUrl ? (
-    <img
-      src={imageUrl}
-      alt={item.product_name || ""}
-      className="w-full h-full object-contain p-2"
-      draggable={false}
-      loading="lazy"
-      onError={(e) => {
-        e.currentTarget.style.display = "none"
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={item.product_name || ""}
+                              className="w-full h-full object-contain p-2"
+                              draggable={false}
+                              loading="lazy"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none"
 
-        const fallback = e.currentTarget.nextElementSibling
-        if (fallback) {
-          fallback.style.display = "flex"
-        }
-      }}
-    />
-  ) : null}
+                                const fallback = e.currentTarget.nextElementSibling
+                                if (fallback) {
+                                  fallback.style.display = "flex"
+                                }
+                              }}
+                            />
+                          ) : null}
 
-  <div
-    className="w-full h-full items-center justify-center bg-white"
-    style={{ display: imageUrl ? "none" : "flex" }}
-  >
-    <FiPackage className="text-gray-300 text-2xl" />
-  </div>
+                          <div
+                            className="w-full h-full items-center justify-center bg-white"
+                            style={{ display: imageUrl ? "none" : "flex" }}
+                          >
+                            <FiPackage className="text-gray-300 text-2xl" />
+                          </div>
 
-  {item.quantity > 1 && (
-    <span
-      className={`absolute bottom-1 ${
-        isAr ? "left-1" : "right-1"
-      } bg-black/75 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md`}
-    >
-      x{item.quantity}
-    </span>
-  )}
+                          {item.quantity > 1 && (
+                            <span
+                              className={`absolute bottom-1 ${
+                                isAr ? "left-1" : "right-1"
+                              } bg-black/75 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md`}
+                            >
+                              x{item.quantity}
+                            </span>
+                          )}
 
-</div>
-                        <div className={`flex-1 min-w-0 ${isAr ? "text-right" : "text-left"}`}>
-                          <p className="font-semibold text-black dark:text-white text-sm truncate">{item.product_name}</p>
-                          {item.color_name && <p className="text-gray-400 text-xs mt-0.5">{item.color_name}</p>}
                         </div>
 
-                        <span className="font-bold text-[#D9A066] text-sm shrink-0">
-                          {item.price_at_time} {isAr ? "ج.م" : "EGP"}
-                        </span>
+                        {/* اسم المنتج - جنب الصورة */}
+                        <div className={`flex-1 min-w-0 ${isAr ? "text-right" : "text-left"}`}>
+                          <p className="font-semibold text-black dark:text-white text-sm truncate">{item.product_name}</p>
+                        </div>
+
+                        {/* اللون فوق، السعر تحته - آخر عنصر في الصف */}
+                        <div className={`flex flex-col items-end shrink-0 gap-0.5 ${isAr ? "text-right" : "text-left"}`}>
+                          {item.color_name && (
+                            <span className="text-gray-400 text-xs">{item.color_name}</span>
+                          )}
+                          <span className="font-bold text-[#D9A066] text-sm">
+                            {item.price_at_time} {isAr ? "ج.م" : "EGP"}
+                          </span>
+                        </div>
                       </div>
                     )
                   })}
@@ -293,7 +300,7 @@ export default function OrderConfirmationPage() {
                 {/* Payment method */}
                 <div className={`flex items-center gap-2 pt-1 ${isAr ? "flex-row-reverse text-right" : "text-left"}`}>
                   <FiCreditCard className="text-[#D9A066] text-sm shrink-0" />
-                  <div>
+                  <div className={isAr ? "text-right" : "text-left"}>
                     <p className="text-xs text-gray-400">{t.payment}</p>
                     <p className="text-sm text-black dark:text-white font-medium">{order.payment_method_display}</p>
                   </div>
