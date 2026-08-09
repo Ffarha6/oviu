@@ -13,9 +13,9 @@ import {
   FaCreditCard, FaHandHoldingUsd
 } from "react-icons/fa"
 import { MdOutlineLocalShipping } from "react-icons/md"
-// ⚠️ عدّلي المسار ده لو AddressModal.jsx و ProfileConstants.js عندك في مكان مختلف عن src/pages/profile/
-import AddressModal from "../profile/AddressModal"
-import { authFetch, getGovernorates } from "../profile/ProfileConstants"
+// ⚠️ عدّلي المسار ده لو AddressModal.jsx و ProfileConstants.js عندك في مكان مختلف عن src/pages/Profile/
+import AddressModal from "../Profile/AddressModal"
+import { authFetch, getGovernorates } from "../Profile/ProfileConstants"
 // ⚠️ عدّلي المسار ده لو حطيتي shippingRates.js في مكان مختلف
 import { getShippingQuote } from "../../data/shippingRates"
 
