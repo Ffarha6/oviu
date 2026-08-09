@@ -14,8 +14,10 @@ import {
 } from "react-icons/fa"
 import { MdOutlineLocalShipping } from "react-icons/md"
 // ⚠️ عدّلي المسار ده لو AddressModal.jsx و ProfileConstants.js عندك في مكان مختلف عن src/pages/profile/
-import AddressModal from "../Profile/AddressModal"
-import { authFetch, getGovernorates } from "../Profile/ProfileConstants"
+import AddressModal from "../profile/AddressModal"
+import { authFetch, getGovernorates } from "../profile/ProfileConstants"
+// ⚠️ عدّلي المسار ده لو حطيتي shippingRates.js في مكان مختلف
+import { getShippingQuote } from "../../data/shippingRates"
 
 // ✅ نفس فكرة صفحة البروفايل: رابط ثابت احتياطي لو VITE_API_URL مش متعرّف في .env
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://oviu-production.up.railway.app"
@@ -78,8 +80,16 @@ export default function CheckoutPage() {
   const totalQuantity = items.reduce((sum, item) => sum + (item.quantity || 0), 0)
   const subtotal = parseFloat(cart?.total_price ?? 0)
   const discount = 0
-  const [shippingMethod, setShippingMethod] = useState("")
-  const shippingCost = shippingMethod === "fast" ? 20 : 0
+
+  // ⚠️ ملحوظة مهمة: مفيش حقل orders_count في بيانات اليوزر الراجعة من
+  // /api/auth/user/، فبنجيب عدد طلبات العميل من endpoint الطلبات نفسه.
+  // ⚠️ عدّلي المسار "/api/orders/" ده لو مختلف عندك في الباك إند.
+  // ⚠️ برضو: ده تحقق فرونت-فقط، سهل التلاعب فيه — لازم الباك إند يتأكد بنفسه
+  // من عدد طلبات العميل وقت إنشاء الطلب قبل ما يطبق أي خصم فعلي على السعر.
+  const [isFirstOrder, setIsFirstOrder] = useState(false)
+
+  const shippingQuote = selectedAddress ? getShippingQuote(selectedAddress.governorate, isFirstOrder) : null
+  const shippingCost = shippingQuote ? shippingQuote.price : 0
   const total = subtotal - discount + shippingCost
 
   const [paymentMethod, setPaymentMethod] = useState("")
@@ -98,6 +108,22 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     fetchCart()
+  }, [])
+
+  useEffect(() => {
+    const checkFirstOrder = async () => {
+      try {
+        const res = await authFetch("/api/orders/")
+        if (!res.ok) return
+        const data = await res.json()
+        const list = Array.isArray(data) ? data : (data?.results || [])
+        setIsFirstOrder(list.length === 0)
+      } catch (err) {
+        console.log(err)
+        // في حالة فشل الطلب، بنسيب isFirstOrder = false (الوضع الآمن الافتراضي)
+      }
+    }
+    checkFirstOrder()
   }, [])
 
   const loadAddresses = async () => {
@@ -208,11 +234,12 @@ export default function CheckoutPage() {
 
       s2: "طريقة الشحن",
       fastShipTitle: "شحن سريع",
-      fastShipSub: "يصلك خلال 1-3 أيام عمل",
-      stdShipTitle: "شحن قياسي",
-      stdShipSub: "يصلك خلال 5-8 أيام عمل",
-      fastPrice: "20 ج.م",
-      stdPrice: "مجاناً",
+      fastShipComingSoon: "قريبًا",
+      stdShipTitle: "التوصيل لباب البيت",
+      stdShipSubPrefix: "يصلك خلال",
+      daysUnit: "أيام",
+      chooseAddressForShipping: "اختاري عنوان الشحن الأول عشان نظهرلك سعر ومدة التوصيل",
+      firstOrderBadge: "خصم أول طلب",
 
       s3: "طريقة الدفع",
       cardTitle: "بطاقة ائتمان",
@@ -256,11 +283,12 @@ export default function CheckoutPage() {
 
       s2: "Shipping Method",
       fastShipTitle: "Fast Shipping",
-      fastShipSub: "Delivered in 1-3 business days",
-      stdShipTitle: "Standard Shipping",
-      stdShipSub: "Delivered in 5-8 business days",
-      fastPrice: "20 EGP",
-      stdPrice: "Free",
+      fastShipComingSoon: "Coming soon",
+      stdShipTitle: "Home Delivery",
+      stdShipSubPrefix: "Arrives in",
+      daysUnit: "days",
+      chooseAddressForShipping: "Choose a shipping address first to see the price and delivery time",
+      firstOrderBadge: "First order discount",
 
       s3: "Payment Method",
       cardTitle: "Credit Card",
@@ -303,11 +331,19 @@ export default function CheckoutPage() {
       .filter(Boolean)
       .join(" - ")
 
+    // ⚠️ shipping_cost و is_first_order_shipping مبعوتين هنا احتياطًا، بس الباك إند
+    // لازم يحسب سعر الشحن والخصم بنفسه من المحافظة وعدد طلبات العميل الفعلي،
+    // مش يصدّق على القيم الجايه من الفرونت دي (عشان محدش يقدر يتلاعب في السعر).
+    const orderNotesParts = []
+    if (coupon) orderNotesParts.push(`Coupon: ${coupon}`)
+    orderNotesParts.push(`Shipping: ${shippingQuote.price} EGP (${shippingQuote.daysMin}-${shippingQuote.daysMax} days)`)
+
     const orderData = {
       phone: selectedAddress.phone,
       address: fullAddress,
       payment_method: PAYMENT_METHOD_MAP[paymentMethod] || paymentMethod,
-      notes: coupon ? `Coupon: ${coupon}` : "",
+      notes: orderNotesParts.join(" | "),
+      shipping_cost: shippingQuote.price,
       items: items.map((item) => ({
         product_id: item.product,
         quantity: item.quantity,
@@ -380,8 +416,8 @@ export default function CheckoutPage() {
       alert(isAr ? "الرجاء اختيار أو إضافة عنوان الشحن" : "Please select or add a shipping address")
       return
     }
-    if (!shippingMethod) {
-      alert(isAr ? "الرجاء اختيار طريقة الشحن" : "Please select a shipping method")
+    if (!shippingQuote) {
+      alert(isAr ? "مقدرناش نحدد سعر الشحن لمحافظتك، جربي تختاري العنوان تاني" : "Couldn't determine shipping cost for your governorate, try re-selecting the address")
       return
     }
     if (!paymentMethod) {
@@ -603,33 +639,57 @@ export default function CheckoutPage() {
             <div className="bg-white dark:bg-[#111] border border-black/5 dark:border-white/5 rounded-[20px] px-4 sm:px-6">
               <SectionHeader title={t.s2} />
               <div className="pb-6 flex flex-col gap-3">
-                {[
-                  { key: "fast", icon: <FaTruck />, title: t.fastShipTitle, sub: t.fastShipSub, price: t.fastPrice, priceClass: "text-black dark:text-white" },
-                  { key: "standard", icon: <MdOutlineLocalShipping />, title: t.stdShipTitle, sub: t.stdShipSub, price: t.stdPrice, priceClass: "text-green-500" },
-                ].map(opt => (
-                  <button
-                    key={opt.key}
-                    onClick={() => setShippingMethod(opt.key)}
-                    className={`w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 transition-all duration-200 ${shippingMethod === opt.key
-                      ? "border-[#D9A066] bg-[#D9A066]/5"
-                      : "border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a]"
-                    }`}
-                  >
+
+                {/* شحن سريع — معطل مؤقتًا، مكتوب عليه "قريبًا" ومينفعش يتختار */}
+                <div
+                  className={`w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-black/10 dark:border-white/10 bg-[#F7F2EE] dark:bg-[#1a1a1a] opacity-50 cursor-not-allowed ${isAr ? "flex-row-reverse" : ""}`}
+                >
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 shrink-0" />
+                    <div className="text-[#D9A066] text-lg sm:text-xl shrink-0"><FaTruck /></div>
+                    <div className={isAr ? "text-right" : "text-left"}>
+                      <p className="font-semibold text-black dark:text-white text-xs sm:text-sm">{t.fastShipTitle}</p>
+                    </div>
+                  </div>
+                  <span className="font-bold text-[11px] sm:text-xs shrink-0 text-gray-400 bg-black/5 dark:bg-white/10 px-2.5 py-1 rounded-full">
+                    {t.fastShipComingSoon}
+                  </span>
+                </div>
+
+                {/* التوصيل القياسي — دايمًا مختار تلقائي، السعر والمدة بيتحددوا حسب محافظة العنوان المختار */}
+                {selectedAddress && shippingQuote ? (
+                  <div className={`w-full flex items-center justify-between px-3.5 sm:px-5 py-3.5 sm:py-4 rounded-[16px] border-2 border-[#D9A066] bg-[#D9A066]/5 ${isAr ? "flex-row-reverse" : ""}`}>
                     <div className="flex items-center gap-2.5 sm:gap-3">
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${shippingMethod === opt.key ? "border-[#D9A066]" : "border-gray-300 dark:border-gray-600"}`}>
-                        {shippingMethod === opt.key && <div className="w-2.5 h-2.5 rounded-full bg-[#D9A066]" />}
+                      <div className="w-5 h-5 rounded-full border-2 border-[#D9A066] flex items-center justify-center shrink-0">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#D9A066]" />
                       </div>
-                      <div className="text-[#D9A066] text-lg sm:text-xl shrink-0">{opt.icon}</div>
+                      <div className="text-[#D9A066] text-lg sm:text-xl shrink-0"><MdOutlineLocalShipping /></div>
                       <div className={isAr ? "text-right" : "text-left"}>
-                        <p className="font-semibold text-black dark:text-white text-xs sm:text-sm">{opt.title}</p>
-                        <p className="text-[11px] sm:text-xs text-gray-400">{opt.sub}</p>
+                        <p className="font-semibold text-black dark:text-white text-xs sm:text-sm">{t.stdShipTitle}</p>
+                        <p className="text-[11px] sm:text-xs text-gray-400">
+                          {t.stdShipSubPrefix} {shippingQuote.daysMin}-{shippingQuote.daysMax} {t.daysUnit}
+                        </p>
                       </div>
                     </div>
-                    <span className={`font-bold text-xs sm:text-sm shrink-0 ${opt.priceClass}`}>
-                      {opt.price}
-                    </span>
-                  </button>
-                ))}
+                    <div className={`flex flex-col ${isAr ? "items-start" : "items-end"} shrink-0`}>
+                      {shippingQuote.isDiscounted && (
+                        <span className="text-[9px] sm:text-[10px] font-bold text-[#D9A066] bg-[#D9A066]/10 px-2 py-0.5 rounded-full mb-0.5">
+                          {t.firstOrderBadge}
+                        </span>
+                      )}
+                      <span className={`font-bold text-xs sm:text-sm ${shippingQuote.isFree ? "text-green-500" : "text-black dark:text-white"}`}>
+                        {shippingQuote.isFree ? t.free : `${shippingQuote.price} ${t.currency}`}
+                      </span>
+                      {shippingQuote.isDiscounted && !shippingQuote.isFree && (
+                        <span className="text-[10px] text-gray-400 line-through">
+                          {shippingQuote.originalPrice} {t.currency}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400 px-2 py-2">{t.chooseAddressForShipping}</p>
+                )}
               </div>
             </div>
 
