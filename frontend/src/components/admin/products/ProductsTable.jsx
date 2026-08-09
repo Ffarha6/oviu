@@ -24,7 +24,16 @@ const stockStyles = {
   out: { label: "غير متوفر", className: "text-red-600" },
 };
 
-export default function ProductsTable({ products, loading, onToggleStatus }) {
+// ✅ selectedIds / onToggleOne / onToggleAll اختياريين — لو الصفحة اللي بتستخدم
+// الجدول مش محتاجة اختيار جماعي، الجدول بيشتغل عادي زي الأول من غيرهم
+export default function ProductsTable({
+  products,
+  loading,
+  onToggleStatus,
+  selectedIds = [],
+  onToggleOne,
+  onToggleAll,
+}) {
   if (loading) {
     return <p className="text-center text-sm text-primary/40 py-10">جاري تحميل المنتجات...</p>;
   }
@@ -33,12 +42,21 @@ export default function ProductsTable({ products, loading, onToggleStatus }) {
     return <p className="text-center text-sm text-primary/40 py-10">مفيش منتجات لعرضها</p>;
   }
 
+  const allSelected = products.length > 0 && selectedIds.length === products.length;
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="text-primary/40 text-xs border-b border-primary/10">
-            <th className="py-3 pr-2 text-right w-8"><input type="checkbox" className="accent-secondary" /></th>
+            <th className="py-3 pr-2 text-right w-8">
+              <input
+                type="checkbox"
+                className="accent-secondary"
+                checked={allSelected}
+                onChange={() => onToggleAll?.()}
+              />
+            </th>
             <th className="py-3 text-right font-medium">المنتج</th>
             <th className="py-3 text-right font-medium">SKU</th>
             <th className="py-3 text-right font-medium">الفئة</th>
@@ -56,7 +74,14 @@ export default function ProductsTable({ products, loading, onToggleStatus }) {
             const stock = stockStyles[p.stock_status] || stockStyles.in;
             return (
               <tr key={p.id} className="border-b border-primary/5 last:border-0">
-                <td className="py-3.5 pr-2"><input type="checkbox" className="accent-secondary" /></td>
+                <td className="py-3.5 pr-2">
+                  <input
+                    type="checkbox"
+                    className="accent-secondary"
+                    checked={selectedIds.includes(p.id)}
+                    onChange={() => onToggleOne?.(p.id)}
+                  />
+                </td>
                 <td className="py-3.5">
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-xl bg-surface flex items-center justify-center text-xl shrink-0 overflow-hidden">
