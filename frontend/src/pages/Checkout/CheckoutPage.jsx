@@ -88,10 +88,6 @@ export default function CheckoutPage() {
   // من عدد طلبات العميل وقت إنشاء الطلب قبل ما يطبق أي خصم فعلي على السعر.
   const [isFirstOrder, setIsFirstOrder] = useState(false)
 
-  const shippingQuote = selectedAddress ? getShippingQuote(selectedAddress.governorate, isFirstOrder) : null
-  const shippingCost = shippingQuote ? shippingQuote.price : 0
-  const total = subtotal - discount + shippingCost
-
   const [paymentMethod, setPaymentMethod] = useState("")
   const [coupon, setCoupon] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
@@ -100,6 +96,11 @@ export default function CheckoutPage() {
   const [addresses, setAddresses] = useState([])
   const [selectedAddress, setSelectedAddress] = useState(null)
   const [addressLoading, setAddressLoading] = useState(true)
+
+  // سعر ومدة الشحن بيتحددوا حسب محافظة العنوان المختار + هل ده أول طلب للعميل
+  const shippingQuote = selectedAddress ? getShippingQuote(selectedAddress.governorate, isFirstOrder) : null
+  const shippingCost = shippingQuote ? shippingQuote.price : 0
+  const total = subtotal - discount + shippingCost
 
   // مودال دليل العناوين (اختيار عنوان من اللي محفوظين)
   const [addressListOpen, setAddressListOpen] = useState(false)
