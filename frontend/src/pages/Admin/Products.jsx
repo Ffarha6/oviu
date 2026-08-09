@@ -232,7 +232,7 @@ export default function ProductsPage() {
           </button>
 
           <Link
-            to="/dashboard/products/new"
+            to="/dashboard/products/add"
             className="flex items-center gap-1.5 bg-primary text-background text-sm font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition"
           >
             <Plus size={16} /> إضافة منتج
