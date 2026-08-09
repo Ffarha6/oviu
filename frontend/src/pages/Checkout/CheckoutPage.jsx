@@ -14,8 +14,8 @@ import {
 } from "react-icons/fa"
 import { MdOutlineLocalShipping } from "react-icons/md"
 // ⚠️ عدّلي المسار ده لو AddressModal.jsx و ProfileConstants.js عندك في مكان مختلف عن src/pages/profile/
-import AddressModal from "../pages/profile/AddressModal"
-import { authFetch, getGovernorates } from "../pages/profile/ProfileConstants"
+import AddressModal from "../Profile/AddressModal"
+import { authFetch, getGovernorates } from "../Profile/ProfileConstants"
 
 // ✅ نفس فكرة صفحة البروفايل: رابط ثابت احتياطي لو VITE_API_URL مش متعرّف في .env
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://oviu-production.up.railway.app"
