@@ -94,9 +94,6 @@ function getColorSwatch(colorName) {
   return COLOR_NAME_MAP[key] || COLOR_NAME_MAP[colorName.trim()] || "#d1d5db"
 }
 
-const FREE_SHIPPING_THRESHOLD = 500
-const SHIPPING_COST = 75
-
 function CartPage() {
   const { language } = useContext(LanguageContext)
   const { darkMode } = useContext(ThemeContext)
@@ -163,11 +160,9 @@ function CartPage() {
   const subtotal      = parseFloat(cart?.total_price ?? 0)
   const discount      = 0
 
-  const qualifiesForFreeShipping  = subtotal >= FREE_SHIPPING_THRESHOLD
-  const shippingCost              = qualifiesForFreeShipping ? 0 : SHIPPING_COST
-  const remainingForFreeShipping  = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal)
-  // ✅ الضريبة اتشالت خالص من الحسبة، الإجمالي بقى بس: المجموع الفرعي - الخصم + الشحن
-  const total                     = subtotal - discount + shippingCost
+  // ✅ الشحن اتشال من صفحة الكارت خالص — بيتحسب ويتعرض في صفحة الـ Checkout بس،
+  // على حسب محافظة العنوان المختار وهل ده أول طلب للعميل أو لأ (getShippingQuote)
+  const total = subtotal - discount
 
   const handleCheckout = () => {
     if (!isLoggedIn) {
@@ -188,9 +183,6 @@ function CartPage() {
       subtotal: "المجموع الفرعي",
       items: "منتج",
       discountLabel: "خصم",
-      shipping: "الشحن",
-      shippingFree: "مجاناً",
-      shippingPaid: `${SHIPPING_COST} ج.م`,
       totalLabel: "الإجمالي",
       couponPlaceholder: "أدخل كود الخصم",
       apply: "تطبيق",
@@ -198,8 +190,6 @@ function CartPage() {
       emptyCart: "سلتك فارغة",
       emptyCartSub: "أضف منتجات من متجرنا",
       shopNow: "تسوق الآن",
-      freeShippingReached: "🎉 طلبك مؤهل للشحن المجاني!",
-      freeShippingRemaining: (amount) => `أضف ${amount.toLocaleString()} ج.م أكثر للحصول على شحن مجاني`,
       currency: "ج.م",
       youMayLike: "قد يعجبك أيضاً",
       addToCart: "أضف للسلة",
@@ -214,9 +204,6 @@ function CartPage() {
       subtotal: "Subtotal",
       items: "items",
       discountLabel: "Discount",
-      shipping: "Shipping",
-      shippingFree: "Free",
-      shippingPaid: `${SHIPPING_COST} EGP`,
       totalLabel: "Total",
       couponPlaceholder: "Enter coupon code",
       apply: "Apply",
@@ -224,8 +211,6 @@ function CartPage() {
       emptyCart: "Your cart is empty",
       emptyCartSub: "Add products from our store",
       shopNow: "Shop Now",
-      freeShippingReached: "🎉 Your order qualifies for free shipping!",
-      freeShippingRemaining: (amount) => `Add ${amount.toLocaleString()} EGP more for free shipping`,
       currency: "EGP",
       youMayLike: "You May Also Like",
       addToCart: "Add to Cart",
@@ -678,44 +663,6 @@ function CartPage() {
                   <div className={`flex items-center justify-between ${isAr ? "flex-row-reverse" : ""}`}>
                     <span className="text-gray-500 dark:text-gray-400 text-sm">{t.discountLabel}</span>
                     <span className="text-[#D9A066] font-semibold text-sm">- {discount} {t.currency}</span>
-                  </div>
-                )}
-
-                <div className={`flex items-center justify-between ${isAr ? "flex-row-reverse" : ""}`}>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm">{t.shipping}</span>
-                  {qualifiesForFreeShipping ? (
-                    <span className="text-green-500 font-semibold text-sm">{t.shippingFree}</span>
-                  ) : (
-                    <span className="text-black dark:text-white font-semibold text-sm">{t.shippingPaid}</span>
-                  )}
-                </div>
-              </div>
-
-              {/* ── Free Shipping Progress Banner ── */}
-              <div className={`mb-5 rounded-[14px] overflow-hidden border ${qualifiesForFreeShipping
-                ? "border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/10"
-                : "border-[#D9A066]/30 bg-[#FFF8F0] dark:bg-[#1a1505]"}`}>
-
-                <div className={`flex items-center gap-2 px-4 py-3 ${isAr ? "flex-row-reverse" : ""}`}>
-                  <FiTruck className={`text-lg shrink-0 ${qualifiesForFreeShipping ? "text-green-500" : "text-[#D9A066]"}`} />
-                  <p
-                    className={`text-xs font-medium ${qualifiesForFreeShipping
-                      ? "text-green-600 dark:text-green-400"
-                      : "text-[#8a6a30] dark:text-[#D9A066]"}`}
-                    dir={isAr ? "rtl" : "ltr"}
-                  >
-                    {qualifiesForFreeShipping
-                      ? t.freeShippingReached
-                      : t.freeShippingRemaining(remainingForFreeShipping)}
-                  </p>
-                </div>
-
-                {!qualifiesForFreeShipping && (
-                  <div className="h-1 bg-[#e8ddd0] dark:bg-[#2a2010] mx-4 mb-3 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#D9A066] rounded-full transition-all duration-500"
-                      style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)}%` }}
-                    />
                   </div>
                 )}
               </div>
