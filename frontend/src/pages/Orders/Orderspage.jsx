@@ -4,7 +4,7 @@ import axios from "axios"
 import {
   FaBox, FaChevronLeft, FaFilter, FaSearch,
   FaTruck, FaCheckCircle, FaClock, FaTimesCircle,
-  FaSpinner, FaBoxOpen, FaHeadset
+  FaSpinner, FaBoxOpen, FaHeadset, FaMapMarkerAlt, FaCopy
 } from "react-icons/fa"
 
 const BASE_URL = "https://oviu-production.up.railway.app"
@@ -22,6 +22,33 @@ const api = axios.create({
   headers: { "X-CSRFToken": getCookie("csrftoken") },
 })
 
+// ✅ الباك إند بيرجّع مسار الصورة نسبي أحيانًا (زي /media/products/xyz.jpg) من غير
+// الدومين، فبنضيف الدومين لو مش موجود أصلاً
+function resolveImageUrl(path) {
+  if (!path) return ""
+  if (/^https?:\/\//i.test(path)) return path
+  return `${BASE_URL}${path.startsWith("/") ? "" : "/"}${path}`
+}
+
+// ✅ الموقع عربي بس، فطريقة الدفع بترجع دايمًا بالعربي حتى لو الباك إند راجعها إنجليزي
+const PAYMENT_METHOD_AR = {
+  "Cash on Delivery": "الدفع عند الاستلام",
+  "Cash On Delivery": "الدفع عند الاستلام",
+  "COD": "الدفع عند الاستلام",
+  "Card": "بطاقة ائتمان",
+  "Credit Card": "بطاقة ائتمان",
+  "Online Payment": "دفع إلكتروني",
+}
+function resolvePaymentMethod(value) {
+  if (!value) return ""
+  return PAYMENT_METHOD_AR[value] || value
+}
+
+function formatShortDate(value) {
+  if (!value) return null
+  return new Date(value).toLocaleDateString("ar-EG", { day: "numeric", month: "long" })
+}
+
 // ── Status config ────────────────────────────────────────────────
 const STATUS_CONFIG = {
   pending:   { label: "قيد المعالجة", color: "#f59e0b", bg: "#fffbeb", icon: <FaClock /> },
@@ -33,6 +60,16 @@ const STATUS_CONFIG = {
 }
 
 const STEPS = ["pending", "confirmed", "preparing", "shipped", "delivered"]
+
+// ✅ التواريخ المتأكدين إنها موجودة في الباك إند بس: تاريخ إنشاء الطلب، تاريخ
+// الشحن، وتاريخ التسليم. باقي الخطوات (تم التأكيد / جاري التجهيز) بتتعرض من غير
+// تاريخ لحد ما تتأكدي إن الباك إند فعلاً بيرجّع تواريخ ليها
+function dateForStep(order, step) {
+  if (step === "pending") return order.created_at
+  if (step === "shipped") return order.shipped_date
+  if (step === "delivered") return order.delivered_date
+  return null
+}
 
 const FILTERS = [
   { key: "all",       label: "الكل" },
@@ -71,18 +108,181 @@ function OrderStatus({ status }) {
   )
 }
 
+// ── Order number chip (copy) ───────────────────────────────────────
+function OrderNumberChip({ order }) {
+  const [copied, setCopied] = useState(false)
+  const value = order.order_number || order.id
+
+  const handleCopy = (e) => {
+    e.stopPropagation()
+    navigator.clipboard.writeText(String(value))
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  return (
+    <div className="order-number-chip">
+      <div>
+        <p className="order-number-chip-label">رقم الطلب</p>
+        <p className="order-number-chip-value">#{value}</p>
+      </div>
+      <button className={`order-number-copy-btn ${copied ? "is-copied" : ""}`} onClick={handleCopy}>
+        <FaCopy />
+        {copied ? "تم النسخ" : "نسخ"}
+      </button>
+    </div>
+  )
+}
+
+// ── Address block ────────────────────────────────────────────────
+function OrderAddress({ address }) {
+  if (!address) return null
+  return (
+    <div className="order-address-block">
+      <FaMapMarkerAlt className="order-address-icon" />
+      <div className="order-address-text-wrap">
+        <p className="order-address-label">عنوان التوصيل</p>
+        <p className="order-address-text">{address}</p>
+      </div>
+    </div>
+  )
+}
+
+// ── Timeline (collapsed summary ↔ full stepper, زي نون) ────────────
+function OrderTimeline({ order, expanded, onToggle }) {
+  const status = order.status
+  const isCancelled = status === "cancelled"
+  const currentIdx = STEPS.indexOf(status)
+
+  if (isCancelled) {
+    return (
+      <div className="order-timeline-wrap">
+        <div className="timeline-cancelled">
+          <FaTimesCircle />
+          <span>تم إلغاء هذا الطلب</span>
+        </div>
+      </div>
+    )
+  }
+
+  const cfg = STATUS_CONFIG[status]
+  const summaryDate = formatShortDate(dateForStep(order, status))
+
+  return (
+    <div className="order-timeline-wrap">
+      <button className="timeline-toggle-btn" onClick={onToggle}>
+        <span className="timeline-summary-label" style={{ color: cfg.color }}>
+          {cfg.icon} {cfg.label}
+        </span>
+        {summaryDate && <span className="timeline-summary-date">{summaryDate}</span>}
+        <FaChevronLeft className={`timeline-toggle-chevron ${expanded ? "is-open" : ""}`} />
+      </button>
+
+      {expanded && (
+        <>
+          <div className="timeline-steps">
+            {STEPS.map((step, i) => {
+              const stepCfg = STATUS_CONFIG[step]
+              const done = i <= currentIdx
+              const date = formatShortDate(dateForStep(order, step))
+              return (
+                <div key={step} className="timeline-step">
+                  <div className="timeline-step-marker">
+                    <span className="timeline-step-dot" style={{ background: done ? stepCfg.color : "#e5e5e5" }} />
+                    {i !== STEPS.length - 1 && (
+                      <span className="timeline-step-line" style={{ background: i < currentIdx ? stepCfg.color : "#e5e5e5" }} />
+                    )}
+                  </div>
+                  <div className="timeline-step-body">
+                    <p className="timeline-step-label" style={{ color: done ? "#222" : "#bbb" }}>{stepCfg.label}</p>
+                    {date && <p className="timeline-step-date">{date}</p>}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <button className="timeline-toggle-btn timeline-toggle-btn--close" onClick={onToggle}>
+            إخفاء التتبع الكامل
+            <FaChevronLeft className="timeline-toggle-chevron is-open" />
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+
+// ── Invoice / summary (collapsible) ─────────────────────────────────
+function OrderInvoice({ order, expanded, onToggle }) {
+  return (
+    <div className="order-invoice-wrap">
+      <button className="invoice-toggle-btn" onClick={onToggle}>
+        <span>عرض ملخص الطلب / الفاتورة</span>
+        <FaChevronLeft className={`invoice-toggle-chevron ${expanded ? "is-open" : ""}`} />
+      </button>
+
+      {expanded && (
+        <div className="order-details">
+          <p className="details-heading">المنتجات:</p>
+          <div className="items-list">
+            {order.items?.map((item, i) => {
+              const imageUrl = resolveImageUrl(item.product_image)
+              return (
+                <div key={i} className="item-row">
+                  <div className="item-thumb">
+                    {imageUrl ? <img src={imageUrl} alt="" /> : <FaBox />}
+                  </div>
+                  <div className="item-info">
+                    <p className="item-name">{item.product_name}</p>
+                    <p className="item-sub">
+                      الكمية: {item.quantity}
+                      {item.color_name && ` · اللون: ${item.color_name}`}
+                    </p>
+                  </div>
+                  <span className="item-price">{item.price_at_time} ج.م</span>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="meta-grid">
+            {[
+              { label: "طريقة الدفع", value: resolvePaymentMethod(order.payment_method_display) },
+              { label: "رقم التتبع", value: order.tracking_number || "—" },
+              { label: "حالة الدفع", value: order.is_paid ? "✅ مدفوع" : "⏳ غير مدفوع" },
+            ].map((meta, i) => (
+              <div key={i} className="meta-item">
+                <p className="meta-label">{meta.label}</p>
+                <p className="meta-value">{meta.value}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="total-row">
+            <span>الإجمالي الكلي</span>
+            <span className="total-row-value">{order.total_price} ج.م</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Order Card ────────────────────────────────────────────────────
 function OrderCard({ order, onExpand, expanded }) {
+  const [timelineOpen, setTimelineOpen] = useState(false)
+  const [invoiceOpen, setInvoiceOpen] = useState(false)
+
   const firstItem = order.items?.[0]
   const itemCount = order.items?.length || 0
+  const imageUrl = resolveImageUrl(firstItem?.product_image)
 
   return (
     <div className={`order-card ${expanded ? "order-card--expanded" : ""}`}>
       <div className="order-card-inner">
 
         <div className="order-image">
-          {firstItem?.product_image
-            ? <img src={firstItem.product_image} alt="" />
+          {imageUrl
+            ? <img src={imageUrl} alt="" />
             : <FaBoxOpen className="order-image-placeholder" />
           }
         </div>
@@ -110,44 +310,11 @@ function OrderCard({ order, onExpand, expanded }) {
       </div>
 
       {expanded && (
-        <div className="order-details">
-          <p className="details-heading">المنتجات:</p>
-          <div className="items-list">
-            {order.items?.map((item, i) => (
-              <div key={i} className="item-row">
-                <div className="item-thumb"><FaBox /></div>
-                <div className="item-info">
-                  <p className="item-name">{item.product_name}</p>
-                  <p className="item-sub">
-                    الكمية: {item.quantity}
-                    {item.color_name && ` · اللون: ${item.color_name}`}
-                  </p>
-                </div>
-                <span className="item-price">{item.price_at_time} ج.م</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="meta-grid">
-            {[
-              { label: "طريقة الدفع", value: order.payment_method_display },
-              { label: "العنوان", value: order.address },
-              { label: "رقم التتبع", value: order.tracking_number || "—" },
-              { label: "تاريخ الشحن", value: order.shipped_date ? new Date(order.shipped_date).toLocaleDateString("ar-EG") : "—" },
-              { label: "تاريخ التسليم", value: order.delivered_date ? new Date(order.delivered_date).toLocaleDateString("ar-EG") : "—" },
-              { label: "حالة الدفع", value: order.is_paid ? "✅ مدفوع" : "⏳ غير مدفوع" },
-            ].map((meta, i) => (
-              <div key={i} className="meta-item">
-                <p className="meta-label">{meta.label}</p>
-                <p className="meta-value">{meta.value}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="total-row">
-            <span>الإجمالي الكلي</span>
-            <span className="total-row-value">{order.total_price} ج.م</span>
-          </div>
+        <div className="order-expanded-body">
+          <OrderNumberChip order={order} />
+          <OrderAddress address={order.address} />
+          <OrderTimeline order={order} expanded={timelineOpen} onToggle={() => setTimelineOpen(v => !v)} />
+          <OrderInvoice order={order} expanded={invoiceOpen} onToggle={() => setInvoiceOpen(v => !v)} />
         </div>
       )}
     </div>
@@ -259,11 +426,7 @@ export default function OrdersPage() {
           padding: 16px; margin-bottom: 20px; color: #ef4444; font-size: 14px; text-align: center;
         }
 
-        /* ── Order card ──
-           order-card-inner is a row on desktop: [image] [content column].
-           On mobile it becomes a column: image on top, full-bleed, then content below.
-           No order/flex-basis tricks, no display:contents — one predictable structure
-           that just switches flex-direction at the breakpoint. */
+        /* ── Order card ── */
         .order-card {
           background: #fff; border-radius: 16px; border: 1px solid #f0f0f0;
           overflow: hidden; transition: box-shadow .2s; margin-bottom: 14px;
@@ -291,7 +454,6 @@ export default function OrdersPage() {
         .order-meta-row strong { color: #222; }
         .order-total strong { color: #E8821A; }
 
-        /* ── the status box — ONE self-contained unit, nothing floats outside it ── */
         .order-status-box { border-radius: 12px; padding: 10px 14px; }
         .order-status-top { display: flex; align-items: center; gap: 8px; }
         .order-status-icon { font-size: 13px; display: inline-flex; flex-shrink: 0; }
@@ -311,33 +473,98 @@ export default function OrdersPage() {
         .detail-btn-chevron { font-size: 10px; transition: transform .2s; }
         .detail-btn-chevron.is-open { transform: rotate(-90deg); }
 
-        /* ── expanded details ── */
-        .order-details { border-top: 1px solid #f5f5f5; padding: 16px 20px; background: #fafafa; }
+        /* ── expanded body: number chip, address, timeline, invoice — زي نون ── */
+        .order-expanded-body {
+          border-top: 1px solid #f5f5f5; padding: 16px 20px; background: #fafafa;
+          display: flex; flex-direction: column; gap: 12px;
+        }
+
+        .order-number-chip {
+          display: flex; align-items: center; justify-content: space-between;
+          background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 12px 16px;
+        }
+        .order-number-chip-label { margin: 0 0 2px; font-size: 11px; color: #aaa; }
+        .order-number-chip-value { margin: 0; font-size: 14px; font-weight: 700; color: #222; }
+        .order-number-copy-btn {
+          display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600;
+          padding: 7px 12px; border-radius: 20px; border: 1px solid #e0e0e0; background: #fff;
+          color: #888; cursor: pointer; font-family: 'Cairo',sans-serif; transition: all .15s;
+        }
+        .order-number-copy-btn.is-copied { border-color: #86efac; background: #f0fdf4; color: #16a34a; }
+
+        .order-address-block {
+          display: flex; align-items: flex-start; gap: 10px;
+          background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 14px 16px;
+        }
+        .order-address-icon { color: #E8821A; font-size: 15px; margin-top: 2px; flex-shrink: 0; }
+        .order-address-label { margin: 0 0 4px; font-size: 11px; color: #aaa; }
+        .order-address-text { margin: 0; font-size: 13px; font-weight: 600; color: #333; line-height: 1.6; }
+
+        /* ── timeline (زي نون: ملخص مطوي + تايم لاين كامل قابل للفتح) ── */
+        .order-timeline-wrap { background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 14px 16px; }
+        .timeline-cancelled { display: flex; align-items: center; gap: 8px; color: #ef4444; font-size: 13px; font-weight: 600; }
+
+        .timeline-toggle-btn {
+          display: flex; align-items: center; justify-content: space-between; gap: 8px;
+          width: 100%; background: none; border: none; cursor: pointer;
+          font-family: 'Cairo',sans-serif; padding: 0;
+        }
+        .timeline-summary-label { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .timeline-summary-date { font-size: 12px; color: #888; }
+        .timeline-toggle-chevron { font-size: 11px; color: #ccc; transition: transform .2s; flex-shrink: 0; }
+        .timeline-toggle-chevron.is-open { transform: rotate(-90deg); }
+
+        .timeline-toggle-btn--close {
+          margin-top: 12px; padding-top: 12px; border-top: 1px solid #f5f5f5;
+          justify-content: center; color: #E8821A; font-size: 12px; font-weight: 600; gap: 6px;
+        }
+
+        .timeline-steps { display: flex; flex-direction: column; margin-top: 14px; }
+        .timeline-step { display: flex; gap: 12px; }
+        .timeline-step-marker { display: flex; flex-direction: column; align-items: center; width: 12px; flex-shrink: 0; }
+        .timeline-step-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+        .timeline-step-line { width: 2px; flex: 1; min-height: 26px; }
+        .timeline-step-body { padding-bottom: 16px; }
+        .timeline-step:last-child .timeline-step-body { padding-bottom: 0; }
+        .timeline-step-label { margin: 0; font-size: 13px; font-weight: 700; }
+        .timeline-step-date { margin: 2px 0 0; font-size: 11.5px; color: #aaa; }
+
+        /* ── invoice toggle + panel ── */
+        .invoice-toggle-btn {
+          display: flex; align-items: center; justify-content: space-between; width: 100%;
+          background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 14px 16px;
+          font-size: 13px; font-weight: 700; color: #333; cursor: pointer; font-family: 'Cairo',sans-serif;
+        }
+        .invoice-toggle-chevron { font-size: 11px; color: #ccc; transition: transform .2s; }
+        .invoice-toggle-chevron.is-open { transform: rotate(-90deg); }
+
+        .order-details { border-top: none; margin-top: 10px; padding: 14px; background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; }
         .details-heading { margin: 0 0 12px; font-size: 13px; font-weight: 700; color: #444; }
 
         .items-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
         .item-row {
-          display: flex; align-items: center; gap: 12px; background: #fff;
+          display: flex; align-items: center; gap: 12px; background: #fafafa;
           border-radius: 10px; padding: 10px 14px; border: 1px solid #f0f0f0;
         }
         .item-thumb {
-          width: 48px; height: 48px; border-radius: 8px; background: #f5f5f5;
+          width: 48px; height: 48px; border-radius: 8px; background: #fff;
           display: flex; align-items: center; justify-content: center;
-          flex-shrink: 0; overflow: hidden;
+          flex-shrink: 0; overflow: hidden; border: 1px solid #f0f0f0;
         }
+        .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .item-info { flex: 1; min-width: 0; }
         .item-name { margin: 0; font-size: 13px; font-weight: 600; }
         .item-sub { margin: 0; font-size: 11px; color: #aaa; }
         .item-price { font-size: 13px; font-weight: 700; color: #222; white-space: nowrap; }
 
         .meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-        .meta-item { background: #fff; border-radius: 8px; padding: 10px 12px; border: 1px solid #f0f0f0; min-width: 0; }
+        .meta-item { background: #fafafa; border-radius: 8px; padding: 10px 12px; border: 1px solid #f0f0f0; min-width: 0; }
         .meta-label { margin: 0 0 2px; font-size: 11px; color: #aaa; }
         .meta-value { margin: 0; font-size: 12px; font-weight: 600; color: #333; overflow-wrap: break-word; }
 
         .total-row {
           display: flex; justify-content: space-between; align-items: center;
-          padding: 12px 16px; background: #fff; border-radius: 10px; border: 1px solid #f0f0f0;
+          padding: 12px 16px; background: #fafafa; border-radius: 10px; border: 1px solid #f0f0f0;
           font-size: 14px; font-weight: 600; color: #444;
         }
         .total-row-value { font-size: 18px; font-weight: 700; color: #E8821A; }
@@ -368,7 +595,7 @@ export default function OrdersPage() {
           font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Cairo',sans-serif; white-space: nowrap;
         }
 
-        /* ── Mobile: image on top, everything else stacked underneath ── */
+        /* ── Mobile ── */
         @media (max-width: 680px) {
           .orders-page { padding-top: 76px; }
           .orders-container { padding: 0 14px 36px; }
@@ -396,6 +623,9 @@ export default function OrdersPage() {
           .order-meta-row { font-size: 11.5px; gap: 14px; }
 
           .detail-btn { align-self: stretch; width: 100%; padding: 10px 14px; }
+
+          .order-expanded-body { padding: 14px; gap: 10px; }
+          .order-number-chip, .order-address-block, .order-timeline-wrap, .invoice-toggle-btn { padding: 12px 14px; }
 
           .meta-grid { grid-template-columns: 1fr; }
 
