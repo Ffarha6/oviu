@@ -29,6 +29,23 @@ function resolveImageUrl(path) {
   return `${API_BASE_URL}${path.startsWith("/") ? "" : "/"}${path}`
 }
 
+// ✅ الموقع عربي بس، فطريقة الدفع بترجع دايمًا بالعربي مهما كانت القيمة الجايه من
+// الباك إند بالإنجليزي (زي "Cash on Delivery"). لو جت قيمة مش موجودة في المابينج،
+// بترجع زي ما هي عشان منخبيش أي بيانات
+const PAYMENT_METHOD_AR = {
+  "Cash on Delivery": "الدفع عند الاستلام",
+  "Cash On Delivery": "الدفع عند الاستلام",
+  "COD": "الدفع عند الاستلام",
+  "Card": "بطاقة ائتمان",
+  "Credit Card": "بطاقة ائتمان",
+  "Online Payment": "دفع إلكتروني",
+}
+
+function resolvePaymentMethod(value) {
+  if (!value) return ""
+  return PAYMENT_METHOD_AR[value] || value
+}
+
 export default function OrderConfirmationPage() {
   const { orderId } = useParams()
   const navigate = useNavigate()
@@ -294,11 +311,11 @@ export default function OrderConfirmationPage() {
                 </div>
 
                 {/* Payment method */}
-                <div className={`flex items-center gap-2 pt-1 ${isAr ? "flex-row-reverse text-right" : "text-left"}`}>
+                <div className={`flex items-center gap-2 pt-1 ${isAr ? "text-right" : "text-left"}`}>
                   <FiCreditCard className="text-[#D9A066] text-sm shrink-0" />
                   <div className={isAr ? "text-right" : "text-left"}>
                     <p className="text-xs text-gray-400">{t.payment}</p>
-                    <p className="text-sm text-black dark:text-white font-medium">{order.payment_method_display}</p>
+                    <p className="text-sm text-black dark:text-white font-medium">{resolvePaymentMethod(order.payment_method_display)}</p>
                   </div>
                 </div>
 
