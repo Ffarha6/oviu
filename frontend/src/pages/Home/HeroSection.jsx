@@ -140,7 +140,7 @@ useEffect(() => {
     <div
       className="
         hidden sm:flex
-        lg:-mt-[52px]
+        
         md:px-0
         pb-0
         md:pb-2
