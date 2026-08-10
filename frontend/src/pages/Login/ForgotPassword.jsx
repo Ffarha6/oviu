@@ -26,13 +26,14 @@ const autofillFix = `
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
-    box-shadow: 0 0 0px 1000px transparent inset !important;
     -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.10) inset !important;
+    box-shadow: 0 0 0 1000px rgba(255,255,255,0.10) inset !important;
+    background-color: transparent !important;
     transition: background-color 9999s ease-in-out 0s;
     caret-color: white;
   }
-`
+`;
 
 function ForgotPassword() {
   const { language } = useContext(LanguageContext)
