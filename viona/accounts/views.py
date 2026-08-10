@@ -338,34 +338,88 @@ def logout_view(request):
 
 @api_view(['POST'])
 def forgot_password(request):
-    email = request.data.get('email')
+    email = (request.data.get('email') or '').strip().lower()
+
     if not email:
-        return Response({'error': 'البريد الإلكتروني مطلوب'}, status=400)
-    
+        return Response(
+            {'error': 'البريد الإلكتروني مطلوب'},
+            status=400
+        )
+
     try:
-        user = User.objects.get(email=email)
+        user = User.objects.get(email__iexact=email)
+
         reset_token = secrets.token_urlsafe(32)
+
         user.reset_token = reset_token
         user.reset_token_created_at = now()
-        user.save()
-        
-        try:
-            reset_link = f"{settings.FRONTEND_URL}/reset-password/{reset_token}"
 
-            send_mail(
-                'استعادة كلمة المرور - OVIU',
-                f'مرحباً {user.username},\n\nلإعادة تعيين كلمة المرور، اضغط على الرابط التالي:\n{reset_link}\n\nإذا لم تطلب هذا، تجاهل هذا البريد.',
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-                fail_silently=False,
-            )
-        except:
-            pass
-        
-        return Response({'message': 'إذا كان البريد الإلكتروني مسجلاً، سنرسل رابط إعادة التعيين'})
+        user.save(update_fields=[
+            'reset_token',
+            'reset_token_created_at'
+        ])
+
+        reset_link = f"{settings.FRONTEND_URL}/reset-password/{reset_token}"
+
+        response = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": "OVIU <noreply@oviustore.com>",
+                "to": [email],
+                "subject": "استعادة كلمة المرور - OVIU",
+                "html": f"""
+                <div dir="rtl" style="font-family: Arial, sans-serif;">
+                    <h2>مرحباً {user.username}</h2>
+
+                    <p>
+                        تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك في OVIU.
+                    </p>
+
+                    <p>
+                        اضغط على الرابط التالي لإعادة تعيين كلمة المرور:
+                    </p>
+
+                    <p>
+                        <a href="{reset_link}">
+                            إعادة تعيين كلمة المرور
+                        </a>
+                    </p>
+
+                    <p>
+                        الرابط صالح لمدة ساعة واحدة.
+                    </p>
+
+                    <p>
+                        إذا لم تطلب إعادة تعيين كلمة المرور، يمكنك تجاهل هذا البريد.
+                    </p>
+                </div>
+                """,
+            },
+            timeout=10,
+        )
+
+        response.raise_for_status()
+
+        return Response({
+            'message': 'إذا كان البريد الإلكتروني مسجلاً، سنرسل رابط إعادة التعيين'
+        })
+
     except User.DoesNotExist:
-        return Response({'message': 'إذا كان البريد الإلكتروني مسجلاً، سنرسل رابط إعادة التعيين'}, status=200)
+        return Response({
+            'message': 'إذا كان البريد الإلكتروني مسجلاً، سنرسل رابط إعادة التعيين'
+        })
 
+    except Exception as e:
+        print(f"Password reset email error: {e}")
+
+        return Response(
+            {'error': 'تعذر إرسال رابط إعادة التعيين. حاول مرة أخرى لاحقًا.'},
+            status=503
+        )
 
 @api_view(['POST'])
 def reset_password(request):
