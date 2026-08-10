@@ -162,7 +162,7 @@ useEffect(() => {
           w-full
           relative
           overflow-hidden
-          h-[520px]
+          aspect-[14/9]
           bg-[#F8F4F1]
           flex items-center
         "
