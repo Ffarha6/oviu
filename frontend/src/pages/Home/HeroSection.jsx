@@ -5,6 +5,10 @@ import { useNavigate } from "react-router-dom"
 import heroBannerLight from "../../assets/images/hero-banner-light.png"
 import heroBannerDark from "../../assets/images/hero-banner-dark.png"
 import heroShippingBanner from "../../assets/images/hero-shipping-banner.png"
+// ✅ صورة جديدة مخصوصة للديسكتوب بس لسلايد "التوصيل المجاني". حطي صورتك
+// الجديدة في نفس فولدر src/assets/images بنفس الاسم ده، أو غيّري اسم
+// الملف هنا لو سميتيها اسم مختلف
+import heroShippingBannerDesktop from "../../assets/images/hero-shipping-banner-desktop.png"
 import { motion } from "framer-motion"
 
 function HeroSection() {
@@ -15,18 +19,30 @@ function HeroSection() {
 
   const isAr = language === "ar"
   const bannerImg = darkMode ? heroBannerDark : heroBannerLight
-  const heroSlides = [
-  bannerImg,
-  heroShippingBanner,
-]
+
+  // ✅ الموبايل بيفضل شغال بنفس الصور القديمة زي ما هي بالظبط
+  const heroSlidesMobile = [
+    bannerImg,
+    heroShippingBanner,
+  ]
+
+  // ✅ الديسكتوب بس بيستخدم الصورة الجديدة في سلايد التوصيل المجاني،
+  // وصورة الشخص فضلت زي ما هي (نفس بانرImg بتاع الموبايل)
+  const heroSlidesDesktop = [
+    bannerImg,
+    heroShippingBannerDesktop,
+  ]
+
+  // عدد السلايدز واحد في الاتنين، فبنستخدمه للـ interval والنقاط سوا
+  const slideCount = heroSlidesMobile.length
 
 useEffect(() => {
   const interval = setInterval(() => {
-    setActiveSlide((prev) => (prev + 1) % heroSlides.length)
+    setActiveSlide((prev) => (prev + 1) % slideCount)
   }, 3000)
 
   return () => clearInterval(interval)
-}, [heroSlides.length])
+}, [slideCount])
 
   const heroMobileImageStyle = darkMode
     ? { objectPosition: "88% top" }
@@ -37,10 +53,11 @@ useEffect(() => {
     transform: "scale(1)",
   }
 
-  // ✅ صورة السلايد التاني - نفس منطق الموبايل بالضبط
-  // object-contain عشان تظهر كاملة + scale أكبر من 1 عشان تملأ العرض
+  // ✅ صورة السلايد التاني بقت صورة مخصوصة للديسكتوب بحجمها بتاعها، فرجّعنا
+  // الـ scale لـ 1 (من غير تكبير إضافي) لأنها المفروض متظبطة بحجمها الصح
+  // من الأول. لو محتاجة زوم إضافي بعد ما تحطي الصورة، غيّري الرقم هنا
   const heroDesktopBannerStyle = {
-    transform: "scale(1.4)",   // ← الرقم ده بتتحكم فيه عشان تملأ العرض
+    transform: "scale(1)",
   }
 
   const content = {
@@ -77,7 +94,7 @@ useEffect(() => {
 
         <motion.img
           key={activeSlide}
-          src={heroSlides[activeSlide]}
+          src={heroSlidesMobile[activeSlide]}
           alt=""
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -117,7 +134,7 @@ useEffect(() => {
 
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex gap-2">
 
-          {heroSlides.map((_, index) => (
+          {heroSlidesMobile.map((_, index) => (
             <button
               key={index}
               onClick={() => setActiveSlide(index)}
@@ -166,11 +183,11 @@ useEffect(() => {
         {/* =====================================================
             صورة السلايدر 
             - الأولى: object-cover عشان تملأ العرض
-            - التانية: object-contain (نفس الموبايل) + scale عشان تملأ العرض
+            - التانية: صورة الديسكتوب المخصوصة بـ object-contain
         ===================================================== */}
         <motion.img
           key={activeSlide}
-          src={heroSlides[activeSlide]}
+          src={heroSlidesDesktop[activeSlide]}
           alt=""
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -255,7 +272,7 @@ useEffect(() => {
 
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex gap-2">
 
-          {heroSlides.map((_, index) => (
+          {heroSlidesDesktop.map((_, index) => (
             <button
               key={index}
               onClick={() => setActiveSlide(index)}
