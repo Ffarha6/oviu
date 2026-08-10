@@ -86,6 +86,11 @@ class Product(models.Model):
     blank=True,
     null=True
 )
+
+    # ✅ لون العدسة - نص حر، مش choices، عشان الألوان ممكن تكون متنوعة
+    # (شفاف، أزرق غامق، بني متدرج... إلخ) ومش عايزين نقفلها بقايمة ثابتة
+    lens_color = models.CharField(max_length=50, blank=True, null=True)
+
     # ========== السعر ==========
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     discount_price = models.DecimalField(
