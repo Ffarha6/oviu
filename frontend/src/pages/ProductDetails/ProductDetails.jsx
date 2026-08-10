@@ -72,7 +72,7 @@ function ProductDetail() {
       noReviews: "لسه مفيش تقييمات، قيّم النظارة إنت الأول",
       home: "الرئيسية", glasses: "النظارات", sunglasses: "نظارات شمسية",
       frameType: "نوع الإطار", frameShape: "شكل الإطار", frameColor: "لون الإطار",
-      material: "مادة الإطار", lensWidth: "عرض العدسة", bridgeWidth: "عرض الجسر",
+      material: "مادة الإطار", lensColor: "لون العدسة", lensWidth: "عرض العدسة", bridgeWidth: "عرض الجسر",
       armLength: "طول الذراع", uvProtection: "نوع العدسة",
       outOfStock: "نفذ من المخزون",
       lowStock: (n) => `متبقى ${n} فقط`,
@@ -91,7 +91,7 @@ function ProductDetail() {
       noReviews: "No ratings yet, be the first to rate it",
       home: "Home", glasses: "Glasses", sunglasses: "Sunglasses",
       frameType: "Frame Type", frameShape: "Frame Shape", frameColor: "Frame Color",
-      material: "Frame Material", lensWidth: "Lens Width", bridgeWidth: "Bridge Width",
+      material: "Frame Material", lensColor: "Lens Color", lensWidth: "Lens Width", bridgeWidth: "Bridge Width",
       armLength: "Arm Length", uvProtection: "Lens Type",
       outOfStock: "Out of Stock",
       lowStock: (n) => `Only ${n} left`,
@@ -189,12 +189,49 @@ function ProductDetail() {
     setActiveImage(0)
   }
 
+  // ✅ الباك بيبعت شكل الإطار بالإنجليزي (rectangle, round, ...) عشان ده
+  // القيمة المخزنة في الداتابيز، فبنترجمها هنا لعرضها بالعربي في الواجهة.
+  // لو جالنا شكل جديد مش موجود في القاموس، بنعرضه زي ما هو بدل ما نكسر الصفحة.
+  const frameShapeLabels = {
+    ar: {
+      rectangle: "مستطيل",
+      round: "دائري",
+      square: "مربع",
+      oval: "بيضاوي",
+      cat_eye: "عين القطة",
+      aviator: "أفياتور",
+      hexagonal: "سداسي",
+      wayfarer: "ويفير",
+      butterfly: "فراشة",
+      geometric: "هندسي",
+    },
+    en: {
+      rectangle: "Rectangle",
+      round: "Round",
+      square: "Square",
+      oval: "Oval",
+      cat_eye: "Cat Eye",
+      aviator: "Aviator",
+      hexagonal: "Hexagonal",
+      wayfarer: "Wayfarer",
+      butterfly: "Butterfly",
+      geometric: "Geometric",
+    },
+  }
+
+  const getFrameShapeLabel = (shape) => {
+    if (!shape) return "--"
+    const key = String(shape).trim().toLowerCase().replace(/\s+/g, "_")
+    const dict = frameShapeLabels[isAr ? "ar" : "en"]
+    return dict[key] || shape
+  }
+
   const specs = product ? [
     { label: t.frameType, value: product.frame_type || product.type || "--" },
-    { label: t.frameShape, value: product.frame_shape || "--" },
+    { label: t.frameShape, value: getFrameShapeLabel(product.frame_shape) },
     { label: t.frameColor, value: product.color || "--" },
-    { label: t.material, value: product.material || "--" },
     { label: t.uvProtection, value: product.uv_protection || "--" },
+    { label: t.lensColor, value: product.lens_color || "--" },
     { label: t.lensWidth, value: product.lens_width ? `${product.lens_width} مم` : "--" },
     { label: t.bridgeWidth, value: product.bridge_width ? `${product.bridge_width} مم` : "--" },
     { label: t.armLength, value: product.arm_length ? `${product.arm_length} مم` : "--" },
