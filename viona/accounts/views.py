@@ -336,7 +336,12 @@ def logout_view(request):
     return Response({'message': 'تم تسجيل الخروج بنجاح'})
 
 
+# =========================================================
+# Forgot Password - Send OTP
+# =========================================================
+
 @api_view(['POST'])
+@throttle_classes([AnonRateThrottle])
 def forgot_password(request):
     email = (request.data.get('email') or '').strip().lower()
 
@@ -349,9 +354,10 @@ def forgot_password(request):
     try:
         user = User.objects.get(email__iexact=email)
 
-        reset_token = secrets.token_urlsafe(32)
+        # كود 6 أرقام
+        reset_code = f"{secrets.randbelow(1000000):06d}"
 
-        user.reset_token = reset_token
+        user.reset_token = reset_code
         user.reset_token_created_at = now()
 
         user.save(update_fields=[
@@ -359,8 +365,7 @@ def forgot_password(request):
             'reset_token_created_at'
         ])
 
-        reset_link = f"{settings.FRONTEND_URL}/reset-password/{reset_token}"
-
+        # إرسال الكود بالإيميل
         response = requests.post(
             "https://api.resend.com/emails",
             headers={
@@ -370,32 +375,37 @@ def forgot_password(request):
             json={
                 "from": "OVIU <noreply@oviustore.com>",
                 "to": [email],
-                "subject": "استعادة كلمة المرور - OVIU",
+                "subject": "كود إعادة تعيين كلمة المرور - OVIU",
                 "html": f"""
-                <div dir="rtl" style="font-family: Arial, sans-serif;">
-                    <h2>مرحباً {user.username}</h2>
+                <div dir="rtl"
+                     style="font-family: Arial, sans-serif; text-align: center;">
+
+                    <h2>مرحباً {user.first_name or user.username}</h2>
 
                     <p>
                         تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك في OVIU.
                     </p>
 
                     <p>
-                        اضغط على الرابط التالي لإعادة تعيين كلمة المرور:
+                        كود التحقق الخاص بك هو:
                     </p>
 
-                    <p>
-                        <a href="{reset_link}">
-                            إعادة تعيين كلمة المرور
-                        </a>
-                    </p>
+                    <h1 style="
+                        letter-spacing: 8px;
+                        font-size: 36px;
+                        color: #D9A066;
+                    ">
+                        {reset_code}
+                    </h1>
 
                     <p>
-                        الرابط صالح لمدة ساعة واحدة.
+                        الكود صالح لمدة 10 دقائق فقط.
                     </p>
 
                     <p>
                         إذا لم تطلب إعادة تعيين كلمة المرور، يمكنك تجاهل هذا البريد.
                     </p>
+
                 </div>
                 """,
             },
@@ -405,53 +415,175 @@ def forgot_password(request):
         response.raise_for_status()
 
         return Response({
-            'message': 'إذا كان البريد الإلكتروني مسجلاً، سنرسل رابط إعادة التعيين'
+            'message': 'تم إرسال كود التحقق إلى بريدك الإلكتروني',
+            'email': email,
         })
 
     except User.DoesNotExist:
+        # نفس الرسالة حتى ما نكشفش إذا الإيميل موجود أو لا
         return Response({
-            'message': 'إذا كان البريد الإلكتروني مسجلاً، سنرسل رابط إعادة التعيين'
+            'message': 'إذا كان البريد الإلكتروني مسجلاً، سيتم إرسال كود التحقق'
         })
 
     except Exception as e:
         print(f"Password reset email error: {e}")
 
         return Response(
-            {'error': 'تعذر إرسال رابط إعادة التعيين. حاول مرة أخرى لاحقًا.'},
+            {
+                'error':
+                'تعذر إرسال كود التحقق. حاول مرة أخرى لاحقًا.'
+            },
             status=503
         )
 
+
+# =========================================================
+# Verify Reset OTP
+# =========================================================
+
 @api_view(['POST'])
-def reset_password(request):
-    token = request.data.get('token')
-    new_password = request.data.get('password')
-    
-    if not token or not new_password:
-        return Response({'error': 'الرمز وكلمة المرور الجديدة مطلوبين'}, status=400)
-    
+@throttle_classes([AnonRateThrottle])
+def verify_reset_code(request):
+    email = (request.data.get('email') or '').strip().lower()
+    code = (request.data.get('code') or '').strip()
+
+    if not email or not code:
+        return Response(
+            {'error': 'البريد الإلكتروني والكود مطلوبين'},
+            status=400
+        )
+
     try:
-        user = User.objects.get(reset_token=token)
-        if user.reset_token_created_at:
-            if (now() - user.reset_token_created_at) > timedelta(hours=1):
-                return Response({'error': 'انتهت صلاحية رابط إعادة التعيين'}, status=400)
-        else:
-            return Response({'error': 'الرابط غير صالح'}, status=400)
-        
-        try:
-            validate_password(new_password)
-        except Exception as e:
-            return Response({'error': str(e)}, status=400)
-        
-        user.set_password(new_password)
-        user.reset_token = ''
-        user.save()
-        Token.objects.filter(user=user).delete()
-        
-        return Response({'message': 'تم تغيير كلمة المرور بنجاح. برجاء تسجيل الدخول مرة أخرى'})
+        user = User.objects.get(email__iexact=email)
+
     except User.DoesNotExist:
-        return Response({'error': 'الرمز غير صالح أو منتهي الصلاحية'}, status=400)
+        return Response(
+            {'error': 'الكود غير صحيح أو منتهي الصلاحية'},
+            status=400
+        )
+
+    # لازم يكون فيه كود
+    if not user.reset_token or not user.reset_token_created_at:
+        return Response(
+            {'error': 'لا يوجد كود إعادة تعيين صالح'},
+            status=400
+        )
+
+    # صلاحية الكود = 10 دقائق
+    if now() - user.reset_token_created_at > timedelta(minutes=10):
+        user.reset_token = ''
+        user.reset_token_created_at = None
+
+        user.save(update_fields=[
+            'reset_token',
+            'reset_token_created_at'
+        ])
+
+        return Response(
+            {'error': 'انتهت صلاحية الكود. اطلبي كود جديد'},
+            status=400
+        )
+
+    # التأكد من الكود
+    if user.reset_token != code:
+        return Response(
+            {'error': 'كود التحقق غير صحيح'},
+            status=400
+        )
+
+    return Response({
+        'message': 'تم التحقق من الكود بنجاح',
+        'verified': True,
+    })
 
 
+# =========================================================
+# Reset Password
+# =========================================================
+
+@api_view(['POST'])
+@throttle_classes([AnonRateThrottle])
+def reset_password(request):
+    email = (request.data.get('email') or '').strip().lower()
+    code = (request.data.get('code') or '').strip()
+    new_password = request.data.get('password')
+
+    if not email or not code or not new_password:
+        return Response(
+            {
+                'error':
+                'البريد الإلكتروني والكود وكلمة المرور الجديدة مطلوبين'
+            },
+            status=400
+        )
+
+    try:
+        user = User.objects.get(email__iexact=email)
+
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'بيانات إعادة التعيين غير صحيحة'},
+            status=400
+        )
+
+    # التأكد من وجود الكود
+    if not user.reset_token or not user.reset_token_created_at:
+        return Response(
+            {'error': 'كود إعادة التعيين غير صالح'},
+            status=400
+        )
+
+    # التأكد من الصلاحية
+    if now() - user.reset_token_created_at > timedelta(minutes=10):
+        user.reset_token = ''
+        user.reset_token_created_at = None
+
+        user.save(update_fields=[
+            'reset_token',
+            'reset_token_created_at'
+        ])
+
+        return Response(
+            {'error': 'انتهت صلاحية الكود. اطلبي كود جديد'},
+            status=400
+        )
+
+    # التأكد من الكود
+    if user.reset_token != code:
+        return Response(
+            {'error': 'كود التحقق غير صحيح'},
+            status=400
+        )
+
+    # التأكد من قوة كلمة المرور
+    try:
+        validate_password(new_password)
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=400
+        )
+
+    # تغيير الباسورد
+    user.set_password(new_password)
+
+    # إلغاء الكود بعد استخدامه
+    user.reset_token = ''
+    user.reset_token_created_at = None
+
+    user.save(update_fields=[
+        'password',
+        'reset_token',
+        'reset_token_created_at'
+    ])
+
+    # إلغاء أي Tokens قديمة
+    Token.objects.filter(user=user).delete()
+
+    return Response({
+        'message':
+        'تم تغيير كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن.'
+    })
 # ─── OAuth Redirect View ─────────────────────────────────────────────────────
 # بعد ما django-allauth يعمل login بجوجل أو فيسبوك،
 # بترد بـ redirect للفرونت مع الـ token في الـ URL

@@ -17,6 +17,8 @@ urlpatterns = [
     # Password Management
     path('change-password/', views.change_password, name='change-password'),
     path('forgot-password/', views.forgot_password, name='forgot-password'),
+    path('verify-reset-code/', views.verify_reset_code, name='verify-reset-code'),
+    path('reset-password/', views.reset_password, name='reset-password'),
     path('reset-password/',  views.reset_password,  name='reset-password'),
     path("api/profile/", views.profile_api, name="profile_api"),
     # OAuth callback — بعد جوجل/فيسبوك بيعملوا redirect هنا
