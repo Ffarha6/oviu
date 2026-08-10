@@ -312,12 +312,12 @@ useEffect(() => {
 
   return (
     <div 
-   
+   ref={navbarRef}
     className="fixed top-0 left-0 w-full z-50 overflow-x-hidden overflow-y-visible" dir={isAr ? "rtl" : "ltr"}>
 
       {/* ── Main navbar — شريط مميز بلون الهوية زي نون ── */}
       <div
-  ref={navbarRef}
+  
   className="
     bg-secondary
     shadow-sm px-3 md:px-6 h-16 md:h-20
