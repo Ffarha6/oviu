@@ -140,7 +140,6 @@ useEffect(() => {
     <div
       className="
         hidden sm:flex
-        
         md:px-0
         pb-0
         md:pb-2
@@ -156,7 +155,9 @@ useEffect(() => {
           relative
           overflow-hidden
           aspect-[16/9]
+          max-h-[calc(100vh-var(--navbar-height,132px))]
           bg-[#F8F4F1]
+          flex items-center
         "
       >
 
