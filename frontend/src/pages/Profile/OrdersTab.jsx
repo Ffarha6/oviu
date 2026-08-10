@@ -4,21 +4,40 @@ import { useTranslation } from "react-i18next"
 import { FaSearch, FaFilter, FaBoxOpen, FaHeadset } from "react-icons/fa"
 import FullOrderCard from "./FullOrderCard"
 import OrderDetailsView from "./OrderDetailsView"
-import { getOrderFilters } from "./ProfileConstants"
+import { getOrderFilters, authFetch } from "./ProfileConstants"
 
 export default function OrdersTab({ orders, ordersError }) {
   const { t, i18n } = useTranslation()
   const [orderSearch, setOrderSearch] = useState("")
   const [orderFilter, setOrderFilter] = useState("all")
   const [selectedOrder, setSelectedOrder] = useState(null)
+  // ✅ لسه محتفظين بيها محليًا عشان orders جاية prop من برا، فبنعمل override
+  // للحالة فورًا بعد الإلغاء من غير ما ننتظر إعادة تحميل الصفحة كلها
+  const [cancelledIds, setCancelledIds] = useState(new Set())
+
+  // ✅ إلغاء الطلب فعليًا عن طريق نفس endpoint الباك إند (cancel_order)
+  const handleCancelOrder = async (orderId) => {
+    const res = await authFetch(`/api/orders/${orderId}/cancel/`, { method: "POST" })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.error || "فشل الإلغاء")
+    }
+    setCancelledIds(prev => new Set(prev).add(orderId))
+    setSelectedOrder(prev => (prev && prev.id === orderId ? { ...prev, status: "cancelled" } : prev))
+  }
 
   if (selectedOrder) {
-    return <OrderDetailsView order={selectedOrder} onBack={() => setSelectedOrder(null)} />
+    return <OrderDetailsView order={selectedOrder} onBack={() => setSelectedOrder(null)} onCancelOrder={handleCancelOrder} />
   }
 
   const orderFilters = getOrderFilters(t)
 
-  const filteredOrders = orders.filter(o => {
+  // ✅ نطبّق حالة الإلغاء المحلية فوق قايمة orders الأصلية قبل الفلترة والعرض
+  const displayOrders = orders.map(o =>
+    cancelledIds.has(o.id) ? { ...o, status: "cancelled" } : o
+  )
+
+  const filteredOrders = displayOrders.filter(o => {
     const matchFilter = orderFilter === "all" || o.status === orderFilter
     const matchSearch = orderSearch === "" || String(o.id).includes(orderSearch)
     return matchFilter && matchSearch
@@ -33,7 +52,7 @@ export default function OrdersTab({ orders, ordersError }) {
           <p className="mt-1 mb-0 text-[15px] text-[#aaa] dark:text-gray-500">{t("orders.subtitle")}</p>
         </div>
         <span className="text-[15px] text-[#888] dark:text-gray-400 bg-white dark:bg-black px-3.5 py-1.5 rounded-[20px] border border-[#f0f0f0] dark:border-gray-700">
-          {t("orders.count", { count: orders.length })}
+          {t("orders.count", { count: displayOrders.length })}
         </span>
       </div>
 
@@ -66,7 +85,7 @@ export default function OrdersTab({ orders, ordersError }) {
             >
               {f.label}
               <span className={`mr-1 text-[13px] ${orderFilter === f.key ? "text-[#E8821A]" : "text-[#aaa] dark:text-gray-500"}`}>
-                ({f.key === "all" ? orders.length : orders.filter(o => o.status === f.key).length})
+                ({f.key === "all" ? displayOrders.length : displayOrders.filter(o => o.status === f.key).length})
               </span>
             </button>
           ))}
@@ -100,6 +119,7 @@ export default function OrdersTab({ orders, ordersError }) {
               key={order.id}
               order={order}
               onViewDetails={setSelectedOrder}
+              onCancelOrder={handleCancelOrder}
             />
           ))}
         </div>
