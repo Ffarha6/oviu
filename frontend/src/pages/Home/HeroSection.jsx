@@ -42,6 +42,7 @@ useEffect(() => {
   title: "أسلوبك يبدأ من نظارتك",
   description:
     "اكتشف تشكيلة مختارة من النظارات الشمسية والطبية بأفضل الأسعار.",
+  shop: "تسوق الآن",
 },
     en: {
       subtitle: "Your Style . Your Vision",
@@ -49,10 +50,16 @@ useEffect(() => {
       description:
         "Discover a curated collection of eyewear that blends luxury, quality, and modern elegance.",
       shop: "Shop Now",
-      tryon: "Virtual Try-On",
     },
   }
   const c = content[language]
+
+  // ✅ بيدور على سكشن المنتجات (BestSellers) في نفس الصفحة الرئيسية بالـ id
+  // بتاعه، ولو لقاه بيعمل سكرول ناعم ليه. مفيش navigate هنا لأننا عايزين
+  // ننزل في نفس الصفحة مش نروح لصفحة تانية
+  const scrollToProducts = () => {
+    document.getElementById("best-sellers")?.scrollIntoView({ behavior: "smooth" })
+  }
 
  return (
   <section>
@@ -227,6 +234,23 @@ useEffect(() => {
               <p className="text-gray-700 dark:text-gray-300 text-lg lg:text-xl leading-relaxed mb-8 max-w-[460px]">
                 {c.description}
               </p>
+
+              {/* ✅ زرار "تسوق الآن" — ديسكتوب بس (جوه سكشن الديسكتوب أصلاً)،
+                  بيعمل سكرول ناعم لقسم المنتجات في نفس الصفحة الرئيسية */}
+              <button
+                onClick={scrollToProducts}
+                className="
+                  bg-[#C89072] hover:bg-[#b87f61]
+                  text-white font-semibold
+                  px-8 py-3.5 lg:px-10 lg:py-4
+                  rounded-full
+                  text-base lg:text-lg
+                  transition
+                  shadow-md hover:shadow-lg
+                "
+              >
+                {c.shop}
+              </button>
 
             </motion.div>
           </>
