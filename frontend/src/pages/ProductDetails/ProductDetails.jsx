@@ -71,9 +71,9 @@ function ProductDetail() {
       currency: "ج.م", reviews: "تقييم", added: "✓ تمت الإضافة",
       noReviews: "لسه مفيش تقييمات، قيّم النظارة إنت الأول",
       home: "الرئيسية", glasses: "النظارات", sunglasses: "نظارات شمسية",
-      frameType: "نوع الإطار", frameShape: "شكل الإطار", frameColor: "لون الإطار",
-      material: "مادة الإطار", lensColor: "لون العدسة", lensWidth: "عرض العدسة", bridgeWidth: "عرض الجسر",
-      armLength: "طول الذراع", uvProtection: "نوع العدسة",
+      frameShape: "شكل الإطار", lensType: "نوع العدسة",
+      lensColor: "لون العدسة", lensWidth: "عرض العدسة", bridgeWidth: "عرض الجسر",
+      templeLength: "طول الذراع",
       outOfStock: "نفذ من المخزون",
       lowStock: (n) => `متبقى ${n} فقط`,
       addError: "عذرًا، الكمية المتاحة لم تعد كافية",
@@ -90,9 +90,9 @@ function ProductDetail() {
       currency: "EGP", reviews: "reviews", added: "✓ Added",
       noReviews: "No ratings yet, be the first to rate it",
       home: "Home", glasses: "Glasses", sunglasses: "Sunglasses",
-      frameType: "Frame Type", frameShape: "Frame Shape", frameColor: "Frame Color",
-      material: "Frame Material", lensColor: "Lens Color", lensWidth: "Lens Width", bridgeWidth: "Bridge Width",
-      armLength: "Arm Length", uvProtection: "Lens Type",
+      frameShape: "Frame Shape", lensType: "Lens Type",
+      lensColor: "Lens Color", lensWidth: "Lens Width", bridgeWidth: "Bridge Width",
+      templeLength: "Temple Length",
       outOfStock: "Out of Stock",
       lowStock: (n) => `Only ${n} left`,
       addError: "Sorry, there isn't enough stock available anymore",
@@ -226,15 +226,37 @@ function ProductDetail() {
     return dict[key] || shape
   }
 
+  // ✅ نفس فكرة frame_shape - الباك بيبعت lens_type بالإنجليزي
+  // (glass, plastic, blue_cut, contact) عشان دي القيمة المخزنة في الداتابيز
+  const lensTypeLabels = {
+    ar: {
+      glass: "زجاج",
+      plastic: "بلاستيك",
+      blue_cut: "بلو كت",
+      contact: "عدسة لاصقة",
+    },
+    en: {
+      glass: "Glass",
+      plastic: "Plastic",
+      blue_cut: "Blue Cut",
+      contact: "Contact Lens",
+    },
+  }
+
+  const getLensTypeLabel = (type) => {
+    if (!type) return "--"
+    const key = String(type).trim().toLowerCase().replace(/\s+/g, "_")
+    const dict = lensTypeLabels[isAr ? "ar" : "en"]
+    return dict[key] || type
+  }
+
   const specs = product ? [
-    { label: t.frameType, value: product.frame_type || product.type || "--" },
     { label: t.frameShape, value: getFrameShapeLabel(product.frame_shape) },
-    { label: t.frameColor, value: product.color || "--" },
-    { label: t.uvProtection, value: product.uv_protection || "--" },
+    { label: t.lensType, value: getLensTypeLabel(product.lens_type) },
     { label: t.lensColor, value: product.lens_color || "--" },
     { label: t.lensWidth, value: product.lens_width ? `${product.lens_width} مم` : "--" },
     { label: t.bridgeWidth, value: product.bridge_width ? `${product.bridge_width} مم` : "--" },
-    { label: t.armLength, value: product.arm_length ? `${product.arm_length} مم` : "--" },
+    { label: t.templeLength, value: product.temple_length ? `${product.temple_length} مم` : "--" },
   ] : []
 
   const bg       = darkMode ? "#0a0a0a"  : "#FAFAF8"
