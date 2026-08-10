@@ -89,79 +89,77 @@ useEffect(() => {
   <section>
 
     {/* =========================================================
-    MOBILE
-========================================================= */}
-<div className="sm:hidden px-0 pt-0 pb-6">
+        MOBILE
+    ========================================================= */}
+    <div className="sm:hidden px-0 pt-0 pb-6">
 
-  <div className="relative overflow-hidden w-full aspect-[16/9] bg-[#F8F4F1]">
+      <div className="relative overflow-hidden w-full aspect-[16/9] bg-[#F8F4F1]">
 
-    <motion.img
-      key={activeSlide}
-      src={heroSlidesMobile[activeSlide]}
-      alt=""
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="absolute inset-0 w-full h-full object-contain"
-    />
-
-    {activeSlide === 0 && (
-      <>
-        {/* جراديانت زي الديسكتوب بالظبط: فاتح في النهار، غامق بس في الدارك مود */}
-        <div
-          className={`absolute inset-0 ${
-            darkMode
-              ? "bg-gradient-to-r from-black/70 via-black/30 to-transparent"
-              : "bg-gradient-to-r from-[#F8F4F1]/70 via-[#F8F4F1]/30 to-transparent"
-          }`}
+        <motion.img
+          key={activeSlide}
+          src={heroSlidesMobile[activeSlide]}
+          alt=""
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0 w-full h-full object-contain"
         />
 
-        {/* صندوق النص ثابت على الشمال زي الديسكتوب بالظبط، مش بيتقلب مع اللغة */}
-        <div className="absolute inset-y-0 left-0 w-[58%] flex items-center px-3">
-          <div className={isAr ? "text-right" : "text-left"}>
-            <p className="text-[#C89072] text-[10.5px] font-semibold mb-1">
-              {c.subtitle}
-            </p>
+       {activeSlide === 0 && (
+          <>
+            <div
+              className={`absolute inset-0 ${
+                darkMode
+                  ? "bg-gradient-to-r from-black/70 via-black/30 to-transparent"
+                  : "bg-gradient-to-r from-[#F8F4F1]/70 via-[#F8F4F1]/30 to-transparent"
+              }`}
+            />
 
-            <h1 className="text-[18px] font-extrabold mb-1 leading-tight text-black dark:text-white">
-              {isAr ? (
-                <>
-                  أسلوبك يبدأ
-                  <br />
-                  من نظارتك
-                </>
-              ) : (
-                c.title
-              )}
-            </h1>
+            <div className="absolute inset-y-0 left-0 w-[58%] flex items-center px-3">
+              <div className={isAr ? "text-right" : "text-left"}>
+                <p className="text-[#C89072] text-[10.5px] font-semibold mb-1">
+                  {c.subtitle}
+                </p>
 
-            <p className="text-gray-700 dark:text-gray-300 text-[10.5px] leading-4">
-              {c.description}
-            </p>
-          </div>
+                <h1 className="text-[18px] font-extrabold mb-1 leading-tight text-black dark:text-white">
+                  {isAr ? (
+                    <>
+                      أسلوبك يبدأ
+                      <br />
+                      من نظارتك
+                    </>
+                  ) : (
+                    c.title
+                  )}
+                </h1>
+
+                <p className="text-gray-700 dark:text-gray-300 text-[10.5px] leading-4">
+                  {c.description}
+                </p>
+              </div>
+            </div>
+          </>
+        )}
+
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+
+          {heroSlidesMobile.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveSlide(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                activeSlide === index
+                  ? "w-8 bg-[#D9A066]"
+                  : "w-2.5 bg-black/20"
+              }`}
+              aria-label={`Slide ${index + 1}`}
+            />
+          ))}
+
         </div>
-      </>
-    )}
 
-    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-
-      {heroSlidesMobile.map((_, index) => (
-        <button
-          key={index}
-          onClick={() => setActiveSlide(index)}
-          className={`h-2.5 rounded-full transition-all duration-300 ${
-            activeSlide === index
-              ? "w-8 bg-[#D9A066]"
-              : "w-2.5 bg-black/20"
-          }`}
-          aria-label={`Slide ${index + 1}`}
-        />
-      ))}
-
+      </div>
     </div>
-
-  </div>
-</div>
 
 
     {/* =========================================================
