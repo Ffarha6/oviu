@@ -28,26 +28,19 @@ useEffect(() => {
   return () => clearInterval(interval)
 }, [heroSlides.length])
 
-  // ✅ الصورتين (الفاتحة والغامقة) مصورتين بزاوية وبعد مختلفين عن بعض، فنفس
-  // الـ object-position بيدّي كروب مختلف بصريًا في كل واحدة. القيم دي بتحكم في
-  // موضع الصورة على الموبايل لكل ثيم لوحده — عدّلي الأرقام دي لحد ما الشخص
-  // يبان بنفس الحجم وفي نفس المكان تقريبًا في الصورتين.
   const heroMobileImageStyle = darkMode
     ? { objectPosition: "88% top" }
     : { objectPosition: "88% 10%" }
 
-  // ✅ على الديسكتوب، صورة السلايد الأول (البورتريه) بـ object-cover
   const heroDesktopImageStyle = {
     objectPosition: "50% 5%",
     transform: "scale(1)",
   }
 
-  // ✅ صورة السلايد التاني - object-cover عشان تملأ العرض
-  // لكن مع scale(0.8) عشان تبان بعيدة وكاملة في نفس الوقت
-  // + objectPosition: center عشان النص يفضل في النص
+  // ✅ صورة السلايد التاني - نفس منطق الموبايل بالضبط
+  // object-contain عشان تظهر كاملة + scale أكبر من 1 عشان تملأ العرض
   const heroDesktopBannerStyle = {
-    objectPosition: "center",
-    transform: "scale(0.8)",   // ← الرقم ده هتتحكم فيه عشان تبان بعيدة كفاية
+    transform: "scale(1.4)",   // ← الرقم ده بتتحكم فيه عشان تملأ العرض
   }
 
   const content = {
@@ -171,8 +164,9 @@ useEffect(() => {
       >
 
         {/* =====================================================
-            صورة السلايدر - الاتنين object-cover عشان يملؤا العرض
-            لكن الصورة التانية فيها scale(0.8) عشان تبان بعيدة وكاملة
+            صورة السلايدر 
+            - الأولى: object-cover عشان تملأ العرض
+            - التانية: object-contain (نفس الموبايل) + scale عشان تملأ العرض
         ===================================================== */}
         <motion.img
           key={activeSlide}
@@ -181,7 +175,9 @@ useEffect(() => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="absolute inset-0 w-full h-full object-cover"
+          className={`absolute inset-0 w-full h-full ${
+            activeSlide === 0 ? "object-cover" : "object-contain"
+          }`}
           style={activeSlide === 0 ? heroDesktopImageStyle : heroDesktopBannerStyle}
         />
 
