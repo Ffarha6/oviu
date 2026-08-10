@@ -53,11 +53,11 @@ useEffect(() => {
     transform: "scale(1)",
   }
 
-  // ✅ صورة السلايد التاني بقت صورة مخصوصة للديسكتوب بحجمها بتاعها، فرجّعنا
-  // الـ scale لـ 1 (من غير تكبير إضافي) لأنها المفروض متظبطة بحجمها الصح
-  // من الأول. لو محتاجة زوم إضافي بعد ما تحطي الصورة، غيّري الرقم هنا
+  // ✅ بانر التوصيل المجاني بقى object-cover زي صورة الشخص بالظبط، عشان
+  // يملى المساحة بالكامل من غير فراغات حواليه. لو حبيتي تتحكمي في أنهي جزء
+  // من الصورة يفضل ظاهر (لو حصل قص بسيط)، عدّلي objectPosition هنا
   const heroDesktopBannerStyle = {
-    transform: "scale(1)",
+    objectPosition: "50% 50%",
   }
 
   const content = {
@@ -181,9 +181,8 @@ useEffect(() => {
       >
 
         {/* =====================================================
-            صورة السلايدر 
-            - الأولى: object-cover عشان تملأ العرض
-            - التانية: صورة الديسكتوب المخصوصة بـ object-contain
+            صورة السلايدر — السلايدين الاتنين بقوا object-cover عشان
+            يملوا المساحة بالكامل من غير فراغات، زي بعض بالظبط
         ===================================================== */}
         <motion.img
           key={activeSlide}
@@ -192,9 +191,7 @@ useEffect(() => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className={`absolute inset-0 w-full h-full ${
-            activeSlide === 0 ? "object-cover" : "object-contain"
-          }`}
+          className="absolute inset-0 w-full h-full object-cover"
           style={activeSlide === 0 ? heroDesktopImageStyle : heroDesktopBannerStyle}
         />
 
