@@ -289,8 +289,8 @@ function ForgotPassword() {
   `
 
   return (
-    <>
-      {autofillFix}
+<>
+<style>{autofillFix}</style>
 
       <div className="relative min-h-screen flex items-center justify-center px-4 py-8 sm:py-12 overflow-hidden bg-[#0f0f0f]">
 
