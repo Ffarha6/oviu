@@ -235,11 +235,13 @@ useEffect(() => {
                 relative z-20
                 w-full
                 max-w-[580px]
+                lg:max-w-[680px]
+                xl:max-w-[760px]
                 px-10
                 lg:px-14
                 py-8
                 lg:py-16
-                ${isAr ? "text-right lg:mr-auto lg:ml-[6%]" : "text-left lg:ml-[6%]"}
+                ${isAr ? "text-right lg:mr-auto lg:ml-[4%]" : "text-left lg:ml-[4%]"}
               `}
             >
 
@@ -247,14 +249,13 @@ useEffect(() => {
                 {c.subtitle}
               </p>
 
-              {/* ✅ العنوان بقى بفاصل سطر يدوي (بدل ما نسيب الالتفاف
-                  التلقائي يقرر مكان القطع): "أسلوبك يبدأ من" في سطر،
-                  و"نظارتك" لوحدها في سطر تحتها، ثابتة كده مهما اتغيّر
-                  عرض الصندوق */}
+              {/* ✅ العنوان بقى بفاصل سطر يدوي: "أسلوبك يبدأ من" في سطر
+                  واحد (مقفول بـ whitespace-nowrap عشان ميتقسّمش أبدًا)،
+                  و"نظارتك" لوحدها في سطر تحتها */}
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-5 text-black dark:text-white leading-[1.1] drop-shadow-[0_0_20px_rgba(217,160,102,0.15)]">
                 {isAr ? (
                   <>
-                    أسلوبك يبدأ من
+                    <span className="whitespace-nowrap">أسلوبك يبدأ من</span>
                     <br />
                     نظارتك
                   </>
