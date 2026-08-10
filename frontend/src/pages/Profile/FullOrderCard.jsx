@@ -70,6 +70,8 @@ function canCancelOrder(status) {
 }
 
 export default function FullOrderCard({ order, onViewDetails, onCancelOrder }) {
+  // 🔧 مؤقت للتشخيص فقط — امسحها بعد ما تتأكد من القيمة
+  console.log("order.status =", JSON.stringify(order.status), "canCancel =", canCancelOrder(order.status))
   const firstItem = order.items?.[0]
   const itemCount = order.items?.reduce((sum, i) => sum + (i.quantity || 0), 0) || 0
   const imageUrl = resolveImageUrl(firstItem?.product_image)
