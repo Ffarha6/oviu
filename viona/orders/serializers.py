@@ -162,35 +162,37 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             item['product'] = product
         
         return value
-def create(self, validated_data):
-    """
-    إنشاء الطلب مع الأصناف
-    ملاحظة: هذه الدالة لن تُستخدم مباشرة لأن price_at_time يُحسب في views.py
-    """
-    items_data = validated_data.pop('items')
-    
-    # إنشاء الطلب بسعر مؤقت 0
-    order = Order.objects.create(
-        user=self.context['request'].user,
-        total_price=0,  # سيتم تحديثه في views.py
-        phone=validated_data['phone'],
-        address=validated_data['address'],
-        payment_method=validated_data.get('payment_method', 'cash'),
-        notes=validated_data.get('notes', ''),
-        status='pending'
-    )
-    
-    # إنشاء OrderItems بسعر مؤقت 0
-    for item_data in items_data:
-        OrderItem.objects.create(
-            order=order,
-            product=item_data['product'],
-            color=item_data['color'],
-            quantity=item_data['quantity'],
-            price_at_time=0  # سيتم تحديثه في views.py
+
+    def create(self, validated_data):
+        """
+        إنشاء الطلب مع الأصناف
+        ملاحظة: هذه الدالة لن تُستخدم مباشرة لأن price_at_time يُحسب في views.py
+        """
+        items_data = validated_data.pop('items')
+        
+        # إنشاء الطلب بسعر مؤقت 0
+        order = Order.objects.create(
+            user=self.context['request'].user,
+            total_price=0,  # سيتم تحديثه في views.py
+            phone=validated_data['phone'],
+            address=validated_data['address'],
+            payment_method=validated_data.get('payment_method', 'cash'),
+            notes=validated_data.get('notes', ''),
+            status='pending'
         )
-    
-    return order
+        
+        # إنشاء OrderItems بسعر مؤقت 0
+        for item_data in items_data:
+            OrderItem.objects.create(
+                order=order,
+                product=item_data['product'],
+                color=item_data['color'],
+                quantity=item_data['quantity'],
+                price_at_time=0  # سيتم تحديثه في views.py
+            )
+        
+        return order
+
 
 class UpdateOrderStatusSerializer(serializers.ModelSerializer):
     """Serializer for updating order status (admin only)"""
