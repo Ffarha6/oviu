@@ -36,6 +36,14 @@ useEffect(() => {
     ? { objectPosition: "88% top" }      // الصورة الغامقة
     : { objectPosition: "88% 10%" }      // الصورة الفاتحة — زوّدي/قلّلي النسبة دي لو لسه مش متطابقة
 
+  // ✅ على الديسكتوب، صورة السلايد الأول (البورتريه الطويل بتاع الشخص) بقت
+  // مقصوصة (object-cover) بدل ما تتصغر كاملة (object-contain)، عشان نتخلص
+  // من الطول الزيادة. الـ objectPosition بيتحكم في أنهي جزء من الصورة يفضل
+  // ظاهر — حاليًا مظبوطة على الجزء العلوي (الوش والكتفين) والباقي بيتقص من
+  // تحت. زوّدي الرقم التاني (النسبة المئوية) لو عايزة تنزلي الكروب لتحت
+  // شوية، أو قلّليه لو عايزة تطلعي لفوق أكتر
+  const heroDesktopImageStyle = { objectPosition: "50% 12%" }
+
   const content = {
     ar: {
   subtitle: "OVIU COLLECTION",
@@ -163,14 +171,16 @@ useEffect(() => {
           relative
           overflow-hidden
           aspect-[16/9]
-          +h[300px]
+          lg:aspect-[21/9]
           bg-[#F8F4F1]
           flex items-center
         "
       >
 
         {/* =====================================================
-            صورة السلايدر
+            صورة السلايدر — السلايد الأول (البورتريه) بيتقص بـ object-cover،
+            وسلايد التوصيل المجاني بيفضل كامل بـ object-contain عشان مصمم
+            كإعلان جاهز ومحتاج يبان بالكامل
         ===================================================== */}
         <motion.img
           key={activeSlide}
@@ -179,7 +189,10 @@ useEffect(() => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="absolute inset-0 w-full h-full object-contain"
+          className={`absolute inset-0 w-full h-full ${
+            activeSlide === 0 ? "object-cover" : "object-contain"
+          }`}
+          style={activeSlide === 0 ? heroDesktopImageStyle : undefined}
         />
 
 
