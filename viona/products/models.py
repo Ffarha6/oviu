@@ -79,7 +79,10 @@ class Product(models.Model):
     blank=True,
     null=True
 )
-    
+
+    # ========== لون العدسة (نص حر، زي "أزرق") ==========
+    lens_color = models.CharField(max_length=50, blank=True, null=True)
+
     frame_shape = models.CharField(
     max_length=50,
     choices=FRAME_SHAPES,
