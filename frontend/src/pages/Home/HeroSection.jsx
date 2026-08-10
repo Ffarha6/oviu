@@ -36,13 +36,23 @@ useEffect(() => {
     ? { objectPosition: "88% top" }      // الصورة الغامقة
     : { objectPosition: "88% 10%" }      // الصورة الفاتحة — زوّدي/قلّلي النسبة دي لو لسه مش متطابقة
 
-  // ✅ على الديسكتوب، صورة السلايد الأول (البورتريه الطويل بتاع الشخص) بقت
-  // مقصوصة (object-cover) بدل ما تتصغر كاملة (object-contain)، عشان نتخلص
-  // من الطول الزيادة. الـ objectPosition بيتحكم في أنهي جزء من الصورة يفضل
-  // ظاهر — حاليًا مظبوطة على الجزء العلوي (الوش والكتفين) والباقي بيتقص من
-  // تحت. زوّدي الرقم التاني (النسبة المئوية) لو عايزة تنزلي الكروب لتحت
-  // شوية، أو قلّليه لو عايزة تطلعي لفوق أكتر
-  const heroDesktopImageStyle = { objectPosition: "50% 12%" }
+  // ✅ على الديسكتوب، صورة السلايد الأول (البورتريه) بتتقص بـ object-cover،
+  // وزودنا عليها zoom إضافي (scale) عشان تتقص أكتر من كده (تفضيل ظاهر بس
+  // الوش والكتفين، والباقي يتقص برّا الفريم). زوّدي رقم الـ scale لو عايزة
+  // قص أكتر، أو قلّليه لو عايزة قص أقل. objectPosition بيتحكم في مكان
+  // التركيز قبل الزوم (لسه بيفضل مهم حتى بعد إضافة الـ scale)
+  const heroDesktopImageStyle = {
+    objectPosition: "50% 5%",
+    transform: "scale(1.35)",
+  }
+
+  // ✅ صورة السلايد التاني (بانر التوصيل المجاني) بتفضل كاملة من غير قص
+  // (object-contain)، بس زودنا عليها scale أصغر من 1 عشان "تتباعد للورا"
+  // شوية (زوم-آوت خفيف) بدل ما تملى الحواف بالظبط. زوّدي/قلّلي الرقم لو
+  // عايزة تتباعد أكتر أو أقل
+  const heroDesktopBannerStyle = {
+    transform: "scale(0.92)",
+  }
 
   const content = {
     ar: {
@@ -171,16 +181,15 @@ useEffect(() => {
           relative
           overflow-hidden
           aspect-[16/9]
-          lg:aspect-[21/9]
           bg-[#F8F4F1]
           flex items-center
         "
       >
 
         {/* =====================================================
-            صورة السلايدر — السلايد الأول (البورتريه) بيتقص بـ object-cover،
-            وسلايد التوصيل المجاني بيفضل كامل بـ object-contain عشان مصمم
-            كإعلان جاهز ومحتاج يبان بالكامل
+            صورة السلايدر — السلايد الأول (البورتريه) بيتقص بـ object-cover
+            وزوم إضافي، وسلايد التوصيل المجاني بيفضل كامل بـ object-contain
+            مع زوم-آوت خفيف (scale أصغر من 1) عشان يبان بعيد شوية للورا
         ===================================================== */}
         <motion.img
           key={activeSlide}
@@ -192,7 +201,7 @@ useEffect(() => {
           className={`absolute inset-0 w-full h-full ${
             activeSlide === 0 ? "object-cover" : "object-contain"
           }`}
-          style={activeSlide === 0 ? heroDesktopImageStyle : undefined}
+          style={activeSlide === 0 ? heroDesktopImageStyle : heroDesktopBannerStyle}
         />
 
 
