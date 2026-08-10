@@ -239,7 +239,7 @@ useEffect(() => {
                 lg:px-14
                 py-8
                 lg:py-16
-                ${isAr ? "text-right mr-auto" : "text-left ml-0"}
+                ${isAr ? "text-right lg:mr-auto lg:ml-[6%]" : "text-left lg:ml-[6%]"}
               `}
             >
 
@@ -247,12 +247,35 @@ useEffect(() => {
                 {c.subtitle}
               </p>
 
+              {/* ✅ العنوان بقى بفاصل سطر يدوي (بدل ما نسيب الالتفاف
+                  التلقائي يقرر مكان القطع): "أسلوبك يبدأ من" في سطر،
+                  و"نظارتك" لوحدها في سطر تحتها، ثابتة كده مهما اتغيّر
+                  عرض الصندوق */}
               <h1 className="text-5xl lg:text-6xl xl:text-7xl font-extrabold mb-5 text-black dark:text-white leading-[1.1] drop-shadow-[0_0_20px_rgba(217,160,102,0.15)]">
-                {c.title}
+                {isAr ? (
+                  <>
+                    أسلوبك يبدأ من
+                    <br />
+                    نظارتك
+                  </>
+                ) : (
+                  c.title
+                )}
               </h1>
 
+              {/* ✅ جملة الوصف كمان بفاصل سطر يدوي، بنفس نقطة القطع
+                  اللي كانت باينة قبل كده، عشان تفضل ثابتة الشكل مهما
+                  اتغيّر عرض الصندوق بعد تحريك النص */}
               <p className="text-gray-700 dark:text-gray-300 text-lg lg:text-xl leading-relaxed mb-8 max-w-[460px]">
-                {c.description}
+                {isAr ? (
+                  <>
+                    اكتشف تشكيلة مختارة من النظارات الشمسية والطبية
+                    <br />
+                    بأفضل الأسعار.
+                  </>
+                ) : (
+                  c.description
+                )}
               </p>
 
               <button
