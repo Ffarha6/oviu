@@ -7,7 +7,7 @@ import heroBannerDark from "../../assets/images/hero-banner-dark.png"
 import heroShippingBanner from "../../assets/images/hero-shipping-banner.png"
 // ✅ صورة جديدة مخصوصة للديسكتوب بس لسلايد "التوصيل المجاني". حطي صورتك
 // الجديدة في نفس فولدر src/assets/images بنفس الاسم ده، أو غيّري اسم
-// الملف هنا لو سميتيها اسم مختلف
+// الملف هنا لو سميتيها اسم مختلف. أبعادها الحقيقية 1920×700
 import heroShippingBannerDesktop from "../../assets/images/hero-shipping-banner-desktop.png"
 import { motion } from "framer-motion"
 
@@ -53,14 +53,15 @@ useEffect(() => {
     transform: "scale(1)",
   }
 
-  // ✅ بانر التوصيل المجاني (الصورة الجديدة) أكبر من مساحة الـ container،
-  // فبدل ما نقصها (object-cover)، رجّعناها لـ object-contain (تفضل كاملة
-  // من غير قص خالص) وضفنا scale أصغر من 1 عشان "تتباعد للورا" وتتظبط جوه
-  // المساحة كلها من غير فراغات كبيرة. زوّدي/قلّلي الرقم لحد ما تلاقيها
-  // متظبطة تمام (كل ما الرقم قل عن 1، كل ما ابتعدت/اتصغرت أكتر)
-  const heroDesktopBannerStyle = {
-    transform: "scale(0.8)",
-  }
+  // ✅ طول الـ container بقى بيتغيّر حسب السلايد الظاهر:
+  // - سلايد الشخص (0): طول ثابت 75vh زي ما كان، والصورة مقصوصة (object-cover)
+  // - سلايد التوصيل المجاني (1): طوله بيتظبط تلقائيًا على نسبة أبعاد
+  //   الصورة الحقيقية (1920×700)، فالصورة تملى العرض بالكامل من غير أي
+  //   قص ومن غير أي فراغات — لأن المساحة والصورة بقوا بنفس النسبة بالظبط
+  const heroContainerStyle =
+    activeSlide === 0
+      ? { height: "75vh" }
+      : { aspectRatio: "1920 / 700" }
 
   const content = {
     ar: {
@@ -176,17 +177,18 @@ useEffect(() => {
           w-full
           relative
           overflow-hidden
-          h-[75vh]
           bg-[#F8F4F1]
           flex items-center
+          transition-[height] duration-500 ease-in-out
         "
+        style={heroContainerStyle}
       >
 
         {/* =====================================================
             صورة السلايدر
-            - الأولى: object-cover عشان تملأ العرض
-            - التانية: object-contain (من غير قص) + scale أصغر من 1 عشان
-              تتظبط جوه المساحة من غير ما تتقص
+            - الأولى: object-cover عشان تملأ ارتفاع الـ 75vh الثابت
+            - التانية: object-contain، والـ container نفسه بقى بنفس نسبة
+              أبعادها بالظبط، فمفيش قص ومفيش فراغات
         ===================================================== */}
         <motion.img
           key={activeSlide}
@@ -198,7 +200,7 @@ useEffect(() => {
           className={`absolute inset-0 w-full h-full ${
             activeSlide === 0 ? "object-cover" : "object-contain"
           }`}
-          style={activeSlide === 0 ? heroDesktopImageStyle : heroDesktopBannerStyle}
+          style={activeSlide === 0 ? heroDesktopImageStyle : undefined}
         />
 
 
