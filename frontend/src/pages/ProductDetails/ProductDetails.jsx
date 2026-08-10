@@ -229,6 +229,8 @@ function ProductDetail() {
   return (
     <div style={{ backgroundColor: bg, color: textMain }} className="min-h-screen transition-colors duration-500 overflow-x-hidden"
       dir={isAr ? "rtl" : "ltr"}>
+      {/* ✅ FIX: py-8 اتحولت لـ pt-8 عشان منسيبش مسافة زيادة تحت آخر عنصر في
+          الصفحة لما قسم "قد يعجبك أيضاً" مش بيظهر (related فاضية) */}
       <div className="max-w-[1300px] mx-auto px-4 sm:px-6 pt-8">
 
         {/* ✅ FIX: تمت إزالة flex-row-reverse لأنها كانت تعمل عكس مزدوج مع dir="rtl"
@@ -493,7 +495,10 @@ onDragEnd={(e, info) => {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        {/* ✅ FIX: mb-10 بقت شرطية - بتظهر بس لو فيه منتجات related فعلاً.
+            كده لما related تبقى فاضية، مفيش مسافة زيادة (بيج) بتفضل معلقة
+            قبل الفوتر مباشرة */}
+        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-6 ${related.length > 0 ? "mb-10" : ""}`}>
 
           {/* ✅ جدول المواصفات: خط أكبر + تلوين صفوف متبادل (Zebra) زي الجداول
               الاحترافية، بدل الخط الصغير والسطر الفاصل الباهت اللي كان موجود */}
