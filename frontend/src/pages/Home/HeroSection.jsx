@@ -107,21 +107,26 @@ useEffect(() => {
 
        {activeSlide === 0 && (
           <>
+            {/* جراديانت خفيف بس على جنب النص (شمال)، فاتح في النهار
+                وغامق بس في الدارك مود، زي منطق الديسكتوب بالظبط */}
             <div
               className={`absolute inset-0 ${
                 darkMode
-                  ? "bg-gradient-to-r from-black/70 via-black/30 to-transparent"
-                  : "bg-gradient-to-r from-[#F8F4F1]/70 via-[#F8F4F1]/30 to-transparent"
+                  ? "bg-gradient-to-r from-black/70 via-black/25 to-transparent"
+                  : "bg-gradient-to-r from-[#F8F4F1]/75 via-[#F8F4F1]/25 to-transparent"
               }`}
             />
 
-            <div className="absolute inset-y-0 left-0 w-[58%] flex items-center px-3">
+            {/* صندوق النص: ضيق (44%) وملزوق شمال، وmax-width على
+                العنوان والوصف عشان النص ميوصلش لمنطقة اللوجو/الدائرة
+                الدهبية في نص الصورة */}
+            <div className="absolute inset-y-0 left-0 w-[44%] flex items-center px-3">
               <div className={isAr ? "text-right" : "text-left"}>
-                <p className="text-[#C89072] text-[10.5px] font-semibold mb-1">
+                <p className="text-[#C89072] text-[10px] font-semibold mb-1">
                   {c.subtitle}
                 </p>
 
-                <h1 className="text-[18px] font-extrabold mb-1 leading-tight text-black dark:text-white">
+                <h1 className="text-[17px] font-extrabold mb-1 leading-tight text-black dark:text-white max-w-[130px]">
                   {isAr ? (
                     <>
                       أسلوبك يبدأ
@@ -133,7 +138,7 @@ useEffect(() => {
                   )}
                 </h1>
 
-                <p className="text-gray-700 dark:text-gray-300 text-[10.5px] leading-4">
+                <p className="text-gray-700 dark:text-gray-300 text-[10px] leading-4 max-w-[130px]">
                   {c.description}
                 </p>
               </div>
