@@ -44,10 +44,11 @@ useEffect(() => {
     transform: "scale(1)",
   }
 
-  // ✅ صورة السلايد التاني (بانر التوصيل المجاني) - هتظهر كاملة وتملأ العرض
-  // من غير فراغات على اليمين واليسار
+  // ✅ صورة السلايد التاني (بانر التوصيل المجاني) - object-cover عشان تملأ العرض
+  // من اليمين للشمال زي الصورة الأولى بالظبط
   const heroDesktopBannerStyle = {
-    transform: "scale(1.15)",   // تكبير بسيط عشان يملأ العرض
+    objectPosition: "center",   // النص يفضل في النص
+    transform: "scale(1)",      // من غير تكبير زيادة
   }
 
   const content = {
@@ -185,9 +186,8 @@ useEffect(() => {
 
         {/* =====================================================
             صورة السلايدر 
-            - السلايد الأول (البورتريه) بـ object-cover عشان يملأ المساحة
-            - سلايد التوصيل المجاني بـ object-contain عشان يظهر كامل
-            مع scale(1.15) عشان يملأ العرض من غير فراغات
+            - الاتنين بـ object-cover عشان يملؤا العرض من اليمين للشمال
+            - لكن object-position مختلف لكل واحدة عشان الجزء المهم يفضل ظاهر
         ===================================================== */}
         <motion.img
           key={activeSlide}
@@ -196,9 +196,7 @@ useEffect(() => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className={`absolute inset-0 w-full h-full ${
-            activeSlide === 0 ? "object-cover" : "object-contain"
-          }`}
+          className="absolute inset-0 w-full h-full object-cover"  // ← object-cover في الاتنين
           style={activeSlide === 0 ? heroDesktopImageStyle : heroDesktopBannerStyle}
         />
 
