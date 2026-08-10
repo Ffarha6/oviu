@@ -140,7 +140,6 @@ useEffect(() => {
     <div
       className="
         hidden sm:flex
-        
         md:px-0
         pb-0
         md:pb-2
@@ -156,6 +155,7 @@ useEffect(() => {
           relative
           overflow-hidden
           aspect-[16/9]
+          lg:aspect-[21/8]
           bg-[#F8F4F1]
         "
       >
