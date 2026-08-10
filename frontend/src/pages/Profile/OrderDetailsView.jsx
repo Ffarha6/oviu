@@ -140,7 +140,7 @@ export default function OrderDetailsView({ order, onBack }) {
           <FaChevronLeft className="text-[13px] text-[#666] dark:text-gray-400" style={{ transform: "rotate(180deg)" }} />
         </button>
         <div>
-          <h2 className="m-0 text-[22px] font-bold text-[#222] dark:text-gray-100">طلب رقم #{order.id}</h2>
+          <h2 className="m-0 text-[22px] font-bold text-[#222] dark:text-gray-100">طلب رقم #{order.order_number || order.id}</h2>
           <p className="mt-1 mb-0 text-sm text-[#aaa] dark:text-gray-500">
             {new Date(order.created_at).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })}
           </p>

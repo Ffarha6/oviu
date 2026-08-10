@@ -101,7 +101,7 @@ export default function OrderConfirmationPage() {
       }
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(String(orderId))
+    navigator.clipboard.writeText(String(order?.order_number || orderId))
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
   }

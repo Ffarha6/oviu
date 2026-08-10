@@ -88,7 +88,7 @@ export default function FullOrderCard({ order, onViewDetails }) {
         {/* ── المحتوى: باقي التفاصيل ── */}
         <div className="flex-1 min-w-0 px-4 py-4 sm:px-0 sm:py-4 sm:pl-0">
           <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
-            <span className="text-base sm:text-[17px] font-bold text-[#222] dark:text-gray-100">طلب رقم #{order.id}</span>
+            <span className="text-base sm:text-[17px] font-bold text-[#222] dark:text-gray-100">طلب رقم #{order.order_number || order.id}</span>
           </div>
           <div className="text-xs sm:text-sm text-[#aaa] dark:text-gray-500 mb-2 sm:mb-1">
             تاريخ الطلب: {new Date(order.created_at).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })}
