@@ -53,11 +53,13 @@ useEffect(() => {
     transform: "scale(1)",
   }
 
-  // ✅ بانر التوصيل المجاني بقى object-cover زي صورة الشخص بالظبط، عشان
-  // يملى المساحة بالكامل من غير فراغات حواليه. لو حبيتي تتحكمي في أنهي جزء
-  // من الصورة يفضل ظاهر (لو حصل قص بسيط)، عدّلي objectPosition هنا
+  // ✅ بانر التوصيل المجاني (الصورة الجديدة) أكبر من مساحة الـ container،
+  // فبدل ما نقصها (object-cover)، رجّعناها لـ object-contain (تفضل كاملة
+  // من غير قص خالص) وضفنا scale أصغر من 1 عشان "تتباعد للورا" وتتظبط جوه
+  // المساحة كلها من غير فراغات كبيرة. زوّدي/قلّلي الرقم لحد ما تلاقيها
+  // متظبطة تمام (كل ما الرقم قل عن 1، كل ما ابتعدت/اتصغرت أكتر)
   const heroDesktopBannerStyle = {
-    objectPosition: "50% 50%",
+    transform: "scale(0.8)",
   }
 
   const content = {
@@ -181,8 +183,10 @@ useEffect(() => {
       >
 
         {/* =====================================================
-            صورة السلايدر — السلايدين الاتنين بقوا object-cover عشان
-            يملوا المساحة بالكامل من غير فراغات، زي بعض بالظبط
+            صورة السلايدر
+            - الأولى: object-cover عشان تملأ العرض
+            - التانية: object-contain (من غير قص) + scale أصغر من 1 عشان
+              تتظبط جوه المساحة من غير ما تتقص
         ===================================================== */}
         <motion.img
           key={activeSlide}
@@ -191,7 +195,9 @@ useEffect(() => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="absolute inset-0 w-full h-full object-cover"
+          className={`absolute inset-0 w-full h-full ${
+            activeSlide === 0 ? "object-cover" : "object-contain"
+          }`}
           style={activeSlide === 0 ? heroDesktopImageStyle : heroDesktopBannerStyle}
         />
 
