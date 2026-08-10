@@ -89,71 +89,83 @@ useEffect(() => {
   <section>
 
     {/* =========================================================
-        MOBILE
-    ========================================================= */}
-    <div className="sm:hidden px-0 pt-0 pb-6">
+    MOBILE
+========================================================= */}
+<div className="sm:hidden px-0 pt-0 pb-6">
 
-      <div className="relative overflow-hidden w-full aspect-[16/9] bg-[#F8F4F1]">
+  <div className="relative overflow-hidden w-full aspect-[16/9] bg-[#F8F4F1]">
 
-        <motion.img
-          key={activeSlide}
-          src={heroSlidesMobile[activeSlide]}
-          alt=""
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="absolute inset-0 w-full h-full object-contain"
+    <motion.img
+      key={activeSlide}
+      src={heroSlidesMobile[activeSlide]}
+      alt=""
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="absolute inset-0 w-full h-full object-contain"
+    />
+
+    {activeSlide === 0 && (
+      <>
+        {/* جراديانت بس على جنب النص، مش على عرض الصورة كله */}
+        <div
+          className={`absolute inset-y-0 ${
+            isAr ? "right-0 bg-gradient-to-l" : "left-0 bg-gradient-to-r"
+          } w-[62%] ${
+            darkMode
+              ? "from-black/80 via-black/35 to-transparent"
+              : "from-black/60 via-black/20 to-transparent"
+          }`}
         />
 
-        {activeSlide === 0 && (
-          <>
-            <div
-              className={`absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t ${
-                darkMode
-                  ? "from-black/85 via-black/40 to-transparent"
-                  : "from-black/70 via-black/25 to-transparent"
-              }`}
-            />
+        {/* صندوق النص جنب الصورة، بخط أصغر */}
+        <div
+          className={`absolute inset-y-0 w-[60%] flex flex-col justify-center ${
+            isAr ? "right-0 text-right pr-4" : "left-0 text-left pl-4"
+          }`}
+        >
+          <p className="text-[#E8B074] text-[10px] font-semibold mb-1">
+            {c.subtitle}
+          </p>
 
-            <div
-              className={`absolute inset-x-0 bottom-0 px-5 pb-8 ${
-                isAr ? "text-right" : "text-left"
-              }`}
-            >
-              <p className="text-[#E8B074] text-[13px] font-semibold mb-1">
-                {c.subtitle}
-              </p>
+          <h1 className="text-white text-[19px] font-extrabold mb-1 leading-tight">
+            {isAr ? (
+              <>
+                أسلوبك يبدأ
+                <br />
+                من نظارتك
+              </>
+            ) : (
+              c.title
+            )}
+          </h1>
 
-              <h1 className="text-white text-[32px] font-extrabold mb-2 leading-tight">
-                {c.title}
-              </h1>
-
-              <p className="text-white/90 text-[15px] leading-7 max-w-[300px]">
-                {c.description}
-              </p>
-            </div>
-          </>
-        )}
-
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-
-          {heroSlidesMobile.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveSlide(index)}
-              className={`h-2.5 rounded-full transition-all duration-300 ${
-                activeSlide === index
-                  ? "w-8 bg-[#D9A066]"
-                  : "w-2.5 bg-black/20"
-              }`}
-              aria-label={`Slide ${index + 1}`}
-            />
-          ))}
-
+          <p className="text-white/90 text-[11px] leading-5 max-w-[150px]">
+            {c.description}
+          </p>
         </div>
+      </>
+    )}
 
-      </div>
+    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+
+      {heroSlidesMobile.map((_, index) => (
+        <button
+          key={index}
+          onClick={() => setActiveSlide(index)}
+          className={`h-2.5 rounded-full transition-all duration-300 ${
+            activeSlide === index
+              ? "w-8 bg-[#D9A066]"
+              : "w-2.5 bg-black/20"
+          }`}
+          aria-label={`Slide ${index + 1}`}
+        />
+      ))}
+
     </div>
+
+  </div>
+</div>
 
 
     {/* =========================================================
