@@ -1,4 +1,5 @@
-import { FaBoxOpen, FaChevronLeft, FaCheck } from "react-icons/fa"
+import { useState } from "react"
+import { FaBoxOpen, FaChevronLeft, FaCheck, FaTimesCircle } from "react-icons/fa"
 import StatusBadge from "./StatusBadge"
 import { STATUS_CONFIG, DEFAULT_STATUS_CONFIG } from "./ProfileConstants"
 
@@ -61,10 +62,39 @@ function DeliveryStatusStrip({ order }) {
   )
 }
 
-export default function FullOrderCard({ order, onViewDetails }) {
+// ✅ الحالات اللي لسه ينفع تلغي فيها الطلب — أول ما يتشحن (shipped) أو يتسلم (delivered)
+// مينفعش تلغي، بنفس منطق الباك إند في cancel_order (نفس الدالة الموجودة في OrderDetailsView)
+const CANCELLABLE_STATUSES = ["pending", "confirmed", "preparing"]
+function canCancelOrder(status) {
+  return CANCELLABLE_STATUSES.includes(status)
+}
+
+export default function FullOrderCard({ order, onViewDetails, onCancelOrder }) {
   const firstItem = order.items?.[0]
   const itemCount = order.items?.reduce((sum, i) => sum + (i.quantity || 0), 0) || 0
   const imageUrl = resolveImageUrl(firstItem?.product_image)
+
+  const [confirmingCancel, setConfirmingCancel] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelError, setCancelError] = useState("")
+
+  // ✅ خطوة أولى بتفتح تأكيد، خطوة تانية (لما يبقى confirmingCancel=true) بتنفذ الإلغاء الفعلي
+  const handleCancelClick = async () => {
+    if (!confirmingCancel) {
+      setConfirmingCancel(true)
+      return
+    }
+    setCancelling(true)
+    setCancelError("")
+    try {
+      await onCancelOrder?.(order.id)
+    } catch (err) {
+      setCancelError("فشل الإلغاء")
+      setConfirmingCancel(false)
+    } finally {
+      setCancelling(false)
+    }
+  }
 
   return (
     <div className="bg-white dark:bg-black rounded-2xl border border-[#f0f0f0] dark:border-gray-700 overflow-hidden">
@@ -101,8 +131,8 @@ export default function FullOrderCard({ order, onViewDetails }) {
           <DeliveryStatusStrip order={order} />
         </div>
 
-        {/* ── زرار عرض التفاصيل: عريض تحت على الموبايل، لوحده على الجنب على الشاشات الكبيرة ── */}
-        <div className="px-4 pb-4 sm:px-4 sm:pb-0 sm:pr-4 shrink-0">
+        {/* ── زرار عرض التفاصيل + إلغاء الطلب ── */}
+        <div className="px-4 pb-4 sm:px-4 sm:pb-0 sm:pr-4 shrink-0 flex flex-col gap-2 sm:w-[160px]">
           <button
             onClick={() => onViewDetails(order)}
             className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2.5 sm:py-2 rounded-[10px] border-[1.5px] border-[#E8821A] bg-white dark:bg-transparent text-[#E8821A] text-sm font-semibold cursor-pointer transition-all duration-200"
@@ -111,6 +141,44 @@ export default function FullOrderCard({ order, onViewDetails }) {
             عرض التفاصيل
             <FaChevronLeft className="text-[10px]" />
           </button>
+
+          {/* ✅ زرار إلغاء الطلب — يظهر بس لو الحالة لسه قبل الشحن */}
+          {canCancelOrder(order.status) && !confirmingCancel && (
+            <button
+              onClick={handleCancelClick}
+              className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2.5 sm:py-2 rounded-[10px] border-[1.5px] border-red-400 bg-white dark:bg-transparent text-red-500 text-sm font-semibold cursor-pointer transition-all duration-200"
+            >
+              <FaTimesCircle className="text-xs" />
+              إلغاء الطلب
+            </button>
+          )}
+
+          {canCancelOrder(order.status) && confirmingCancel && (
+            <div className="flex flex-col gap-1.5">
+              <p className="m-0 text-[11px] text-[#888] dark:text-gray-400 text-center leading-snug">
+                تأكيد الإلغاء؟
+              </p>
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() => setConfirmingCancel(false)}
+                  disabled={cancelling}
+                  className="flex-1 py-2 rounded-[8px] border border-[#e0e0e0] dark:border-gray-600 text-[#666] dark:text-gray-400 text-xs font-semibold bg-white dark:bg-transparent cursor-pointer"
+                >
+                  تراجع
+                </button>
+                <button
+                  onClick={handleCancelClick}
+                  disabled={cancelling}
+                  className="flex-1 py-2 rounded-[8px] border-none bg-red-500 text-white text-xs font-semibold cursor-pointer disabled:opacity-60"
+                >
+                  {cancelling ? "..." : "تأكيد"}
+                </button>
+              </div>
+              {cancelError && (
+                <p className="m-0 text-[10px] text-red-500 text-center">{cancelError}</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

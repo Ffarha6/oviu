@@ -1,7 +1,7 @@
 import { useState } from "react"
 import {
   FaChevronLeft, FaBox, FaMapMarkerAlt, FaCopy,
-  FaClock, FaCheckCircle, FaSpinner, FaTruck
+  FaClock, FaCheckCircle, FaSpinner, FaTruck, FaTimesCircle
 } from "react-icons/fa"
 import StatusBadge from "./StatusBadge"
 
@@ -49,6 +49,13 @@ function dateForStep(order, key) {
 function formatShortDate(value) {
   if (!value) return null
   return new Date(value).toLocaleDateString("ar-EG", { day: "numeric", month: "long" })
+}
+
+// ✅ الحالات اللي لسه ينفع تلغي فيها الطلب — أول ما يتشحن (shipped) أو يتسلم (delivered)
+// مينفعش تلغي، بنفس منطق الباك إند في cancel_order
+const CANCELLABLE_STATUSES = ["pending", "confirmed", "preparing"]
+function canCancelOrder(status) {
+  return CANCELLABLE_STATUSES.includes(status)
 }
 
 // ── تايم لاين رأسي كامل (بيظهر بس لما يتفتح) ──────────────────────
@@ -120,14 +127,35 @@ function OrderNumberChip({ order }) {
   )
 }
 
-export default function OrderDetailsView({ order, onBack }) {
+export default function OrderDetailsView({ order, onBack, onCancelOrder }) {
   const [timelineOpen, setTimelineOpen] = useState(false)
   const [invoiceOpen, setInvoiceOpen] = useState(false)
+  const [confirmingCancel, setConfirmingCancel] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelError, setCancelError] = useState("")
   const itemCount = order.items?.reduce((sum, i) => sum + (i.quantity || 0), 0) || 0
 
   const isCancelled = order.status === "cancelled"
   const currentStep = STEPS.find(s => s.key === order.status)
   const summaryDate = currentStep ? formatShortDate(dateForStep(order, currentStep.key)) : null
+
+  // ✅ خطوة أولى بتفتح تأكيد، خطوة تانية (لما يبقى confirmingCancel=true) بتنفذ الإلغاء الفعلي
+  const handleCancelClick = async () => {
+    if (!confirmingCancel) {
+      setConfirmingCancel(true)
+      return
+    }
+    setCancelling(true)
+    setCancelError("")
+    try {
+      await onCancelOrder?.(order.id)
+    } catch (err) {
+      setCancelError("حصل خطأ أثناء إلغاء الطلب، حاول تاني")
+      setConfirmingCancel(false)
+    } finally {
+      setCancelling(false)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -188,6 +216,46 @@ export default function OrderDetailsView({ order, onBack }) {
 
             {timelineOpen && <OrderProgress status={order.status} order={order} />}
           </>
+        )}
+
+        {/* ✅ زرار إلغاء الطلب — يظهر بس لو الحالة لسه قبل الشحن */}
+        {canCancelOrder(order.status) && (
+          <div className="mt-5 pt-5 border-t border-[#f0f0f0] dark:border-gray-700">
+            {!confirmingCancel ? (
+              <button
+                onClick={handleCancelClick}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[10px] border-[1.5px] border-red-400 text-red-500 text-sm font-semibold bg-white dark:bg-transparent cursor-pointer transition-all duration-200"
+              >
+                <FaTimesCircle className="text-xs" />
+                إلغاء الطلب
+              </button>
+            ) : (
+              <div className="flex flex-col gap-2.5">
+                <p className="m-0 text-[13px] text-[#666] dark:text-gray-400 text-center">
+                  متأكد إنك عايز تلغي الطلب ده؟ مش هتقدر ترجعه تاني.
+                </p>
+                <div className="flex gap-2.5">
+                  <button
+                    onClick={() => setConfirmingCancel(false)}
+                    disabled={cancelling}
+                    className="flex-1 py-2.5 rounded-[10px] border border-[#e0e0e0] dark:border-gray-600 text-[#666] dark:text-gray-400 text-sm font-semibold bg-white dark:bg-transparent cursor-pointer"
+                  >
+                    تراجع
+                  </button>
+                  <button
+                    onClick={handleCancelClick}
+                    disabled={cancelling}
+                    className="flex-1 py-2.5 rounded-[10px] border-none bg-red-500 text-white text-sm font-semibold cursor-pointer disabled:opacity-60"
+                  >
+                    {cancelling ? "جاري الإلغاء..." : "تأكيد الإلغاء"}
+                  </button>
+                </div>
+                {cancelError && (
+                  <p className="m-0 text-xs text-red-500 text-center">{cancelError}</p>
+                )}
+              </div>
+            )}
+          </div>
         )}
       </div>
 
