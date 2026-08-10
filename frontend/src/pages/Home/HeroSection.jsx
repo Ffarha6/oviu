@@ -33,22 +33,21 @@ useEffect(() => {
   // موضع الصورة على الموبايل لكل ثيم لوحده — عدّلي الأرقام دي لحد ما الشخص
   // يبان بنفس الحجم وفي نفس المكان تقريبًا في الصورتين.
   const heroMobileImageStyle = darkMode
-    ? { objectPosition: "88% top" }      // الصورة الغامقة
-    : { objectPosition: "88% 10%" }      // الصورة الفاتحة — زوّدي/قلّلي النسبة دي لو لسه مش متطابقة
+    ? { objectPosition: "88% top" }
+    : { objectPosition: "88% 10%" }
 
-  // ✅ على الديسكتوب، صورة السلايد الأول (البورتريه) بقينا نتحكم في ارتفاعها
-  // من الأب بـ h-[75vh] بدل aspect-[16/9]، والـ scale اترفع عشان الصورة
-  // متبقاش مكبرة زيادة عن اللزوم
+  // ✅ على الديسكتوب، صورة السلايد الأول (البورتريه) بـ object-cover
   const heroDesktopImageStyle = {
     objectPosition: "50% 5%",
     transform: "scale(1)",
   }
 
-  // ✅ صورة السلايد التاني (بانر التوصيل المجاني) - object-cover عشان تملأ العرض
-  // من اليمين للشمال زي الصورة الأولى بالظبط
+  // ✅ صورة السلايد التاني - object-cover عشان تملأ العرض
+  // لكن مع scale(0.8) عشان تبان بعيدة وكاملة في نفس الوقت
+  // + objectPosition: center عشان النص يفضل في النص
   const heroDesktopBannerStyle = {
-    objectPosition: "center",   // النص يفضل في النص
-    transform: "scale(1)",      // من غير تكبير زيادة
+    objectPosition: "center",
+    transform: "scale(0.8)",   // ← الرقم ده هتتحكم فيه عشان تبان بعيدة كفاية
   }
 
   const content = {
@@ -69,9 +68,6 @@ useEffect(() => {
   }
   const c = content[language]
 
-  // ✅ بيدور على سكشن المنتجات (BestSellers) في نفس الصفحة الرئيسية بالـ id
-  // بتاعه، ولو لقاه بيعمل سكرول ناعم ليه. مفيش navigate هنا لأننا عايزين
-  // ننزل في نفس الصفحة مش نروح لصفحة تانية
   const scrollToProducts = () => {
     document.getElementById("best-sellers")?.scrollIntoView({ behavior: "smooth" })
   }
@@ -86,7 +82,6 @@ useEffect(() => {
 
       <div className="relative overflow-hidden w-full aspect-[16/9] bg-[#F8F4F1]">
 
-        {/* صورة السلايدر */}
         <motion.img
           key={activeSlide}
           src={heroSlides[activeSlide]}
@@ -97,12 +92,8 @@ useEffect(() => {
           className="absolute inset-0 w-full h-full object-contain"
         />
 
-        {/* =====================================================
-            محتوى الهيرو الأصلي فقط
-        ===================================================== */}
         {activeSlide === 0 && (
           <>
-            {/* التعتيم */}
             <div
               className={`absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t ${
                 darkMode
@@ -111,7 +102,6 @@ useEffect(() => {
               }`}
             />
 
-            {/* النص */}
             <div
               className={`absolute inset-x-0 bottom-0 px-5 pb-8 ${
                 isAr ? "text-right" : "text-left"
@@ -132,9 +122,6 @@ useEffect(() => {
           </>
         )}
 
-        {/* =====================================================
-            نقاط السلايدر
-        ===================================================== */}
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex gap-2">
 
           {heroSlides.map((_, index) => (
@@ -172,22 +159,20 @@ useEffect(() => {
       "
     >
 
-      {/* ✅ التغيير الأساسي هنا: من aspect-[16/9] لـ h-[75vh] عشان نتحكم في الارتفاع */}
       <div
         className="
           w-full
           relative
           overflow-hidden
-          h-[75vh]          /* ← بدل aspect-[16/9] */
+          h-[75vh]
           bg-[#F8F4F1]
           flex items-center
         "
       >
 
         {/* =====================================================
-            صورة السلايدر 
-            - الاتنين بـ object-cover عشان يملؤا العرض من اليمين للشمال
-            - لكن object-position مختلف لكل واحدة عشان الجزء المهم يفضل ظاهر
+            صورة السلايدر - الاتنين object-cover عشان يملؤا العرض
+            لكن الصورة التانية فيها scale(0.8) عشان تبان بعيدة وكاملة
         ===================================================== */}
         <motion.img
           key={activeSlide}
@@ -196,7 +181,7 @@ useEffect(() => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="absolute inset-0 w-full h-full object-cover"  // ← object-cover في الاتنين
+          className="absolute inset-0 w-full h-full object-cover"
           style={activeSlide === 0 ? heroDesktopImageStyle : heroDesktopBannerStyle}
         />
 
@@ -206,7 +191,6 @@ useEffect(() => {
         ===================================================== */}
         {activeSlide === 0 && (
           <>
-            {/* Overlay */}
             <div
               className={`
                 absolute inset-0
@@ -218,7 +202,6 @@ useEffect(() => {
               `}
             />
 
-            {/* النص */}
             <motion.div
               key={language}
               initial={{
@@ -254,8 +237,6 @@ useEffect(() => {
                 {c.description}
               </p>
 
-              {/* ✅ زرار "تسوق الآن" — ديسكتوب بس (جوه سكشن الديسكتوب أصلاً)،
-                  بيعمل سكرول ناعم لقسم المنتجات في نفس الصفحة الرئيسية */}
               <button
                 onClick={scrollToProducts}
                 className="
@@ -276,9 +257,6 @@ useEffect(() => {
         )}
 
 
-        {/* =====================================================
-            نقاط السلايدر - DESKTOP
-        ===================================================== */}
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex gap-2">
 
           {heroSlides.map((_, index) => (
