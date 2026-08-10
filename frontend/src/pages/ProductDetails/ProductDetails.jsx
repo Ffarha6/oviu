@@ -229,7 +229,7 @@ function ProductDetail() {
   return (
     <div style={{ backgroundColor: bg, color: textMain }} className="min-h-screen transition-colors duration-500 overflow-x-hidden"
       dir={isAr ? "rtl" : "ltr"}>
-      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 py-8">
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 pt-8">
 
         {/* ✅ FIX: تمت إزالة flex-row-reverse لأنها كانت تعمل عكس مزدوج مع dir="rtl"
             وهو اللي كان بيخلي الـ breadcrumb يظهر في اتجاه LTR (على الشمال) بدل اليمين.
