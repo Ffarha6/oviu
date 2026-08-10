@@ -289,7 +289,6 @@ class ProductWriteSerializer(serializers.ModelSerializer):
             'is_active',
             'lens_type',
             'frame_shape',
-            'lens_color',
             'price',
             'discount_price',
             'stock',
