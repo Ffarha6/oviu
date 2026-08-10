@@ -93,42 +93,24 @@ useEffect(() => {
 ========================================================= */}
 <div className="sm:hidden px-0 pt-0 pb-6">
 
-  <div className="relative overflow-hidden w-full aspect-[16/9] bg-[#F8F4F1]">
+  <div className="relative overflow-hidden w-full aspect-[16/9] bg-[#F8F4F1] flex">
 
-    <motion.img
-      key={activeSlide}
-      src={heroSlidesMobile[activeSlide]}
-      alt=""
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="absolute inset-0 w-full h-full object-contain"
-    />
-
-    {activeSlide === 0 && (
+    {activeSlide === 0 ? (
       <>
-        {/* جراديانت بس على جنب النص، مش على عرض الصورة كله */}
+        {/* =====================================================
+            سلايد الشخص: نص Split حقيقي - نص + صورة جمب بعض
+            من غير أي تعتيم على الصورة
+        ===================================================== */}
         <div
-          className={`absolute inset-y-0 ${
-            isAr ? "right-0 bg-gradient-to-l" : "left-0 bg-gradient-to-r"
-          } w-[62%] ${
-            darkMode
-              ? "from-black/80 via-black/35 to-transparent"
-              : "from-black/60 via-black/20 to-transparent"
-          }`}
-        />
-
-        {/* صندوق النص جنب الصورة، بخط أصغر */}
-        <div
-          className={`absolute inset-y-0 w-[60%] flex flex-col justify-center ${
-            isAr ? "right-0 text-right pr-4" : "left-0 text-left pl-4"
+          className={`w-[42%] flex flex-col justify-center px-3 bg-[#F8F4F1] ${
+            isAr ? "order-2 text-right" : "order-1 text-left"
           }`}
         >
-          <p className="text-[#E8B074] text-[10px] font-semibold mb-1">
+          <p className="text-[#C89072] text-[10px] font-semibold mb-1">
             {c.subtitle}
           </p>
 
-          <h1 className="text-white text-[19px] font-extrabold mb-1 leading-tight">
+          <h1 className="text-[#1a1a1a] text-[17px] font-extrabold mb-1 leading-tight">
             {isAr ? (
               <>
                 أسلوبك يبدأ
@@ -140,11 +122,38 @@ useEffect(() => {
             )}
           </h1>
 
-          <p className="text-white/90 text-[11px] leading-5 max-w-[150px]">
+          <p className="text-gray-600 text-[10.5px] leading-4">
             {c.description}
           </p>
         </div>
+
+        <div
+          className={`w-[58%] relative ${
+            isAr ? "order-1" : "order-2"
+          }`}
+        >
+          <motion.img
+            key={activeSlide}
+            src={heroSlidesMobile[activeSlide]}
+            alt=""
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
       </>
+    ) : (
+      /* سلايد التوصيل المجاني: صورة كاملة زي ما هي */
+      <motion.img
+        key={activeSlide}
+        src={heroSlidesMobile[activeSlide]}
+        alt=""
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="absolute inset-0 w-full h-full object-contain"
+      />
     )}
 
     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex gap-2">
