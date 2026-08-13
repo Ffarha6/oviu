@@ -25,12 +25,10 @@ def create_order(request):
         with transaction.atomic():
             items_data = serializer.validated_data['items']
             
-            # ✅ جمع كل المنتجات المطلوبة لقفلها
             product_ids = [item['product'].id for item in items_data]
             products = Product.objects.select_for_update().filter(id__in=product_ids)
             products_dict = {p.id: p for p in products}
             
-            # ✅ حساب total_price و price_at_time بعد القفل
             total_price = 0
             order_items_to_create = []
             
@@ -41,11 +39,9 @@ def create_order(request):
                 
                 quantity = item_data['quantity']
                 
-                # التحقق من المخزون مرة أخرى بعد القفل
                 if product.stock < quantity:
                     raise ValueError(f"المنتج {product.name} غير متوفر بالكمية المطلوبة. المتاح: {product.stock}")
                 
-                # ✅ حساب السعر الحالي بعد القفل
                 price_at_time = float(product.get_current_price())
                 
                 total_price += price_at_time * quantity
@@ -56,11 +52,15 @@ def create_order(request):
                     'quantity': quantity,
                     'price_at_time': price_at_time
                 })
+
+            # ✅ إضافة تكلفة الشحن للإجمالي
+            shipping_cost = serializer.validated_data.get('shipping_cost', 0)
+            total_price += float(shipping_cost)
             
-            # إنشاء الطلب
             order = Order.objects.create(
                 user=request.user,
                 total_price=total_price,
+                shipping_cost=shipping_cost,
                 phone=serializer.validated_data['phone'],
                 address=serializer.validated_data['address'],
                 payment_method=serializer.validated_data.get('payment_method', 'cash'),
@@ -68,7 +68,6 @@ def create_order(request):
                 status='pending'
             )
             
-            # إنشاء OrderItems وتحديث المخزون
             for item_data in order_items_to_create:
                 OrderItem.objects.create(
                     order=order,
@@ -77,12 +76,9 @@ def create_order(request):
                     quantity=item_data['quantity'],
                     price_at_time=item_data['price_at_time']
                 )
-                # تحديث المخزون
                 item_data['product'].stock -= item_data['quantity']
                 item_data['product'].save()
             
-            # ✅ FIX: ضفنا context={'request': request} عشان product_image يرجع
-            # رابط كامل (http://...) بدل مسار نسبي بس
             order_serializer = OrderSerializer(order, context={'request': request})
             return Response(order_serializer.data, status=status.HTTP_201_CREATED)
 
@@ -97,8 +93,6 @@ def create_order(request):
 def my_orders(request):
     """جلب كل أوردرات المستخدم الحالي"""
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    # ✅ FIX: نفس الحكاية - كان مفيش context، فصور المنتجات هنا كانت بترجع
-    # مسار نسبي بس (ده اللي كان بيسبب نفس مشكلة الصور في تاب "طلباتي" بالبروفايل)
     serializer = OrderSerializer(orders, many=True, context={'request': request})
     return Response(serializer.data)
 
@@ -108,7 +102,6 @@ def my_orders(request):
 def order_detail(request, order_id):
     """جلب تفاصيل أوردر معين"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    # ✅ FIX: ده أهم مكان - صفحة تأكيد الطلب بتنادي الـ endpoint ده بالظبط
     serializer = OrderSerializer(order, context={'request': request})
     return Response(serializer.data)
 
@@ -125,7 +118,6 @@ def update_order_status(request, order_id):
 
     new_status = serializer.validated_data['status']
     
-    # ✅ التحقق من صحة انتقال الحالات
     valid_transitions = {
         'pending': ['confirmed', 'cancelled'],
         'confirmed': ['preparing', 'cancelled'],
@@ -146,7 +138,6 @@ def update_order_status(request, order_id):
     elif new_status == 'delivered' and not order.delivered_date:
         order.delivered_date = timezone.now()
     elif new_status == 'cancelled' and order.is_paid:
-        # إعادة المخزون لو الطلب كان مدفوع وتم إلغاؤه
         for item in order.items.all():
             item.product.stock += item.quantity
             item.product.save()
@@ -173,7 +164,6 @@ def cancel_order(request, order_id):
     order.status = 'cancelled'
     order.save()
 
-    # إعادة المخزون
     for item in order.items.all():
         item.product.stock += item.quantity
         item.product.save()
@@ -302,7 +292,6 @@ def repeat_order(request, order_id):
         with transaction.atomic():
             validated_items = serializer.validated_data['items']
             
-            # ✅ نفس التعديلات التي في create_order
             product_ids = [item['product'].id for item in validated_items]
             products = Product.objects.select_for_update().filter(id__in=product_ids)
             products_dict = {p.id: p for p in products}
