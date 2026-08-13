@@ -57,7 +57,7 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = [
             'id', 'order_number', 'user', 'user_name',
-            'total_price', 'total_price_display',
+            'total_price', 'total_price_display', 'shipping_cost',
             'phone', 'address', 'payment_method', 'payment_method_display',
             'notes', 'status', 'status_display',
             'is_paid', 'paid_at', 'shipped_date', 'delivered_date',
@@ -75,7 +75,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Order
-        fields = ['phone', 'address', 'payment_method', 'notes', 'items']
+        fields = ['phone', 'address', 'payment_method', 'notes', 'items', 'shipping_cost']
     
     def validate_phone(self, value):
         """التحقق من صحة رقم الهاتف (مصري أو دولي)"""  # ✅ تم التعديل
