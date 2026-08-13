@@ -56,11 +56,16 @@ def create_order(request):
                     'quantity': quantity,
                     'price_at_time': price_at_time
                 })
+
+            # ✅ إضافة تكلفة الشحن للإجمالي (الفرونت إند بيبعتها في shipping_cost)
+            shipping_cost = serializer.validated_data.get('shipping_cost', 0)
+            total_price += float(shipping_cost)
             
             # إنشاء الطلب
             order = Order.objects.create(
                 user=request.user,
                 total_price=total_price,
+                shipping_cost=shipping_cost,
                 phone=serializer.validated_data['phone'],
                 address=serializer.validated_data['address'],
                 payment_method=serializer.validated_data.get('payment_method', 'cash'),
