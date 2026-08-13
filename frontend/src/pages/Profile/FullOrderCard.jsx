@@ -101,7 +101,7 @@ export default function FullOrderCard({ order, onViewDetails, onCancelOrder }) {
       <div className="flex flex-col sm:flex-row sm:items-center gap-0 sm:gap-4">
 
         {/* ── الصورة: عريضة وفوق على الموبايل، مربعة وعلى الجنب على الشاشات الكبيرة ── */}
-        <div className="w-full h-44 sm:w-[90px] sm:h-[90px] sm:m-4 shrink-0 sm:rounded-xl bg-[#fafafa] sm:bg-white border-b sm:border border-gray-100 sm:border-gray-200 flex items-center justify-center overflow-hidden">
+        <div className="w-full h-44 sm:w-[90px] sm:h-[90px] sm:m-4 shrink-0 sm:rounded-xl bg-[#fafafa] sm:bg-white flex items-center justify-center overflow-hidden">
           {imageUrl ? (
             <img
               src={imageUrl}
